@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroBg from '../../components/HeroBg.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ServiceIcon from '../../components/ServiceIcon.astro';
 import Divider from '../../components/Divider.astro';
@@ -21,12 +22,14 @@ const itemList = {
   name: 'Auto repair services at Toy Auto Center',
   itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/services/${s.slug}/`), name: s.name })),
 };
+import { heroPreload } from '../../lib/images';
+const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 ---
-<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[itemList]} ctaSeed={1313}>
-  <section class="hub-hero" aria-labelledby="hub-title">
-    <Harness client:idle variant="light" density="med" seed={13} />
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[itemList]} ctaSeed={1313} preload={heroPre}>
+  <section class="hub-hero photo-hero on-dark" aria-labelledby="hub-title">
+    <HeroBg image="hero-shop-bay-blauvelt" />
     <div class="container hub-hero__inner">
-      <Breadcrumbs items={crumbs} />
+      <Breadcrumbs items={crumbs} tone="dark" />
       <p class="eyebrow eyebrow--mono">SERVICES 01 TO 13 · ALL MAKES &amp; MODELS</p>
       <h1 id="hub-title">{copy.h1}</h1>
       <div class="hub-hero__intro flow">{copy.intro.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={inline(p, Astro.url)} />)}</div>
@@ -71,10 +74,10 @@ const itemList = {
   </section>
 </Base>
 <style>
-  .hub-hero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
   .hub-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--s-5); }
   .hub-hero h1 { max-width: 16ch; }
-  .hub-hero__intro { max-width: 62ch; }
+  .hub-hero__intro { max-width: 56ch; }
+  .hub-hero__intro p:not(.lead) { color: var(--tac-on-dark-soft); }
   .hub-h2 { margin-bottom: var(--s-8); max-width: 24ch; }
   .groups { display: grid; gap: var(--s-12) var(--s-10); }
   @media (min-width: 900px) { .groups { grid-template-columns: 1fr 1fr; } }

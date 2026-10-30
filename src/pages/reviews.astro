@@ -23,9 +23,11 @@ const schema = list.map((r, i) => ({
   url: r.url,
   publisher: { '@type': 'Organization', name: r.source },
 }));
+import { heroPreload } from '../lib/images';
+const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 ---
-<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={55}>
-  <PageHero crumbs={crumbs} eyebrow="WORD ON THE ROAD" title={copy.h1} lead={copy.intro} seed={55} />
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={55} preload={heroPre}>
+  <PageHero crumbs={crumbs} eyebrow="WORD ON THE ROAD" title={copy.h1} lead={copy.intro} seed={55} image="hero-shop-bay-blauvelt" />
 
   <section class="section section--tight" aria-labelledby="rt-h">
     <div class="container">

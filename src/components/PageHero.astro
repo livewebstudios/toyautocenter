@@ -1,16 +1,19 @@
 ---
-// Light page hero with the Harness background. Media (photo frame, badge, map) goes in the slot.
+// Page hero. With `image`, a full-bleed photo sits behind the text (subject on the right);
+// without one, the light hero with the Harness background. Media (badge, map) goes in the slot.
 import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+import HeroBg from './HeroBg.astro';
 import Harness from '../islands/HarnessBackground';
-interface Props { crumbs?: Crumb[]; eyebrow: string; title: string; lead?: string; seed?: number; density?: 'low' | 'med' | 'high'; harness?: boolean }
-const { crumbs = [], eyebrow, title, lead, seed = 5, density = 'med', harness = true } = Astro.props;
+interface Props { crumbs?: Crumb[]; eyebrow: string; title: string; lead?: string; seed?: number; density?: 'low' | 'med' | 'high'; harness?: boolean; image?: string }
+const { crumbs = [], eyebrow, title, lead, seed = 5, density = 'med', harness = true, image } = Astro.props;
 const hasMedia = Astro.slots.has('default');
 ---
-<section class:list={['phero', hasMedia && 'phero--media']} aria-labelledby="phero-title">
-  {harness && <Harness client:idle variant="light" density={density} seed={seed} />}
+<section class:list={['phero', hasMedia && 'phero--media', image && 'photo-hero on-dark', image && hasMedia && 'photo-hero--media']} aria-labelledby="phero-title">
+  {image && <HeroBg image={image} />}
+  {!image && harness && <Harness client:idle variant="light" density={density} seed={seed} />}
   <div class="container phero__grid">
     <div class="phero__text">
-      {crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
+      {crumbs.length > 0 && <Breadcrumbs items={crumbs} tone={image ? 'dark' : 'light'} />}
       <p class="eyebrow eyebrow--mono">{eyebrow}</p>
       <h1 id="phero-title">{title}</h1>
       {lead && <p class="lead phero__lead" data-speakable set:html={lead} />}
@@ -21,13 +24,15 @@ const hasMedia = Astro.slots.has('default');
 </section>
 <style>
   .phero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
-  .phero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; }
+  .phero.photo-hero { background: var(--tac-graphite); }
+  .phero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; width: min(100% - 2 * var(--gutter), var(--container)); }
   .phero__text { display: grid; gap: var(--s-5); justify-items: start; }
-  .phero h1 { max-width: 16ch; }
-  .phero__lead { max-width: 58ch; }
+  .phero h1 { max-width: 18ch; }
+  .phero__lead { max-width: 52ch; }
   .phero__media { width: 100%; max-width: 440px; justify-self: center; }
   @media (min-width: 900px) {
     .phero--media .phero__grid { grid-template-columns: 1.25fr 0.75fr; gap: var(--s-16); }
     .phero__media { justify-self: end; }
+    .photo-hero:not(.photo-hero--media) .phero__text { max-width: 58%; }
   }
 </style>

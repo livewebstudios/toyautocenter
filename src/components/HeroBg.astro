@@ -1,0 +1,11 @@
+---
+// Full-bleed hero photo (a wide composite from scripts/hero-compose.mjs) with the readability overlay.
+import { Picture } from 'astro:assets';
+import { wide, HERO_WIDTHS, HERO_SIZES } from '../lib/images';
+interface Props { image: string; alt?: string }
+const { image, alt = '' } = Astro.props;
+const src = wide(image);
+---
+<div class="hero-bg" aria-hidden={alt ? undefined : 'true'}>
+  <Picture src={src} alt={alt} widths={HERO_WIDTHS.filter((w) => w <= src.width)} sizes={HERO_SIZES} formats={['avif', 'webp']} quality={42} loading="eager" fetchpriority="high" decoding="async" />
+</div>

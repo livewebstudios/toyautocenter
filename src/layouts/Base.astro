@@ -10,9 +10,6 @@ import { abs, rel } from '../lib/paths';
 import { businessNode, websiteNode, organizationNode, webPageNode, breadcrumbNode, type Node } from '../lib/schema';
 import { getImage } from 'astro:assets';
 import heroPhoto from '../assets/images/hero-shop-bay-blauvelt.jpg';
-import bsd800 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-800-normal.woff2?url';
-import bsd700 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-700-normal.woff2?url';
-import bsd600 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-600-normal.woff2?url';
 import inter from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import mono400 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url';
 import mono600 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2?url';
@@ -66,9 +63,6 @@ const graph: Node[] = [
 const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 
 const fontCss = `
-@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:800;font-display:swap;src:url(${bsd800}) format('woff2')}
-@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:700;font-display:swap;src:url(${bsd700}) format('woff2')}
-@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:600;font-display:swap;src:url(${bsd600}) format('woff2')}
 @font-face{font-family:'Inter Variable';font-style:normal;font-weight:100 900;font-display:swap;src:url(${inter}) format('woff2-variations')}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(${mono400}) format('woff2')}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:600;font-display:swap;src:url(${mono600}) format('woff2')}`;
@@ -117,8 +111,7 @@ const gaInit = ga4
     <link rel="manifest" href={rel(Astro.url, '/site.webmanifest')} />
     <link rel="alternate" type="application/rss+xml" title="Toy Auto Center blog" href={rel(Astro.url, '/rss.xml')} />
 
-    <link rel="preload" href={bsd800} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={bsd700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter} as="font" type="font/woff2" crossorigin />
     {preload && <link rel="preload" as="image" imagesrcset={preload.srcset} imagesizes={preload.sizes} type={preload.type} fetchpriority="high" />}
     <style is:inline set:html={fontCss}></style>
     <script is:inline>

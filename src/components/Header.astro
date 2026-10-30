@@ -40,8 +40,8 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
 <header class:list={['site-header', theme === 'dark' && 'site-header--over-dark']} data-header data-theme={theme}>
   <div class="container site-header__row">
     <a class="brand" href={base(Astro.url)} aria-label="Toy Auto Center home">
-      <Image src={logo} alt="Toy Auto Center" class="brand__logo brand__logo--light" width={300} height={50} loading="eager" />
-      {theme === 'dark' && <Image src={logoInverse} alt="" class="brand__logo brand__logo--dark" width={300} height={50} loading="eager" aria-hidden="true" />}
+      <Image src={logo} alt="Toy Auto Center" class="brand__logo brand__logo--light" width={400} height={67} loading="eager" />
+      {theme === 'dark' && <Image src={logoInverse} alt="" class="brand__logo brand__logo--dark" width={400} height={67} loading="eager" aria-hidden="true" />}
     </a>
     <span class="progress-key" data-progress-key aria-hidden="true"><KeyMark size={28} /></span>
 
@@ -53,32 +53,27 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
             <span class="visually-hidden">Show services menu</span>
             <svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" /></svg>
           </button>
-          <div class="mega" id="mega-services" data-mega-panel hidden>
-            <div class="container mega__grid">
+          <div class="mega on-dark" id="mega-services" data-mega-panel hidden>
+            <div class="mega__grid">
               {groups.map((g) => (
                 <div class="mega__group">
-                  <p class="eyebrow">{g.toUpperCase()}</p>
+                  <p class="mega__label">{g.toUpperCase()}</p>
                   <ul>
                     {services.filter((s) => s.group === g).map((s) => (
                       <li>
                         <a class="mega__link" href={rel(Astro.url, `/services/${s.slug}/`)}>
-                          <ServiceIcon name={s.icon} size={34} />
-                          <span>
-                            <span class="mega__name"><span class="mono mega__n">{pad(s.n)}</span>{s.name.toUpperCase()}</span>
-                            <span class="mega__sym">{s.symptom}</span>
-                          </span>
+                          <ServiceIcon name={s.icon} size={22} />
+                          <span>{s.short.toUpperCase()}</span>
                         </a>
                       </li>
                     ))}
                   </ul>
                 </div>
               ))}
-              <div class="mega__card on-dark">
-                <p class="mega__card-title">Not sure what's wrong? Describe the symptom.</p>
-                <p class="mega__card-text">Tell us what it sounds like, feels like or smells like. We diagnose first and quote second.</p>
-                <Button href="/contact/" size="sm">BOOK AN APPOINTMENT</Button>
-                <a class="mega__all link-arrow" href={rel(Astro.url, '/services/')}>SEE ALL SERVICES</a>
-              </div>
+            </div>
+            <div class="mega__foot">
+              <a href={rel(Astro.url, '/services/')}>ALL 13 SERVICES <span aria-hidden="true">&rarr;</span></a>
+              <a href={rel(Astro.url, '/contact/')}>NOT SURE WHAT'S WRONG? BOOK A DIAGNOSIS <span aria-hidden="true">&rarr;</span></a>
             </div>
           </div>
         </li>
@@ -125,7 +120,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
     li.addEventListener('pointerleave', (e) => {
       if (e.pointerType !== 'mouse') return;
       clearTimeout(timer);
-      timer = window.setTimeout(() => set(false), intent * 1.33);
+      timer = window.setTimeout(() => set(false), intent * 2.5);
     });
     btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
     // First tap on SERVICES with touch opens the panel instead of navigating.
@@ -176,7 +171,8 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .site-header__row { height: 100%; display: flex; align-items: center; gap: var(--s-5); }
 
   .brand { display: block; position: relative; flex: none; line-height: 0; }
-  .brand :global(.brand__logo) { width: clamp(196px, 9vw + 120px, 300px); height: auto; }
+  .brand :global(.brand__logo) { width: clamp(210px, 52vw, 270px); height: auto; }
+  @media (min-width: 1024px) { .brand :global(.brand__logo) { width: clamp(200px, 36vw - 170px, 400px); } }
   .brand :global(.brand__logo--dark) { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-2); }
   .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--dark) { opacity: 1; }
   .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--light) { opacity: 0; }
@@ -185,8 +181,8 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .progress-key { display: none; color: var(--tac-purple); line-height: 0; }
   .site-header--over-dark:not(.is-scrolled) .progress-key { color: var(--tac-white); }
 
-  .primary-nav { display: none; margin-left: auto; }
-  .primary-nav__list { list-style: none; padding: 0; display: flex; align-items: center; gap: clamp(0.875rem, 0.1rem + 1.2vw, 1.75rem); }
+  .primary-nav { display: none; margin-left: auto; align-self: stretch; }
+  .primary-nav__list { list-style: none; padding: 0; height: 100%; display: flex; align-items: center; gap: clamp(0.875rem, 0.1rem + 1.2vw, 1.75rem); }
   .nav-link {
     font-family: var(--font-body); font-weight: 650; font-size: clamp(0.8125rem, 0.62rem + 0.3vw, 0.9375rem); letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--tac-ink); text-decoration: none; padding-block: var(--s-2); position: relative; white-space: nowrap;
@@ -197,28 +193,42 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .site-header--over-dark:not(.is-scrolled) .nav-link { color: var(--tac-white); }
   .site-header--over-dark:not(.is-scrolled) .nav-link::after { background: var(--tac-amber); }
 
-  .has-mega { display: flex; align-items: center; gap: 2px; }
+  .has-mega { display: flex; align-items: center; gap: 2px; align-self: stretch; }
   .mega-toggle { width: 28px; height: 32px; display: grid; place-items: center; color: var(--tac-ink); border-radius: var(--r-1); }
   .site-header--over-dark:not(.is-scrolled) .mega-toggle { color: var(--tac-white); }
   .mega-toggle svg { transition: transform var(--dur-2) var(--ease-out); }
   .is-open .mega-toggle svg { transform: rotate(180deg); }
+  /* The panel hangs from the bottom of the header; the stretched <li> plus this bridge leave no dead gap for the cursor. */
   .mega {
-    position: absolute; left: 0; right: 0; top: 100%;
-    background: var(--tac-white); border-top: 1px solid var(--tac-line); border-bottom: 1px solid var(--tac-line);
-    box-shadow: 0 24px 48px var(--tac-grape-14); padding-block: var(--s-8);
+    position: absolute; top: calc(100% - 6px); left: 50%; transform: translateX(-50%);
+    width: min(940px, calc(100vw - 2 * var(--gutter)));
+    background: var(--tac-grape); color: var(--tac-on-dark);
+    border: 1px solid var(--tac-white-12); border-radius: var(--r-3);
+    box-shadow: 0 28px 60px var(--tac-grape-14), 0 2px 0 var(--tac-white-12) inset;
+    padding: var(--s-6) var(--s-6) 0; overflow: hidden;
+    animation: mega-in var(--dur-3) var(--ease-out);
   }
-  .mega__grid { display: grid; grid-template-columns: repeat(4, 1fr) 1.15fr; gap: var(--s-6); }
-  .mega__group ul { list-style: none; padding: 0; margin-top: var(--s-3); }
-  .mega__link { display: grid; grid-template-columns: 34px 1fr; gap: var(--s-3); align-items: start; padding: var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); }
-  .mega__link:hover { background: var(--tac-mist); color: var(--tac-ink); }
-  .mega__name { display: block; font-family: var(--font-body); font-weight: 700; font-size: 0.875rem; letter-spacing: 0.03em; color: var(--tac-purple); line-height: 1.15; }
-  .mega__n { font-size: 0.6875rem; color: var(--tac-violet-deep); margin-right: 0.5em; }
-  .mega__sym { display: block; font-size: 0.8125rem; color: var(--tac-ink-soft); line-height: 1.35; margin-top: 2px; }
-  .mega__card { background: var(--tac-grape); color: var(--tac-on-dark); border-radius: var(--r-3); padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; }
-  .mega__card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.625rem; line-height: 1.05; color: var(--tac-white); }
-  .mega__card-text { font-size: 0.9375rem; color: var(--tac-on-dark-soft); }
-  .mega__all { color: var(--tac-white); font-size: 0.875rem; }
-
+  .mega::before { content: ''; position: absolute; left: 0; right: 0; top: -24px; height: 24px; }
+  @keyframes mega-in { from { opacity: 0; transform: translate(-50%, -6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  .mega__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-6); }
+  .mega__label { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.18em; color: var(--tac-amber); margin-bottom: var(--s-3); }
+  .mega__group ul { list-style: none; padding: 0; display: grid; gap: 2px; }
+  .mega__link {
+    display: grid; grid-template-columns: 22px 1fr; gap: var(--s-3); align-items: center;
+    padding: var(--s-2) var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2);
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; line-height: 1.3;
+    color: var(--tac-on-dark); text-decoration: none; transition: background-color var(--dur-2), color var(--dur-2);
+  }
+  .mega__link:hover, .mega__link:focus-visible { background: var(--tac-white-12); color: var(--tac-white); }
+  .mega__link :global(.ic) { --ic-p: var(--tac-violet-light); --ic-s: var(--tac-amber); }
+  .mega__foot {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3) var(--s-6);
+    margin: var(--s-6) calc(var(--s-6) * -1) 0; padding: var(--s-4) var(--s-6);
+    border-top: 1px solid var(--tac-white-12); background: var(--tac-graphite);
+  }
+  .mega__foot a { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; color: var(--tac-white); text-decoration: none; display: inline-flex; align-items: center; gap: 0.6em; min-height: 32px; }
+  .mega__foot a:hover { color: var(--tac-amber); }
+  @media (prefers-reduced-motion: reduce) { .mega { animation: none; } }
 
   .mobile-bar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-nav); height: var(--mobile-bar-h);

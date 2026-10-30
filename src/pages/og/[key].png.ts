@@ -1,5 +1,5 @@
 // Build-time OG images (1200x630): grape ground, Harness traces, the key mark, the page title in
-// Big Shoulders and "Blauvelt, NY · Route 303" in mono. satori -> SVG -> sharp -> PNG.
+// Inter and "Blauvelt, NY · Route 303" in mono. satori -> SVG -> sharp -> PNG.
 import type { APIRoute } from 'astro';
 import satori from 'satori';
 import sharp from 'sharp';
@@ -15,7 +15,7 @@ const AMBER = rgbOf('tac-amber');
 const require = createRequire(import.meta.url);
 const font = (p: string) => readFileSync(require.resolve(p));
 const fonts = [
-  { name: 'Big Shoulders Display', data: font('@fontsource/big-shoulders-display/files/big-shoulders-display-latin-800-normal.woff'), weight: 800 as const, style: 'normal' as const },
+  { name: 'Inter', data: font('@fontsource/inter/files/inter-latin-800-normal.woff'), weight: 800 as const, style: 'normal' as const },
   { name: 'JetBrains Mono', data: font('@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff'), weight: 600 as const, style: 'normal' as const },
 ];
 
@@ -58,7 +58,7 @@ export const GET: APIRoute = async ({ props }) => {
   const bg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="${tok('tac-grape')}"/>${traces(seed)}</svg>`;
   const key2 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${KEY_VIEWBOX}"><path d="${KEY_BADGE}" fill="${tok('tac-purple')}"/><path d="${KEY_RING}" fill="${tok('tac-steel')}" fill-rule="evenodd"/><path d="${KEY_KEY}" fill="${tok('tac-key-light')}" fill-rule="evenodd"/></svg>`;
   const uri = (s: string) => `data:image/svg+xml;base64,${Buffer.from(s).toString('base64')}`;
-  const size = title.length > 60 ? 76 : title.length > 36 ? 92 : 112;
+  const size = title.length > 60 ? 54 : title.length > 36 ? 64 : 80;
 
   const svg = await satori(
     {
@@ -72,7 +72,7 @@ export const GET: APIRoute = async ({ props }) => {
               style: { display: 'flex', alignItems: 'center', gap: 20 },
               children: [
                 { type: 'img', props: { src: uri(key2), width: 84, height: 90 } },
-                { type: 'div', props: { style: { fontFamily: 'Big Shoulders Display', fontSize: 44, color: tok('tac-white'), letterSpacing: 4 }, children: 'TOY AUTO CENTER' } },
+                { type: 'div', props: { style: { fontFamily: 'Inter', fontSize: 36, color: tok('tac-white'), letterSpacing: 3 }, children: 'TOY AUTO CENTER' } },
               ],
             },
           },
@@ -82,7 +82,7 @@ export const GET: APIRoute = async ({ props }) => {
               style: { display: 'flex', flexDirection: 'column', gap: 18 },
               children: [
                 { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 24, color: tok('tac-amber'), letterSpacing: 3 }, children: kicker } },
-                { type: 'div', props: { style: { fontFamily: 'Big Shoulders Display', fontSize: size, lineHeight: 0.95, color: tok('tac-white'), textTransform: 'uppercase', maxWidth: 1000 }, children: title } },
+                { type: 'div', props: { style: { fontFamily: 'Inter', fontSize: size, lineHeight: 1.04, color: tok('tac-white'), letterSpacing: -2, maxWidth: 1040 }, children: title } },
               ],
             },
           },

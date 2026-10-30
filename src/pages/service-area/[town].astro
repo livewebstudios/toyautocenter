@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
+import Band from '../../components/Band.astro';
 import Button from '../../components/Button.astro';
 import AreaMap from '../../components/AreaMap.astro';
 import ServiceIcon from '../../components/ServiceIcon.astro';
@@ -42,9 +43,13 @@ const townNode = {
   areaServed: t.places.map((p) => ({ '@type': 'Place', name: `${p.name}, ${p.region}` })),
   image: abs('/icon-512.png'),
 };
+const heroPool = ['hero-shop-bay-blauvelt', 'wheel-alignment-rack-strut', 'brake-rotor-caliper-replacement', 'mechanic-hands-wrench-workbench', 'obd2-diagnostic-scan-tool', 'serpentine-belt-replacement', 'nys-inspection-underbody-check', 'ac-manifold-gauge-service', 'transmission-service-fluid-drain'];
+const townHero = heroPool[Math.max(0, towns.findIndex((x) => x.slug === t.slug)) % heroPool.length];
+import { heroPreload } from '../../lib/images';
+const heroPre = await heroPreload(townHero);
 ---
-<Base title={c.title} description={c.description} crumbs={crumbs.slice(1)} schema={[townNode, faqNode(path, c.faqs)]} ctaSeed={t.map.x * 3 + t.map.y}>
-  <PageHero crumbs={crumbs} eyebrow={`${t.name.toUpperCase()}${t.places[0].region === 'NJ' ? ', NJ' : ', NY'} · ${c.route.driveTime.toUpperCase()} TO THE SHOP`} title={c.h1} lead={md(c.intro[0])} seed={t.map.x * 7 + t.map.y}>
+<Base title={c.title} description={c.description} crumbs={crumbs.slice(1)} schema={[townNode, faqNode(path, c.faqs)]} ctaSeed={t.map.x * 3 + t.map.y} preload={heroPre}>
+  <PageHero crumbs={crumbs} eyebrow={`${t.name.toUpperCase()}${t.places[0].region === 'NJ' ? ', NJ' : ', NY'} · ${c.route.driveTime.toUpperCase()} TO THE SHOP`} title={c.h1} lead={md(c.intro[0])} seed={t.map.x * 7 + t.map.y} image={townHero}>
     <AreaMap compact title={`Map from ${t.name} to Toy Auto Center on Route 303 in Blauvelt`} />
     <Fragment slot="actions">
       <div class="btn-row">
@@ -54,84 +59,71 @@ const townNode = {
     </Fragment>
   </PageHero>
 
-  <div class="container town-body">
-    <article class="town-main">
-      <section class="flow" aria-label="Overview">{c.intro.slice(1).flatMap(splitLong).map((p) => <p class="lead" set:html={md(p)} />)}</section>
+  <Band tone="light" label="Overview" seed={t.map.x}>
+    <div slot="head">
+      <p class="eyebrow">{t.name.toUpperCase()}</p>
+      {c.intro.slice(1).flatMap(splitLong).map((p) => <p class="town-lead" set:html={md(p)} />)}
+    </div>
+    <div class="route" data-reveal>
+      <p class="eyebrow">THE DRIVE</p>
+      <h2 id="route-h">{c.route.heading}</h2>
+      <p class="route__time mono"><span class="led" aria-hidden="true"></span>{c.route.driveTime}</p>
+      <ol class="route__steps">{c.route.steps.map((s) => <li set:html={md(s)} />)}</ol>
+      {c.route.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    </div>
+  </Band>
 
-      <section class="route" aria-labelledby="route-h" data-reveal>
-        <div class="route__head">
-          <p class="eyebrow">THE DRIVE</p>
-          <h2 id="route-h">{c.route.heading}</h2>
-          <p class="route__time mono"><span class="led" aria-hidden="true"></span>{c.route.driveTime}</p>
-        </div>
-        <ol class="readout-list">{c.route.steps.map((s) => <li set:html={md(s)} />)}</ol>
-        <div class="flow route__body">{c.route.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}</div>
-      </section>
+  {c.sections.map((sec, i) => (
+    <Band tone={i % 2 === 0 ? 'dark' : 'light'} eyebrow={i === 0 ? 'WHAT WE DO' : 'GOOD TO KNOW'} heading={sec.heading} headingId={`sec-h-${i}`} seed={t.map.y + i}>
+      {sec.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    </Band>
+  ))}
 
-      {c.sections.map((s) => (
-        <section class="flow town-sec" aria-label={s.heading}>
-          <h2>{s.heading}</h2>
-          {s.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-        </section>
+  <Band tone={c.sections.length % 2 === 0 ? 'dark' : 'light'} eyebrow="INSPECTION" heading={c.inspectionNote.heading} headingId="insp-h" seed={t.map.x + 5}>
+    {c.inspectionNote.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    <ul class="town-svcs" data-live-icons aria-label={`What ${t.name} drivers book most`}>
+      {svcs.map((s) => (
+        <li>
+          <a href={rel(Astro.url, `/services/${s.slug}/`)}>
+            <ServiceIcon name={s.icon} size={44} />
+            <span class="town-svcs__name">{s.name}</span>
+            <span class="town-svcs__p">{serviceCopy(s.slug).promise}</span>
+          </a>
+        </li>
       ))}
+    </ul>
+  </Band>
 
-      <section class="insp" aria-labelledby="insp-h" data-reveal>
-        <p class="eyebrow">INSPECTION</p>
-        <h2 id="insp-h">{c.inspectionNote.heading}</h2>
-        {c.inspectionNote.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-      </section>
-
-      <section aria-labelledby="ts-h">
-        <h2 id="ts-h" class="ts-h">What {t.name} drivers book most</h2>
-        <ul class="town-svcs" data-live-icons>
-          {svcs.map((s) => (
-            <li>
-              <a href={rel(Astro.url, `/services/${s.slug}/`)}>
-                <ServiceIcon name={s.icon} size={52} />
-                <span class="mono town-svcs__n">{pad(s.n)}</span>
-                <span class="town-svcs__name">{s.name}</span>
-                <span class="town-svcs__p">{serviceCopy(s.slug).promise}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="tf-h">
-        <h2 id="tf-h" class="ts-h">{t.name} questions</h2>
-        <FAQ items={c.faqs} />
-      </section>
-    </article>
-    <aside class="town-aside" aria-label="More towns">
-      <div class="aside-box">
-        <h2 class="aside-box__h">Other towns we serve</h2>
-        <ul>{neighbors.map((n) => <li><a href={rel(Astro.url, `/service-area/${n.slug}/`)}>{n.name}</a></li>)}</ul>
-        <a class="link-arrow" href={rel(Astro.url, '/service-area/')}>Full service area</a>
-      </div>
-    </aside>
-  </div>
-  <Divider />
+  <Band tone={c.sections.length % 2 === 0 ? 'light' : 'dark'} eyebrow="FAQ" heading={`${t.name} questions`} headingId="tf-h" seed={t.map.y + 9}>
+    <div slot="head" class="town-more">
+      <p class="town-more__label">Other towns we serve</p>
+      <ul>{neighbors.map((n) => <li><a href={rel(Astro.url, `/service-area/${n.slug}/`)}>{n.name}</a></li>)}</ul>
+    </div>
+    <FAQ items={c.faqs} />
+  </Band>
 </Base>
 <style>
-  .town-body { display: grid; gap: var(--s-16); padding-block: var(--s-16) var(--section-y); }
-  @media (min-width: 1100px) { .town-body { grid-template-columns: minmax(0, 1fr) 280px; gap: var(--s-20); } .town-aside { position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; } }
-  .town-main { display: grid; gap: var(--s-16); min-width: 0; }
-  .route { display: grid; gap: var(--s-6); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); }
-  .route__head { display: grid; gap: var(--s-2); }
-  .route__time { display: inline-flex; gap: var(--s-2); align-items: center; font-weight: 600; color: var(--tac-violet-deep); text-transform: uppercase; letter-spacing: 0.08em; }
-  .town-sec h2, .insp h2 { max-width: 22ch; }
-  .insp { display: grid; gap: var(--s-4); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); background: var(--tac-mist); border-radius: var(--r-3); border-left: 4px solid var(--tac-amber); }
-  .ts-h { margin-bottom: var(--s-6); }
-  .town-svcs { list-style: none; padding: 0; display: grid; gap: var(--s-4); }
+  .town-lead { margin-top: var(--s-3); font-size: clamp(1.1875rem, 1.05rem + 0.5vw, 1.4375rem); line-height: 1.45; font-weight: 600; color: var(--tac-purple); max-width: 34ch; }
+  .route { display: grid; gap: var(--s-3); padding: clamp(1.25rem, 1rem + 1.5vw, 2rem); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); box-shadow: var(--tac-shadow-1); }
+  .route h2 { font-size: var(--fs-h3); }
+  .route__time { display: inline-flex; gap: var(--s-2); align-items: center; font-weight: 600; color: var(--tac-violet-deep); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8125rem; }
+  .route__steps { padding-left: 1.2em; display: grid; gap: var(--s-1); font-weight: 600; color: var(--tac-ink); }
+  .route p:not(.eyebrow):not(.route__time) { color: var(--tac-ink-soft); }
+  .town-svcs { list-style: none; padding: 0; display: grid; gap: var(--s-3); }
   @media (min-width: 720px) { .town-svcs { grid-template-columns: repeat(3, 1fr); } }
-  .town-svcs a { display: grid; gap: var(--s-2); height: 100%; padding: var(--s-5); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); text-decoration: none; color: var(--tac-ink); transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2); }
-  .town-svcs a:hover { transform: translateY(-2px); box-shadow: var(--tac-shadow-2); color: var(--tac-ink); }
-  .town-svcs__n { font-size: 0.75rem; color: var(--tac-violet-deep); }
-  .town-svcs__name { font-family: var(--font-display); font-weight: 700; font-size: 1.375rem; color: var(--tac-purple); line-height: 1.05; }
+  .town-svcs a { display: grid; gap: var(--s-2); height: 100%; padding: var(--s-4); border: 1px solid var(--tac-line); border-radius: var(--r-2); background: var(--tac-white); text-decoration: none; color: var(--tac-ink); transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2); }
+  .town-svcs a:hover { transform: translateY(-2px); border-color: var(--tac-violet); color: var(--tac-ink); }
+  .town-svcs__name { font-weight: 750; font-size: 1.0625rem; color: var(--tac-purple); line-height: 1.2; }
   .town-svcs__p { font-size: 0.875rem; color: var(--tac-ink-soft); }
-  .aside-box { padding: var(--s-6); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); display: grid; gap: var(--s-4); }
-  .aside-box__h { font-size: 1.375rem; }
-  .aside-box ul { list-style: none; padding: 0; display: grid; gap: var(--s-1); }
-  .aside-box a { text-decoration: none; }
-  .aside-box a:hover { text-decoration: underline; }
+  :global(.band--dark) .town-svcs a { background: var(--tac-white-08); border-color: var(--tac-white-12); }
+  :global(.band--dark) .town-svcs a:hover { border-color: var(--tac-amber); }
+  :global(.band--dark) .town-svcs__name { color: var(--tac-white); }
+  :global(.band--dark) .town-svcs__p { color: var(--tac-on-dark-soft); }
+  .town-more { margin-top: var(--s-6); }
+  .town-more__label { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tac-violet-deep); }
+  :global(.band--dark) .town-more__label { color: var(--tac-amber); }
+  .town-more ul { list-style: none; padding: 0; margin-top: var(--s-2); display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .town-more a { display: inline-flex; align-items: center; min-height: 32px; padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-white); border: 1px solid var(--tac-line); font-size: 0.875rem; text-decoration: none; color: var(--tac-purple); }
+  .town-more a:hover { background: var(--tac-purple); color: var(--tac-white); }
+  :global(.band--dark) .town-more a { background: var(--tac-white-08); border-color: var(--tac-white-12); color: var(--tac-white); }
 </style>

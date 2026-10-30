@@ -1,0 +1,36 @@
+---
+// Full-width content band. Light bands sit on mist with a slow drifting glow; dark bands sit on
+// grape with the Harness wiring and a moving glow. "split" puts the heading in a left column
+// (sticky on desktop) and the content on the right.
+import Harness from '../islands/HarnessBackground';
+interface Props {
+  tone?: 'light' | 'dark';
+  eyebrow?: string;
+  heading?: string;
+  headingId?: string;
+  label?: string;
+  seed?: number;
+  split?: boolean;
+  class?: string;
+}
+const { tone = 'light', eyebrow, heading, headingId, label, seed = 11, split = true, class: cls } = Astro.props;
+const hasHead = !!heading || Astro.slots.has('head');
+---
+<section
+  class:list={['band', `band--${tone}`, tone === 'dark' && 'section--dark', cls]}
+  aria-labelledby={heading && headingId ? headingId : undefined}
+  aria-label={!heading ? label : undefined}
+>
+  <div class="band__glow" aria-hidden="true"></div>
+  {tone === 'dark' && <Harness client:visible variant="dark" density="low" seed={seed} />}
+  <div class:list={['container', 'band__grid', split && hasHead && 'band__grid--split']}>
+    {hasHead && (
+      <div class="band__head">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        {heading && <h2 id={headingId}>{heading}</h2>}
+        <slot name="head" />
+      </div>
+    )}
+    <div class="band__body"><slot /></div>
+  </div>
+</section>

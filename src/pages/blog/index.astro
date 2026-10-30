@@ -18,9 +18,11 @@ const blogNode = {
   publisher: { '@id': BUSINESS_ID },
   blogPost: allPosts().map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: abs(`/blog/${p.slug}/`), datePublished: p.date })),
 };
+import { heroPreload } from '../../lib/images';
+const heroPre = await heroPreload('serpentine-belt-replacement');
 ---
-<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[blogNode]} ctaSeed={88}>
-  <PageHero crumbs={crumbs} eyebrow="THE SHOP BLOG" title={copy.h1} lead={copy.intro} harness={false} />
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[blogNode]} ctaSeed={88} preload={heroPre}>
+  <PageHero crumbs={crumbs} eyebrow="THE SHOP BLOG" title={copy.h1} lead={copy.intro} image="serpentine-belt-replacement" />
   <section class="section section--tight">
     <div class="container">
       <BlogFilter client:visible posts={postCards(Astro.url)} categories={categoryLinks(Astro.url)} allHref={rel(Astro.url, '/blog/')} />

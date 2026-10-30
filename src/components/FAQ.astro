@@ -1,12 +1,13 @@
 ---
 // FAQ accordion (<details>). FAQPage schema is emitted by the page through Base.astro (faqSchema helper).
+// Each item is a card; open cards get the accent edge. A small script animates open and close.
 import type { FAQItem } from '../data/types';
 import { inline } from '../lib/inline';
 interface Props { items: (FAQItem & { source?: { name: string; path: string } })[]; headingLevel?: 'h3' | 'h4'; open?: number }
 const { items, headingLevel: H = 'h3', open = -1 } = Astro.props;
 import { rel } from '../lib/paths';
 ---
-<div class="faq">
+<div class="faq" data-faq>
   {items.map((f, i) => (
     <details class="faq__item" open={i === open}>
       <summary class="faq__q"><H class="faq__h">{f.q}</H><span class="faq__icon" aria-hidden="true"></span></summary>
@@ -17,19 +18,67 @@ import { rel } from '../lib/paths';
     </details>
   ))}
 </div>
+
+<script>
+  // Height animation for <details>. Native toggling still works without JS or with reduced motion.
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const dur = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-4')) || 600) * 0.6;
+  document.querySelectorAll<HTMLDetailsElement>('[data-faq] .faq__item').forEach((d) => {
+    const sum = d.querySelector('summary')!;
+    const body = d.querySelector<HTMLElement>('.faq__a')!;
+    let anim: Animation | null = null;
+    sum.addEventListener('click', (e) => {
+      if (reduce.matches) return;
+      e.preventDefault();
+      anim?.cancel();
+      if (d.open) {
+        d.classList.add('is-closing');
+        const h = body.offsetHeight;
+        anim = body.animate([{ height: `${h}px`, opacity: 1 }, { height: '0px', opacity: 0 }], { duration: dur * 0.8, easing: 'cubic-bezier(.4,0,.2,1)' });
+        anim.onfinish = () => { d.open = false; d.classList.remove('is-closing'); anim = null; };
+      } else {
+        d.open = true;
+        const h = body.offsetHeight;
+        anim = body.animate([{ height: '0px', opacity: 0 }, { height: `${h}px`, opacity: 1 }], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)' });
+        anim.onfinish = () => { anim = null; };
+      }
+    });
+  });
+</script>
+
 <style>
-  .faq { border-top: 1px solid var(--tac-line); }
-  .faq__item { border-bottom: 1px solid var(--tac-line); }
-  .faq__q { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); align-items: center; padding: var(--s-5) 0; }
+  .faq { display: grid; gap: var(--s-3); }
+  .faq__item {
+    border-radius: var(--r-2); background: var(--tac-white); border: 1px solid var(--tac-line);
+    border-left: 4px solid var(--tac-line); box-shadow: var(--tac-shadow-1);
+    transition: border-color var(--dur-3) var(--ease-out), background-color var(--dur-3), box-shadow var(--dur-3);
+  }
+  .faq__item:hover { border-left-color: var(--tac-violet); }
+  .faq__item[open]:not(.is-closing) { border-left-color: var(--tac-purple); box-shadow: var(--tac-shadow-2); }
+  .faq__q { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); align-items: center; padding: var(--s-4) var(--s-5); min-height: 56px; }
   .faq__q::-webkit-details-marker { display: none; }
-  .faq__h { font-family: var(--font-body); font-size: 1.125rem; font-weight: 650; letter-spacing: 0; color: var(--tac-ink); line-height: 1.35; text-wrap: pretty; }
-  .faq__q:hover .faq__h { color: var(--tac-purple); }
-  .faq__icon { width: 22px; height: 22px; position: relative; flex: none; }
-  .faq__icon::before, .faq__icon::after { content: ''; position: absolute; left: 3px; right: 3px; top: 10px; height: 2px; background: var(--tac-violet); transition: transform var(--dur-2) var(--ease-out); }
+  .faq__h { font-family: var(--font-body); font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.005em; color: var(--tac-ink); line-height: 1.35; text-wrap: pretty; }
+  .faq__q:hover .faq__h, .faq__item[open] .faq__h { color: var(--tac-purple); }
+  .faq__icon { width: 30px; height: 30px; position: relative; flex: none; border-radius: var(--r-pill); background: var(--tac-mist); transition: background-color var(--dur-3), transform var(--dur-4) var(--ease-out); }
+  .faq__icon::before, .faq__icon::after { content: ''; position: absolute; left: 9px; right: 9px; top: 14px; height: 2px; background: var(--tac-purple); transition: transform var(--dur-3) var(--ease-out), background-color var(--dur-3); }
   .faq__icon::after { transform: rotate(90deg); }
-  details[open] .faq__icon::after { transform: rotate(0); }
-  .faq__a { padding: 0 0 var(--s-6); max-width: var(--measure); }
-  .faq__src { margin-top: var(--s-2); font-size: 0.75rem; color: var(--tac-ink-soft); }
-  :global(.section--dark) .faq, :global(.section--dark) .faq__item { border-color: var(--tac-steel-dark); }
+  .faq__item[open]:not(.is-closing) .faq__icon { background: var(--tac-purple); transform: rotate(180deg); }
+  .faq__item[open]:not(.is-closing) .faq__icon::before, .faq__item[open]:not(.is-closing) .faq__icon::after { background: var(--tac-white); }
+  .faq__item[open]:not(.is-closing) .faq__icon::after { transform: rotate(0); }
+  .faq__a { overflow: hidden; padding: 0 var(--s-5); }
+  .faq__a > :first-child { padding-top: var(--s-1); }
+  .faq__a > :last-child { padding-bottom: var(--s-5); }
+  .faq__a p { max-width: var(--measure); color: var(--tac-ink-soft); }
+  .faq__src { margin-top: var(--s-2); font-size: 0.75rem; }
+
+  :global(.section--dark) .faq__item { background: var(--tac-white-08); border-color: var(--tac-white-12); border-left-color: var(--tac-white-22); box-shadow: none; }
+  :global(.section--dark) .faq__item:hover { border-left-color: var(--tac-violet-light); }
+  :global(.section--dark) .faq__item[open]:not(.is-closing) { background: var(--tac-white-12); border-left-color: var(--tac-amber); }
   :global(.section--dark) .faq__h { color: var(--tac-white); }
+  :global(.section--dark) .faq__q:hover .faq__h, :global(.section--dark) .faq__item[open] .faq__h { color: var(--tac-white); }
+  :global(.section--dark) .faq__a p { color: var(--tac-on-dark); }
+  :global(.section--dark) .faq__icon { background: var(--tac-white-12); }
+  :global(.section--dark) .faq__icon::before, :global(.section--dark) .faq__icon::after { background: var(--tac-white); }
+  :global(.section--dark) .faq__item[open]:not(.is-closing) .faq__icon { background: var(--tac-amber); }
+  :global(.section--dark) .faq__item[open]:not(.is-closing) .faq__icon::before, :global(.section--dark) .faq__item[open]:not(.is-closing) .faq__icon::after { background: var(--tac-graphite); }
 </style>

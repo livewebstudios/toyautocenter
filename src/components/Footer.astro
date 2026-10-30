@@ -10,6 +10,7 @@ import { rel, base } from '../lib/paths';
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer on-dark">
+  <div class="footer-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="container site-footer__grid">
     <div class="site-footer__brand">
       <a href={base(Astro.url)} class="site-footer__logo">
@@ -68,8 +69,18 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  .site-footer { background: var(--tac-graphite); color: var(--tac-on-dark-soft); padding-top: var(--s-20); padding-bottom: calc(var(--s-8) + var(--mobile-bar-h)); font-size: 0.9375rem; }
+  .site-footer { position: relative; overflow: hidden; isolation: isolate; background: var(--tac-graphite); color: var(--tac-on-dark-soft); padding-top: var(--s-20); padding-bottom: calc(var(--s-8) + var(--mobile-bar-h)); font-size: 0.9375rem; }
   .site-footer a { color: var(--tac-on-dark); text-decoration: none; }
+  /* Slow, blurred colour blobs drifting behind the footer. */
+  .footer-blobs { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .footer-blobs span { position: absolute; border-radius: 50%; filter: blur(70px); will-change: transform; }
+  .footer-blobs span:nth-child(1) { width: 46vw; height: 46vw; max-width: 640px; max-height: 640px; left: -8%; top: -20%; background: var(--tac-purple); opacity: 0.75; animation: blob-a calc(var(--loop-drift) * 0.9) var(--ease-inout) infinite alternate; }
+  .footer-blobs span:nth-child(2) { width: 38vw; height: 38vw; max-width: 520px; max-height: 520px; right: -6%; top: 10%; background: var(--tac-violet); opacity: 0.45; animation: blob-b calc(var(--loop-drift) * 1.1) var(--ease-inout) infinite alternate; }
+  .footer-blobs span:nth-child(3) { width: 26vw; height: 26vw; max-width: 380px; max-height: 380px; left: 40%; bottom: -18%; background: var(--tac-amber); opacity: 0.16; animation: blob-c calc(var(--loop-drift) * 0.75) var(--ease-inout) infinite alternate; }
+  @keyframes blob-a { to { transform: translate3d(28vw, 18%, 0) scale(1.15); } }
+  @keyframes blob-b { to { transform: translate3d(-30vw, 30%, 0) scale(0.85); } }
+  @keyframes blob-c { to { transform: translate3d(-22vw, -40%, 0) scale(1.3); } }
+  @media (prefers-reduced-motion: reduce) { .footer-blobs span { animation: none; } }
   .site-footer a:hover { color: var(--tac-amber); text-decoration: underline; }
   .site-footer__grid { display: grid; gap: var(--s-12); grid-template-columns: 1fr; }
   .site-footer__logo { display: inline-block; line-height: 0; }

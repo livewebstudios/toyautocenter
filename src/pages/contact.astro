@@ -10,9 +10,11 @@ import { services } from '../data/services';
 const path = '/contact/';
 const crumbs = [{ name: 'Home', path: '/' }, { name: 'Contact', path }];
 const endpoint = `https://formspree.io/f/${site.formspreeId}`;
+import { heroPreload } from '../lib/images';
+const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 ---
-<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="ContactPage" ctaBand={false}>
-  <PageHero crumbs={crumbs} eyebrow="BOOK · CALL · TEXT" title={copy.h1} lead={copy.intro} seed={10913} density="low" />
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="ContactPage" ctaBand={false} preload={heroPre}>
+  <PageHero crumbs={crumbs} eyebrow="BOOK · CALL · TEXT" title={copy.h1} lead={copy.intro} seed={10913} density="low" image="hero-shop-bay-blauvelt" />
 
   <section class="section contact" aria-label="Booking and shop details">
     <div class="container contact__grid">

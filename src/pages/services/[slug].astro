@@ -16,7 +16,9 @@ import { inline, splitLong } from '../../lib/inline';
 import { rel } from '../../lib/paths';
 import { serviceNode, faqNode, oilOfferNode } from '../../lib/schema';
 import { getImage } from 'astro:assets';
-import { photo } from '../../lib/images';
+import { wide, HERO_WIDTHS, HERO_SIZES } from '../../lib/images';
+import HeroBg from '../../components/HeroBg.astro';
+import Band from '../../components/Band.astro';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug } }));
@@ -39,17 +41,28 @@ const schema = [
   faqNode(path, c.faqs),
 ];
 const shortName = svc.short;
-const heroSizes = '(min-width: 1024px) 34vw, 92vw';
-const heroImg = svc.image ? photo(svc.image) : null;
-const heroAvif = heroImg ? await getImage({ src: heroImg, widths: [480, 720, 928].filter((w) => w <= heroImg.width), format: 'avif', quality: 38 }) : null;
-const preload = heroAvif ? { srcset: heroAvif.srcSet.attribute, sizes: heroSizes, type: 'image/avif' } : null;
+// Services without their own photo borrow the closest match for the hero background.
+const fallbackHero: Record<string, string> = {
+  'oil-change-maintenance': 'mechanic-hands-wrench-workbench',
+  'engine-repair': 'serpentine-belt-replacement',
+  'fuel-system': 'hero-shop-bay-blauvelt',
+  'battery-electrical': 'obd2-diagnostic-scan-tool',
+  'exhaust-air-intake': 'nys-inspection-underbody-check',
+};
+const heroKey = svc.image ?? fallbackHero[slug] ?? 'hero-shop-bay-blauvelt';
+const heroImg = wide(heroKey);
+const heroAvif = await getImage({ src: heroImg, widths: HERO_WIDTHS.filter((w) => w <= heroImg.width), format: 'avif', quality: 42 });
+const preload = { srcset: heroAvif.srcSet.attribute, sizes: HERO_SIZES, type: 'image/avif' };
+// Bands alternate light / dark in render order.
+let bandN = 0;
+const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
 ---
 <Base title={c.title} description={c.description} crumbs={crumbs.slice(1)} schema={schema} speakable={slug === 'nys-inspection'} ctaSeed={svc.n * 131} preload={preload}>
-  <section class="svc-hero" aria-labelledby="svc-title">
-    <Harness client:idle variant="light" density="med" seed={svc.n * 97} />
+  <section class="svc-hero photo-hero on-dark" aria-labelledby="svc-title">
+    <HeroBg image={heroKey} />
     <div class="container svc-hero__grid">
       <div class="svc-hero__text">
-        <Breadcrumbs items={crumbs} />
+        <Breadcrumbs items={crumbs} tone="dark" />
         <p class="svc-hero__num mono"><span class="led" aria-hidden="true"></span>SERVICE {pad(svc.n)} / 13</p>
         <h1 id="svc-title">{c.h1}</h1>
         <p class="lead svc-hero__promise" data-speakable>{c.promise}</p>
@@ -58,219 +71,173 @@ const preload = heroAvif ? { srcset: heroAvif.srcSet.attribute, sizes: heroSizes
           <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
         </div>
       </div>
-      <div class="svc-hero__media">
-        {svc.image ? (
-          <PhotoFrame image={svc.image} alt={svc.imageAlt ?? svc.name} focus={svc.focus} eager label={`${pad(svc.n)} · ${shortName.toUpperCase()}`} sizes={heroSizes} />
-        ) : (
-          <div class="svc-hero__icon" data-live-icons>
-            <ServiceIcon name={svc.icon} size={240} />
-            <p class="frame-tag mono"><span class="led" aria-hidden="true"></span>{pad(svc.n)} · {shortName.toUpperCase()}</p>
-          </div>
-        )}
-      </div>
     </div>
   </section>
 
-  <div class="container svc-body">
-    <article class="svc-main">
-      <section class="svc-intro flow" aria-label="Overview">
-        {c.intro.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={md(p)} />)}
-      </section>
-
-      <section class="svc-block" aria-labelledby="sym-h">
-        <p class="eyebrow">SYMPTOMS</p>
-        <h2 id="sym-h">{c.symptomsHeading}</h2>
-        <ul class="symptoms">
-          {c.symptoms.map((s) => (
-            <li data-reveal>
-              <p class="symptoms__feel" set:html={md(s.feel)} />
-              <p class="symptoms__means"><span class="mono">LIKELY CAUSE</span> <span set:html={md(s.means)} /></p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section class="svc-block" aria-labelledby="chk-h">
-        <p class="eyebrow">WHAT WE CHECK</p>
-        <h2 id="chk-h">{c.checkHeading}</h2>
-        {c.checkIntro && <p set:html={md(c.checkIntro)} />}
-        <ol class="readout-list">{c.checks.map((x) => <li set:html={md(x)} />)}</ol>
-      </section>
-
-      <section class="svc-block" aria-labelledby="fix-h">
-        <p class="eyebrow">WHAT WE FIX</p>
-        <h2 id="fix-h">{c.fixHeading}</h2>
-        <div class="fixes">
-          {c.fixes.map((g) => (
-            <div class="fixes__group" data-reveal>
-              <h3>{g.title}</h3>
-              <dl>
-                {g.items.map((it) => (
-                  <div><dt>{it.name}</dt><dd set:html={md(it.note)} /></div>
-                ))}
-              </dl>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {c.table && (
-        <section class="svc-block" aria-label={c.table.caption}>
-          <div class="table-wrap" tabindex="0" role="region" aria-label={`${c.table.caption}, scrolls sideways`}>
-            <table class="data-table">
-              <caption>{c.table.caption}</caption>
-              <thead><tr>{c.table.columns.map((h) => <th scope="col">{h}</th>)}</tr></thead>
-              <tbody>
-                {c.table.rows.map((r) => (
-                  <tr>
-                    <th scope="row">{r[0]}</th>
-                    {r.slice(1).map((cell) => <td class:list={[cell && 'tick']}>{cell ? cell : <span class="visually-hidden">Not scheduled</span>}</td>)}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
-
-      {c.extra?.map((b) => (
-        <section class="svc-block flow" aria-label={b.heading}>
-          <h2>{b.heading}</h2>
-          {b.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-        </section>
-      ))}
-
-      {c.techie && (
-        <section class="techie" aria-labelledby="tech-h" data-reveal>
-          <p class="techie__label mono">FOR THE CURIOUS</p>
-          <h2 id="tech-h" class="techie__h">{c.techie.heading}</h2>
-          {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-        </section>
-      )}
-
-      {c.toyota && (
-        <section class="toyota-note" aria-labelledby="toy-h" data-reveal>
-          <KeyMark variant="solid" size={48} class="toyota-note__key" />
-          <div class="flow">
-            <p class="eyebrow">TOYOTA &amp; LEXUS</p>
-            <h2 id="toy-h">{c.toyota.heading}</h2>
-            {c.toyota.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-          </div>
-        </section>
-      )}
-
-      <section class="svc-block" aria-labelledby="faq-h">
-        <p class="eyebrow">FAQ</p>
-        <h2 id="faq-h">{shortName} questions, answered</h2>
-        <FAQ items={c.faqs} />
-      </section>
-
-      <section class="svc-close" aria-label="Book this service">
-        <p class="lead" set:html={md(c.closing)} />
-        <div class="btn-row">
-          <Button href="/contact/">BOOK AN APPOINTMENT</Button>
-          <a class="link-arrow" href={rel(Astro.url, '/services/')}>BACK TO SERVICES</a>
-        </div>
-      </section>
-    </article>
-
-    <aside class="svc-aside" aria-label="Related">
-      <div class="aside-card aside-card--dark on-dark">
-        <p class="aside-card__title">Not sure it's {shortName.toLowerCase()}?</p>
-        <p>Describe what the car is doing. We diagnose first and call before any repair.</p>
-        <Button href="/contact/" size="sm">BOOK AN APPOINTMENT</Button>
-        <p class="aside-card__phone mono"><a href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a><br /><a href={site.text.sms}>TEXT {site.text.display}</a></p>
+  <Band tone={tone()} label="Overview" seed={svc.n * 7}>
+    <div class="svc-intro" slot="head">
+      <p class="eyebrow">{shortName.toUpperCase()}</p>
+      <p class="svc-intro__lead" set:html={md(c.intro[0])} />
+    </div>
+    {c.intro.slice(1).flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    <div class="svc-help">
+      <ServiceIcon name={svc.icon} size={56} />
+      <div>
+        <p class="svc-help__title">Not sure what you need?</p>
+        <p>Describe what the car is doing. We find the cause first and call before any repair.</p>
       </div>
-      <nav class="aside-card" aria-labelledby="rel-h">
-        <h2 id="rel-h" class="aside-card__h">Related services</h2>
-        <ul class="related" data-live-icons>
-          {related.map((r) => (
-            <li>
-              <a href={rel(Astro.url, `/services/${r.slug}/`)}>
-                <ServiceIcon name={r.icon} size={36} />
-                <span><span class="mono related__n">{pad(r.n)}</span>{r.name}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        {svc.toyotaNote && <a class="aside-link" href={rel(Astro.url, '/toyota-lexus-repair/')}>Toyota &amp; Lexus specialists</a>}
-      </nav>
-      <nav class="aside-card" aria-labelledby="serve-h">
-        <h2 id="serve-h" class="aside-card__h">Serving</h2>
-        <ul class="serving">
-          {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
-        </ul>
-      </nav>
-    </aside>
-  </div>
-  <Divider />
+    </div>
+  </Band>
+
+  <Band tone={tone()} eyebrow="SYMPTOMS" heading={c.symptomsHeading} headingId="sym-h" seed={svc.n * 11}>
+    <ul class="symptoms">
+      {c.symptoms.map((s) => (
+        <li data-reveal>
+          <p class="symptoms__feel" set:html={md(s.feel)} />
+          <p class="symptoms__means"><span class="symptoms__tag">LIKELY CAUSE</span> <span set:html={md(s.means)} /></p>
+        </li>
+      ))}
+    </ul>
+  </Band>
+
+  <Band tone={tone()} eyebrow="WHAT WE CHECK" heading={c.checkHeading} headingId="chk-h" seed={svc.n * 13}>
+    {c.checkIntro && <p slot="head" set:html={md(c.checkIntro)} />}
+    <ol class="checks">{c.checks.map((x) => <li data-reveal set:html={md(x)} />)}</ol>
+  </Band>
+
+  <Band tone={tone()} eyebrow="WHAT WE FIX" heading={c.fixHeading} headingId="fix-h" seed={svc.n * 17}>
+    <div class="fixes">
+      {c.fixes.map((g) => (
+        <div class="fixes__group" data-reveal>
+          <h3>{g.title}</h3>
+          <dl>
+            {g.items.map((it) => (
+              <div><dt>{it.name}</dt><dd set:html={md(it.note)} /></div>
+            ))}
+          </dl>
+        </div>
+      ))}
+    </div>
+  </Band>
+
+  {c.table && (
+    <Band tone={tone()} eyebrow="AT A GLANCE" heading={c.table.caption} headingId="tbl-h" seed={svc.n * 19}>
+      <div class="table-wrap" tabindex="0" role="region" aria-label={`${c.table.caption}, scrolls sideways`}>
+        <table class="data-table">
+          <thead><tr>{c.table.columns.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+          <tbody>
+            {c.table.rows.map((r) => (
+              <tr>
+                <th scope="row">{r[0]}</th>
+                {r.slice(1).map((cell) => <td class:list={[cell && 'tick']}>{cell ? cell : <span class="visually-hidden">Not scheduled</span>}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Band>
+  )}
+
+  {c.extra?.map((b, i) => (
+    <Band tone={tone()} eyebrow="GOOD TO KNOW" heading={b.heading} headingId={`ex-h-${i}`} seed={svc.n * 23 + i}>
+      {b.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    </Band>
+  ))}
+
+  {c.techie && (
+    <Band tone={tone()} eyebrow="FOR THE CURIOUS" heading={c.techie.heading} headingId="tech-h" seed={svc.n * 29}>
+      {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+    </Band>
+  )}
+
+  {c.toyota && (
+    <Band tone={tone()} eyebrow="TOYOTA & LEXUS" heading={c.toyota.heading} headingId="toy-h" seed={svc.n * 31}>
+      <KeyMark variant="solid" size={44} slot="head" class="svc-key" />
+      {c.toyota.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+      <p><a class="link-arrow" href={rel(Astro.url, '/toyota-lexus-repair/')}>TOYOTA &amp; LEXUS SPECIALISTS</a></p>
+    </Band>
+  )}
+
+  <Band tone={tone()} eyebrow="FAQ" heading={`${shortName} questions, answered`} headingId="faq-h" seed={svc.n * 37}>
+    <p slot="head" set:html={md(c.closing)} />
+    <FAQ items={c.faqs} />
+  </Band>
+
+  <Band tone={tone()} eyebrow="KEEP GOING" heading="Related services" headingId="rel-h" seed={svc.n * 41}>
+    <ul class="related" data-live-icons>
+      {related.map((r) => (
+        <li>
+          <a href={rel(Astro.url, `/services/${r.slug}/`)}>
+            <ServiceIcon name={r.icon} size={40} />
+            <span><span class="mono related__n">{pad(r.n)}</span>{r.name}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="serving-label">Serving</p>
+    <ul class="serving">
+      {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
+    </ul>
+  </Band>
 </Base>
 
 <style>
-  .svc-hero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
-  .svc-hero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; }
-  .svc-hero__text { display: grid; gap: var(--s-5); justify-items: start; }
-  .svc-hero__num { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; margin-top: var(--s-4); }
-  .svc-hero h1 { font-size: var(--fs-h1-inner); max-width: 14ch; }
-  .svc-hero__promise { max-width: 46ch; }
-  .svc-hero__media { width: 100%; max-width: 440px; justify-self: center; }
-  .svc-hero__icon {
-    position: relative; aspect-ratio: 4 / 5; display: grid; place-items: center; border-radius: var(--r-3);
-    background: var(--tac-white); border: 1px solid var(--tac-line); box-shadow: var(--tac-shadow-1);
-  }
-  .svc-hero__icon :global(.ic) { width: min(240px, 60%); height: auto; }
-  .frame-tag { position: absolute; left: var(--s-3); bottom: var(--s-3); display: inline-flex; align-items: center; gap: var(--s-2); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-grape); color: var(--tac-white); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; }
-  @media (min-width: 900px) {
-    .svc-hero__grid { grid-template-columns: 1.25fr 0.75fr; gap: var(--s-16); }
-    .svc-hero__media { justify-self: end; }
-  }
+  .svc-hero__grid { position: relative; z-index: 1; }
+  .svc-hero__text { display: grid; gap: var(--s-5); justify-items: start; max-width: 640px; }
+  .svc-hero__num { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--tac-amber); font-weight: 600; letter-spacing: 0.1em; margin-top: var(--s-4); }
+  .svc-hero h1 { font-size: var(--fs-h1-inner); max-width: 16ch; }
+  .svc-hero__promise { max-width: 44ch; }
 
-  .svc-body { display: grid; gap: var(--s-16); padding-block: var(--s-16) var(--section-y); }
-  @media (min-width: 1100px) { .svc-body { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--s-20); } }
-  .svc-main { display: grid; gap: var(--s-16); min-width: 0; }
-  .svc-block > h2 { margin: var(--s-2) 0 var(--s-6); max-width: 22ch; }
-  .svc-block > p { margin-bottom: var(--s-4); }
+  .svc-intro__lead { margin-top: var(--s-3); font-size: clamp(1.1875rem, 1.05rem + 0.5vw, 1.4375rem); line-height: 1.45; font-weight: 600; letter-spacing: -0.01em; color: var(--tac-purple); max-width: 34ch; }
+  :global(.band--dark) .svc-intro__lead { color: var(--tac-white); }
+  .svc-help { display: grid; grid-template-columns: 56px 1fr; gap: var(--s-4); align-items: center; padding: var(--s-5); border-radius: var(--r-3); background: var(--tac-white); border: 1px solid var(--tac-line); box-shadow: var(--tac-shadow-1); }
+  .svc-help__title { font-weight: 750; color: var(--tac-purple); font-size: 1.125rem; }
+  .svc-help p + p { margin-top: var(--s-1); color: var(--tac-ink-soft); font-size: var(--fs-small); }
 
-  .symptoms { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--tac-line); }
-  .symptoms li { display: grid; gap: var(--s-1); padding: var(--s-5) 0; border-bottom: 1px solid var(--tac-line); }
-  .symptoms__feel { font-weight: 650; font-size: 1.0625rem; color: var(--tac-ink); }
+  .symptoms { list-style: none; padding: 0; display: grid; gap: var(--s-3); }
+  .symptoms li { display: grid; gap: var(--s-1); padding: var(--s-4) var(--s-5); border-radius: var(--r-2); background: var(--tac-white); border: 1px solid var(--tac-line); }
+  .symptoms__feel { font-weight: 700; font-size: 1.0625rem; color: var(--tac-ink); }
   .symptoms__means { color: var(--tac-ink-soft); }
-  .symptoms__means .mono { font-size: 0.6875rem; color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; margin-right: var(--s-1); }
-  @media (min-width: 720px) {
-    .symptoms li { grid-template-columns: 1fr 1fr; gap: var(--s-8); }
-  }
+  .symptoms__tag { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; margin-right: var(--s-1); }
+  :global(.band--dark) .symptoms li { background: var(--tac-white-08); border-color: var(--tac-white-12); }
+  :global(.band--dark) .symptoms__feel { color: var(--tac-white); }
+  :global(.band--dark) .symptoms__means { color: var(--tac-on-dark-soft); }
+  :global(.band--dark) .symptoms__tag { color: var(--tac-amber); }
+
+  .checks { list-style: none; padding: 0; display: grid; gap: var(--s-3); counter-reset: chk; }
+  @media (min-width: 640px) { .checks { grid-template-columns: 1fr 1fr; } }
+  .checks li { counter-increment: chk; display: grid; grid-template-columns: 2.25rem 1fr; gap: var(--s-3); align-items: center; padding: var(--s-3) var(--s-4); border-radius: var(--r-2); background: var(--tac-white); border: 1px solid var(--tac-line); font-weight: 600; color: var(--tac-ink); line-height: 1.35; }
+  .checks li::before { content: counter(chk, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: var(--tac-white); background: var(--tac-purple); border-radius: var(--r-pill); width: 2.25rem; height: 1.75rem; display: grid; place-items: center; }
+  :global(.band--dark) .checks li { background: var(--tac-white-08); border-color: var(--tac-white-12); color: var(--tac-white); }
+  :global(.band--dark) .checks li::before { background: var(--tac-amber); color: var(--tac-graphite); }
 
   .fixes { display: grid; gap: var(--s-8); }
   @media (min-width: 720px) { .fixes { grid-template-columns: 1fr 1fr; } }
-  .fixes__group h3 { font-size: 1.5rem; padding-bottom: var(--s-3); border-bottom: 2px solid var(--tac-purple); margin-bottom: var(--s-3); }
+  .fixes__group h3 { font-size: 1.25rem; padding-bottom: var(--s-3); border-bottom: 2px solid var(--tac-purple); margin-bottom: var(--s-2); }
   .fixes__group dl div { padding: var(--s-3) 0; border-bottom: 1px solid var(--tac-line); }
-  .fixes__group dt { font-weight: 650; color: var(--tac-ink); }
+  .fixes__group dt { font-weight: 700; color: var(--tac-ink); }
   .fixes__group dd { margin: var(--s-1) 0 0; color: var(--tac-ink-soft); font-size: 0.9375rem; }
+  :global(.band--dark) .fixes__group h3 { border-color: var(--tac-amber); }
+  :global(.band--dark) .fixes__group dl div { border-color: var(--tac-white-12); }
+  :global(.band--dark) .fixes__group dt { color: var(--tac-white); }
+  :global(.band--dark) .fixes__group dd { color: var(--tac-on-dark-soft); }
 
-  .techie { background: var(--tac-mist); border-radius: var(--r-3); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border-left: 4px solid var(--tac-violet); display: grid; gap: var(--s-4); }
-  .techie__label { font-weight: 600; letter-spacing: 0.12em; color: var(--tac-violet-deep); font-size: 0.75rem; }
-  .techie__h { font-family: var(--font-mono); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); font-weight: 600; letter-spacing: 0; text-transform: none; line-height: 1.3; }
+  .svc-key { margin-top: var(--s-4); }
 
-  .toyota-note { display: grid; gap: var(--s-5); grid-template-columns: auto 1fr; align-items: start; padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); }
-  .toyota-note h2 { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem); }
-
-  .svc-close { display: grid; gap: var(--s-6); padding-top: var(--s-8); border-top: 1px solid var(--tac-line); }
-
-  .svc-aside { display: grid; gap: var(--s-5); align-content: start; }
-  @media (min-width: 1100px) { .svc-aside { position: sticky; top: calc(var(--nav-h) + var(--s-6)); } }
-  .aside-card { background: var(--tac-white); border: 1px solid var(--tac-line); border-radius: var(--r-3); padding: var(--s-6); display: grid; gap: var(--s-4); }
-  .aside-card--dark { background: var(--tac-grape); color: var(--tac-on-dark); border-color: transparent; justify-items: start; }
-  .aside-card__title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1.02; color: var(--tac-white); }
-  .aside-card__phone { font-size: 0.8125rem; line-height: 1.9; }
-  .aside-card__phone a { color: var(--tac-on-dark); text-decoration: none; }
-  .aside-card__phone a:hover { color: var(--tac-amber); }
-  .aside-card__h { font-size: 1.375rem; }
-  .related { list-style: none; padding: 0; display: grid; gap: var(--s-2); }
-  .related a { display: grid; grid-template-columns: 36px 1fr; gap: var(--s-3); align-items: center; padding: var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); font-weight: 600; line-height: 1.25; }
-  .related a:hover { background: var(--tac-mist); color: var(--tac-purple); }
-  .related__n { font-size: 0.6875rem; color: var(--tac-violet-deep); margin-right: 0.6em; }
-  .aside-link { font-weight: 600; }
+  .related { list-style: none; padding: 0; display: grid; gap: var(--s-3); }
+  .related { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+  .related a > span { min-width: 0; overflow-wrap: anywhere; }
+  .related a { display: grid; grid-template-columns: 40px 1fr; gap: var(--s-3); align-items: center; padding: var(--s-4); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); font-weight: 700; line-height: 1.25; background: var(--tac-white); border: 1px solid var(--tac-line); transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2); }
+  .related a:hover { color: var(--tac-purple); border-color: var(--tac-violet); transform: translateY(-2px); }
+  .related__n { display: block; font-size: 0.6875rem; color: var(--tac-violet-deep); }
+  :global(.band--dark) .related a { background: var(--tac-white-08); border-color: var(--tac-white-12); color: var(--tac-white); }
+  :global(.band--dark) .related a:hover { border-color: var(--tac-amber); color: var(--tac-white); }
+  :global(.band--dark) .related__n { color: var(--tac-amber); }
+  .serving-label { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tac-violet-deep); }
+  :global(.band--dark) .serving-label { color: var(--tac-amber); }
   .serving { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
-  .serving a { display: inline-block; padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-mist); font-size: 0.875rem; text-decoration: none; color: var(--tac-purple); }
+  .serving a { display: inline-flex; align-items: center; min-height: 32px; padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-white); border: 1px solid var(--tac-line); font-size: 0.875rem; text-decoration: none; color: var(--tac-purple); }
   .serving a:hover { background: var(--tac-purple); color: var(--tac-white); }
+  :global(.band--dark) .serving a { background: var(--tac-white-08); border-color: var(--tac-white-12); color: var(--tac-white); }
+  :global(.band--dark) .serving a:hover { background: var(--tac-white); color: var(--tac-grape); }
 </style>
