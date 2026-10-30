@@ -6,8 +6,8 @@ const copy: TownCopy = {
   description: "Nyack auto repair for Cuomo Bridge and Route 59 commuters: brakes, cooling and diagnostics at Toy Auto Center, 628 Route 303 in Blauvelt, Rockland County.",
   h1: 'Auto Repair & NYS Inspection for Nyack Drivers',
   intro: [
-    "Nyack is tough on cars. You crawl down Main Street, sit in Route 59 traffic, then stop and go across the Governor Mario M. Cuomo Bridge into Westchester. That's hard on brakes and harder on cooling systems. Toy Auto Center handles auto repair for Nyack from our shop on Route 303 in Blauvelt, about 12 minutes away.",
-    "Plenty of people in the village barely drive during the week. They walk to town and take the car out on weekends. Short trips and long sits mean batteries go flat, rotors pick up rust, and the oil never gets hot enough to cook off moisture. We see both kinds of Nyack car, and we treat them differently.",
+    "Nyack is tough on cars. Main Street, Route 59 and the crawl across the Cuomo Bridge are all stop and go. Toy Auto Center handles auto repair for Nyack from our shop on Route 303 in Blauvelt, about 12 minutes away.",
+    "Other village cars barely move all week, so batteries go flat and rotors rust. We treat each kind differently.",
   ],
   route: {
     heading: 'The drive in from Nyack',
@@ -19,48 +19,38 @@ const copy: TownCopy = {
       "Our sign is at 628 Route 303, and the shop is a block off 303 on Birchwood Drive",
     ],
     body: [
-      "You can also hop on the Thruway at exit 11 and get off at exit 12 in West Nyack, which drops you onto 303 by the Palisades Center.",
-      "If you commute over the Cuomo Bridge, we're an easy detour on the way home: off at exit 12, south on 303, and you're here. Leave the car at 8, and you'll get a call or a text once we know what's wrong.",
+      "Bridge commuters can take Thruway exit 12 and head south on 303. Leave the car at 8, and we'll text once we know what's wrong.",
     ],
   },
   sections: [
     {
       heading: 'Bridge traffic and what it does to your brakes',
       body: [
-        "Stop-and-go is the hardest duty a brake system sees. Every stop turns speed into heat, and when stops come every few hundred feet, the pads and rotors never cool off. That glazes pads, leaves uneven pad material on the rotors (the usual cause of a pulsing pedal), and wears everything out early.",
-        "We measure pad thickness, check rotor runout, and look closely at the caliper slide pins, which seize on a lot of cars around here. Here's [how we approach brake work](/services/brake-repair/).",
+        "Stopping every few hundred feet keeps brakes hot, so pads glaze and the pedal can start to pulse. We measure pads, check rotors and look for stuck parts. Here's [how we approach brake work](/services/brake-repair/).",
       ],
     },
     {
       heading: 'Keeping a Nyack car cool in traffic',
       body: [
-        "At highway speed, air rushing through the radiator does most of the cooling. In bridge traffic, the radiator fan does it all, and the water pump, thermostat, hoses and coolant have to hold up under heat soak.",
-        "We pressure test the system to find slow leaks, check the coolant's condition, and inspect the hoses and the belt that drives the water pump (on some engines, that's the timing belt). New [belts and hoses](/services/belts-hoses-filters/) cost little next to an engine that overheated. Live on the other side of 303? See our [West Nyack page](/service-area/west-nyack-ny/).",
-      ],
-    },
-    {
-      heading: 'Nyack auto repair, diagnosis first',
-      body: [
-        "We find the cause, explain it in plain English, and fix only that. Toyota and Lexus are our specialty, and we work on every other make that crosses the bridge.",
+        "Crawling over the bridge, only the radiator fan cools the engine. We pressure test for leaks and check the coolant and [belts and hoses](/services/belts-hoses-filters/), which cost little next to an overheated engine. Also see [West Nyack](/service-area/west-nyack-ny/).",
       ],
     },
   ],
   inspectionNote: {
     heading: 'NYS inspection without leaving Rockland',
     body: [
-      "Your car needs a New York safety and emissions inspection once a year to keep its sticker current. We're a certified inspection station on Route 303, so come over from Nyack, wait in the shop, and drive home inspected.",
-      "A village car that sits a lot can arrive with a weak battery, and a battery that was jumped, disconnected or replaced resets the computer's emissions self-tests. Give it a few days of normal driving first so those tests read ready.",
+      "We're a certified station on 303: wait in the shop and drive home with a fresh sticker. Battery just jumped or replaced? Drive a few normal days first so the car reads ready.",
     ],
   },
   serviceLinks: ['brake-repair', 'belts-hoses-filters', 'battery-electrical'],
   faqs: [
     {
       q: 'Is it worth driving from Nyack to Blauvelt for a repair?',
-      a: "It's about 12 minutes by Route 59 and 303. If you want a shop that diagnoses before it replaces anything and explains the bill line by line, we think the trip pays off.",
+      a: "It's about 12 minutes by Route 59 and 303. If you want a shop that finds the cause first and explains the bill, we think so.",
     },
     {
       q: 'My temperature gauge rises on the bridge but stays normal on the highway. Why?',
-      a: "That pattern usually points at low-speed airflow: a radiator fan that isn't switching on, a failing fan relay or sensor, low coolant, or a radiator clogged on the outside with leaves. We test the fan circuit and the cooling system under load to find which one it is.",
+      a: "Usually a radiator fan that isn't kicking on, low coolant, or leaves clogging the radiator. We test the fan and cooling system.",
     },
   ],
 };

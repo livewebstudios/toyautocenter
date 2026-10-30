@@ -52,8 +52,8 @@ export interface ServiceCopy {
   fixHeading: string;
   fixes: FixGroup[];
   table?: Table;
-  /** The mono-headed mist card for people who want to know how it works. */
-  techie: Block;
+  /** Optional mono-headed mist card for people who want to know how it works. Omit unless it is plain and short. */
+  techie?: Block;
   /** Toyota / Lexus specific note, where relevant. */
   toyota?: Block;
   /** Extra sections (e.g. the Jasper remanufacturing detail). */

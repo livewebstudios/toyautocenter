@@ -86,7 +86,7 @@ a:hover { color: var(--tac-purple); text-decoration-thickness: 2px; }
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-3);
   min-height: 52px; padding: var(--s-3) var(--s-6);
   background: var(--btn-bg); color: var(--btn-fg); border: 2px solid var(--btn-bd); border-radius: var(--r-2);
-  font-family: var(--font-display); font-weight: 700; font-size: 1.0625rem; letter-spacing: 0.08em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.06em; text-transform: uppercase;
   text-decoration: none; line-height: 1; white-space: nowrap;
   box-shadow: var(--tac-shadow-1);
   transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2);
@@ -98,7 +98,7 @@ a:hover { color: var(--tac-purple); text-decoration-thickness: 2px; }
 .on-dark .btn--ghost, .section--dark .btn--ghost, .section--graphite .btn--ghost { --btn-fg: var(--tac-white); --btn-bd: var(--tac-white-70); }
 .on-dark .btn--ghost:hover, .section--dark .btn--ghost:hover, .section--graphite .btn--ghost:hover { --btn-bg: var(--tac-white); --btn-fg: var(--tac-grape); --btn-bd: var(--tac-white); }
 .on-dark .btn--primary, .section--dark .btn--primary, .section--graphite .btn--primary { --btn-bg: var(--tac-white); --btn-fg: var(--tac-grape); --btn-bd: var(--tac-white); }
-.btn--sm { min-height: 40px; padding: var(--s-2) var(--s-4); font-size: 0.9375rem; }
+.btn--sm { min-height: 40px; padding: var(--s-2) var(--s-4); font-size: 0.8125rem; }
 @media (max-width: 1023px), (pointer: coarse) { .btn--sm { min-height: 44px; } }
 .btn .btn__key { width: 22px; height: 22px; flex: none; transition: transform var(--dur-3) var(--ease-out); transform-origin: 50% 50%; }
 @media (hover: hover) and (pointer: fine) {

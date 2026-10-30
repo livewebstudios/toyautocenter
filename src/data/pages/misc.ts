@@ -8,8 +8,8 @@ export const servicesHub: PageCopy & { intro: string[]; trayHeading: string; gro
     'Auto repair services in Blauvelt, NY: inspections, brakes, diagnostics, A/C, transmissions and more for all makes, with Toyota and Lexus specialists on 303.',
   h1: 'Auto Repair Services in Blauvelt, NY',
   intro: [
-    'Thirteen services, one approach: find the cause, explain it, fix what needs fixing. Every auto repair service below covers domestic and import cars, trucks and SUVs, and every one gets the same diagnose-first treatment whether it is a squeal or a slipping transmission.',
-    "Not sure which one you need? Pick the symptom that sounds closest, or skip the guessing and [tell us what the car is doing](/contact/). That's what the diagnosis is for.",
+    'Thirteen auto repair services, one approach: find the cause, explain it, fix what needs fixing. All makes, domestic and import.',
+    "Not sure which one you need? Pick the symptom that sounds closest, or just [tell us what the car is doing](/contact/).",
   ],
   trayHeading: 'Pick the symptom that sounds like your car',
   groupsHeading: 'Every service, grouped by system',
@@ -27,7 +27,7 @@ export const deals: PageCopy & { intro: string; includesHeading: string; howHead
     "This month's oil change deal in Blauvelt, NY: $44.99 full service oil change, $64.99 full synthetic, with a multi-point check. Toy Auto Center on Route 303.",
   h1: "This Month's Deal: $44.99 Oil Change",
   intro:
-    "We're always looking for ways to save our customers time and money without cutting corners on the work. This month that means a full service oil change at a price that covers the oil, the filter and a careful look at the rest of the car while it's in the air.",
+    "A full service oil change at a fair price: the oil, the filter and a careful look at the rest of the car while it's in the air.",
   includesHeading: 'What the full service oil change includes',
   howHeading: 'How to get the price',
   how: [
@@ -53,7 +53,7 @@ export const contact: PageCopy & { intro: string; formHeading: string; visitHead
   formHeading: 'Request an appointment',
   visitHeading: 'Find the shop',
   directions:
-    "We're at 628 Route 303 in Blauvelt, 1 block off 303 on Birchwood Drive. Coming from the Thruway, take exit 12 and head south on 303. From the Palisades Parkway, take the Route 303 exit in Orangeburg and head north.",
+    "628 Route 303 in Blauvelt, one block off 303 on Birchwood Drive. Close to Thruway exit 12 and the Palisades Parkway.",
   next: {
     heading: 'What happens after you send it',
     steps: [
@@ -74,7 +74,7 @@ export const reviewsPage: PageCopy & { intro: string; ratingsHeading: string; le
   ratingsHeading: 'Our ratings',
   leaveHeading: 'Had your car in recently? Leave a review.',
   leave:
-    'A few honest sentences help your neighbors decide where to take their car, and they tell us what we are doing right and what to fix. Google reviews help the most. The link opens the review box for our shop directly.',
+    'A few honest sentences help your neighbors decide where to take their car. Google reviews help the most.',
   never: 'We never write, buy or edit reviews. Every rating on this page links to its source.',
 };
 
@@ -84,8 +84,8 @@ export const serviceArea: PageCopy & { intro: string[]; listHeading: string; map
     'Toy Auto Center serves Rockland County from Route 303 in Blauvelt: auto repair and NYS inspection for Orangeburg, Tappan, Nyack, Nanuet, New City and nearby.',
   h1: 'Auto Repair Across Rockland County',
   intro: [
-    'Our shop is on Route 303 in Blauvelt, near the middle of Rockland County and a short run from the Thruway, the Palisades Parkway and the New Jersey line. Most of our customers drive less than fifteen minutes to reach us.',
-    'Each town page below covers the route in, the services that town asks us for most, and how to drop the car off on a commute.',
+    'Our shop is on Route 303 in Blauvelt, near the middle of Rockland County. Most of our customers drive less than fifteen minutes to reach us.',
+    'Pick your town for the route in and the services your neighbors ask us for most.',
   ],
   listHeading: 'Towns we serve',
   mapHeading: 'Where we are',
@@ -98,7 +98,7 @@ export const faqPage: PageCopy & { intro: string; generalHeading: string } = {
     'Answers to common auto repair questions in Blauvelt, NY: NYS inspection, brakes, check engine lights, oil changes, hybrids and more from Toy Auto Center.',
   h1: 'Auto Repair Questions, Answered',
   intro:
-    'Every question we answer anywhere on the site, in one place. Each answer links back to the service page it came from, where you will find the full story.',
+    'Every question we answer on the site, in one place. Each answer links back to its service page.',
   generalHeading: 'About the shop',
 };
 
@@ -107,7 +107,7 @@ export const blog: PageCopy & { intro: string; categoryIntro: (c: string) => str
   description:
     'The Toy Auto Center auto repair blog: plain-English posts on check engine codes, NYS inspection, brakes and Toyota hybrids from our shop in Blauvelt, NY.',
   h1: 'Notes from the Shop',
-  intro: 'Plain-English explanations of what we see in the bays: codes, inspections, brakes, hybrids and the questions customers ask us at the counter.',
+  intro: 'Plain-English answers to the questions customers ask us at the counter.',
   categoryIntro: (c) => `Every post we have written in ${c}, newest first.`,
 };
 

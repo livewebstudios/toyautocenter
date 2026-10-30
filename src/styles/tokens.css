@@ -164,7 +164,7 @@
   --z-skip: 100;
 
   /* Chrome sizes (reserved to prevent layout shift) */
-  --utility-h: 36px;
-  --nav-h: 76px;
+  --utility-h: 40px;
+  --nav-h: 88px;
   --mobile-bar-h: 60px;
 }

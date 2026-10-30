@@ -14,19 +14,19 @@ const copy: GeneralFaqCopy = {
     },
     {
       q: 'Where exactly is the shop?',
-      a: "628 Route 303 in Blauvelt, NY 10913, 1 block off 303 on Birchwood Drive. If you're coming from Orangeburg or Tappan it's a short run north on 303. The map and directions are on our [contact page](/contact/).",
+      a: "628 Route 303 in Blauvelt, NY 10913, one block off 303 on Birchwood Drive. Map and directions are on our [contact page](/contact/).",
     },
     {
       q: 'Do you specialize in Toyotas?',
-      a: "Yes. Toyota and Lexus are our specialty, and Scion too. We also work on every other make and model, domestic and import, so you can bring the whole family's cars to one place. Here's what that specialty looks like on our [Toyota and Lexus page](/toyota-lexus-repair/).",
+      a: "Yes. Toyota, Lexus and Scion are our specialty, and we work on every other make too. More on our [Toyota and Lexus page](/toyota-lexus-repair/).",
     },
     {
       q: 'How often do I need a NYS inspection?',
-      a: 'Once a year. New York requires an annual safety inspection, and most gas cars and light trucks get an OBD-II emissions check at the same visit. Your windshield sticker shows the month it runs out. We are a certified [NYS inspection station](/services/nys-inspection/) and do inspections every weekday.',
+      a: "Once a year. Safety and emissions are checked in the same visit, and your windshield sticker shows the month it runs out. We're a certified [NYS inspection station](/services/nys-inspection/).",
     },
     {
       q: 'Do I need an appointment for an inspection, and can I wait?',
-      a: "Walk-ins are welcome during business hours, but call ahead and we'll tell you the wait. You're welcome to wait while we do it. For bigger repairs, plan on dropping the car off, and we'll call or text when it's ready.",
+      a: "Walk-ins are welcome. Call ahead and we'll tell you the wait. For bigger repairs, drop the car off and we'll text you when it's ready.",
     },
     {
       q: 'What forms of payment do you accept?',
@@ -34,11 +34,11 @@ const copy: GeneralFaqCopy = {
     },
     {
       q: 'Do you offer warranties on repairs?',
-      a: "Yes. We stand behind our work, use quality parts, and if something we fixed isn't right, bring it back. Jasper remanufactured transmissions we install carry a 3 year / 100,000 mile parts and labor warranty. Ask about coverage on any specific repair when you get your estimate, or see the details on our [transmission service page](/services/transmission-repair/).",
+      a: "Yes. We stand behind our work. If something we fixed isn't right, bring it back. Jasper transmissions carry a 3 year / 100,000 mile warranty. See our [transmission page](/services/transmission-repair/).",
     },
     {
       q: 'Can I text you?',
-      a: "Yes. Text 201.394.8673 with your name, your car and what's going on, and we'll get back to you during business hours. It works for booking, quick questions and checking whether your car is ready.",
+      a: "Yes. Text 201.394.8673 with your name, your car and what's going on. We'll get back to you during business hours.",
     },
   ],
 };

@@ -20,39 +20,37 @@ const copy: AboutCopy = {
     {
       heading: 'Family-owned auto repair in Blauvelt',
       body: [
-        "Toy Auto Center of NY has been family owned and operated since 1976, fixing cars on Route 303 in Blauvelt. We're an independent auto repair shop and a New York State Certified Motor Vehicle Inspection Station at 628 Route 303, tucked one block off 303 on Birchwood Drive.",
-        "We work on cars, trucks, SUVs and Jeeps, domestic and import. Our ASE-certified technicians handle everything from oil changes and [NYS inspections](/services/nys-inspection/) to engine diagnostics, brakes, steering and A/C. The goal is simple: find the real cause, fix it right and explain it in plain English.",
+        "Toy Auto Center has been family owned and operated since 1976, fixing cars at 628 Route 303 in Blauvelt. We're an independent shop and a New York State certified inspection station.",
+        "Cars, trucks, SUVs and Jeeps, domestic and import. Our ASE-certified technicians handle everything from oil changes and [NYS inspections](/services/nys-inspection/) to brakes, engines and A/C.",
       ],
     },
     {
       heading: 'How an estimate works here',
       body: [
-        "**We diagnose first.** Before we price a repair, we find out what's actually wrong. That can mean reading trouble codes and freeze frame data over OBD-II (a snapshot of what the engine was doing when the fault set), a road test, or a look at it on the lift. You don't pay for guesswork or parts thrown at a problem.",
-        '**You get a written estimate.** It lists the parts, the labor and the total before any wrench turns. If you want photos of the worn parts, we can send them, so you see what we saw.',
-        "**We sort urgent from can-wait.** Brakes at 2 millimeters are urgent. A slightly seeping valve cover gasket usually isn't. We tell you which is which, and you set the timing and the budget.",
-        "**We call before going past the estimate.** If we open something up and find more, we stop and call you. Nothing gets added to your bill without a yes from you.",
+        "**We find the problem first.** You don't pay for guesswork or parts thrown at a problem.",
+        '**You get it in writing.** Parts, labor and the total, before any work starts. Want photos of the worn parts? Just ask.',
+        '**We sort urgent from can-wait.** You set the timing and the budget.',
+        '**We call before going past the estimate.** Nothing gets added to your bill without a yes from you.',
       ],
     },
     {
       heading: 'Why so many Toyotas and Lexus models',
       body: [
-        "Toyota and Lexus are our specialty, with Scion right alongside them. Many of these cars run well past 200,000 miles, and they get there with on-time maintenance and someone who knows their habits: the V6 water pumps, the AWD differential fluid, the hybrid battery cooling fan nobody remembers to clean.",
-        "That includes hybrids. A Prius, Camry Hybrid, RAV4 Hybrid or Lexus hybrid gets a hybrid battery health check, inverter coolant service and a look at the 12V auxiliary battery, along with everything a gas-only car gets.",
-        "We still take every make, so the rest of the family's cars can come here too. See what we do for these cars on our [Toyota and Lexus repair page](/toyota-lexus-repair/).",
+        'Toyota and Lexus are our specialty, Scion too. These cars run well past 200,000 miles with on-time maintenance and someone who knows them, hybrids included.',
+        "We still take every make, so the whole family's cars can come here. More on our [Toyota and Lexus page](/toyota-lexus-repair/).",
       ],
     },
     {
       heading: 'Jasper remanufactured transmissions',
       body: [
-        "When a transmission fails, we diagnose it and repair it if that makes sense. When repairing yours isn't cost-effective, we install a Jasper remanufactured unit instead. Jasper rebuilds transmissions to exacting tolerances, replaces the wear parts with new ones, and tests its units before they ship.",
-        "Every Jasper remanufactured transmission we install carries a **3 year / 100,000 mile parts and labor warranty**. Details are on our [transmission repair page](/services/transmission-repair/).",
+        "When repairing your transmission doesn't make sense, we install a Jasper remanufactured one instead. Each carries a **3 year / 100,000 mile parts and labor warranty**. Details on our [transmission repair page](/services/transmission-repair/).",
       ],
     },
     {
-      heading: 'Part of Blauvelt, Orangetown and Rockland County',
+      heading: 'Part of Blauvelt and Rockland County',
       body: [
-        "We're a neighborhood shop in the Town of Orangetown, and most of our customers live close by: Blauvelt, Orangeburg, Tappan, Pearl River, the Nyacks, and across the line in Northvale and Norwood, New Jersey. We're also minutes from the Palisades Parkway and the Thruway, which makes us an easy stop for commuters. When the inspection sticker comes due, we're right on 303.",
-        "If you're new to the area, or just new to us, stop by, call 845.365.3003 or text 201.394.8673. See the full list of towns on our [service area page](/service-area/).",
+        'Most of our customers live close by: Blauvelt, Orangeburg, Tappan, Pearl River, the Nyacks, and Northvale and Norwood across the line. See every town on our [service area page](/service-area/).',
+        'New to us? Stop by, call 845.365.3003 or text 201.394.8673.',
       ],
     },
   ],

@@ -140,11 +140,13 @@ const preload = heroAvif ? { srcset: heroAvif.srcSet.attribute, sizes: heroSizes
         </section>
       ))}
 
-      <section class="techie" aria-labelledby="tech-h" data-reveal>
-        <p class="techie__label mono">FOR THE CURIOUS</p>
-        <h2 id="tech-h" class="techie__h">{c.techie.heading}</h2>
-        {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
-      </section>
+      {c.techie && (
+        <section class="techie" aria-labelledby="tech-h" data-reveal>
+          <p class="techie__label mono">FOR THE CURIOUS</p>
+          <h2 id="tech-h" class="techie__h">{c.techie.heading}</h2>
+          {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+        </section>
+      )}
 
       {c.toyota && (
         <section class="toyota-note" aria-labelledby="toy-h" data-reveal>

@@ -24,43 +24,37 @@ const copy: HomeCopy = {
   eyebrow: 'BLAUVELT, NY · ROUTE 303 · SINCE 1976',
   h1Groups: ['Honest auto repair.', 'Dealer-level Toyota', '& Lexus care.'],
   sub:
-    'Toy Auto Center is a family-owned shop and NYS inspection station on Route 303 in Blauvelt. We diagnose the root cause, explain it in plain English, and fix only what needs fixing.',
+    'A family-owned shop and NYS inspection station on Route 303 in Blauvelt. We find the real problem, explain it in plain English and fix only what needs fixing.',
   readout: ['NYS inspection station', 'All makes & models', 'Toyota / Lexus specialists', 'Jasper transmissions', 'Mon to Fri 8 to 5'],
   trust: ['Family owned since 1976', 'NYS certified inspection station', 'Toyota & Lexus specialists', 'No upsell. Ever.'],
   tray: {
     heading: 'Thirteen things we fix, and how to tell which one you need.',
-    intro:
-      'Start with what the car is doing. Each card names the symptom drivers usually notice first, then takes you to what we check, what we fix and what it tends to cost you to wait.',
+    intro: 'Start with what the car is doing. Pick the symptom that sounds like yours.',
   },
   pitch: {
     heading: 'The honest dealer alternative, two doors down from the dealer.',
     body: [
-      "Why pay dealership prices? We bring dealer-level knowledge to every car that rolls in, and Toyota and Lexus owners get a shop that knows their cars as well as anyone on Route 303. What you won't get is the high-pressure part.",
-      'We put people ahead of cars. That means you pay for the repair the car actually needs, not the list a service menu was built to sell. If something can wait until next season, we say so, and we write it down so you can plan for it.',
-      "When the dealer is the right call, for factory warranty work, recalls or a software update, we'll tell you that too. It's a short drive. Everything else, from the oil change to the transmission, we handle here.",
+      "Dealer-level know-how without dealer prices or the high-pressure part. You pay for the repair your car actually needs. If something can wait, we say so.",
+      "When the dealer is the right call, like recalls or factory warranty work, we'll tell you that too. Everything else, we handle here.",
     ],
     link: 'See how we compare with the dealer',
   },
   language: {
     eyebrow: 'HOW WE WORK',
-    heading: "We speak your car's language.",
-    intro:
-      'A modern car is a network of computers talking over a CAN bus. Before we touch a wrench, we listen to what those computers are saying.',
+    heading: 'Find it. Explain it. Fix it.',
+    intro: 'No guessing and no surprises on the bill.',
     columns: [
       {
         label: '01 / DIAGNOSE',
-        body:
-          'We connect to the OBD-II port and read the codes, then go further: live PID data from the sensors, and the freeze frame that shows exactly what the engine was doing when the light came on. We read the data before we buy a part, so you are not paying for guesses.',
+        body: 'We test before we replace anything, so you never pay for a guess.',
       },
       {
         label: '02 / EXPLAIN',
-        body:
-          'You get a written estimate and a straight explanation of what failed and why. We can show you the worn part or a photo of it. We sort the list into what is urgent for safety, what is coming due, and what can safely wait, so the decision is yours.',
+        body: "You get a written estimate in plain English. We tell you what's urgent and what can wait.",
       },
       {
         label: '03 / FIX',
-        body:
-          'We install OE or OE-equivalent parts, torque fasteners to the factory spec and follow the service procedure for your make. Then we road test it and recheck for codes before you come back for the keys. If the repair changes on the lift, we call you first.',
+        body: 'We use quality parts and road test the car before you pick it up. If anything changes, we call you first.',
       },
     ],
   },
@@ -71,13 +65,12 @@ const copy: HomeCopy = {
   },
   reviews: {
     heading: 'Word on the road travels fast.',
-    body:
-      "Drivers rate us on Carfax, Yelp, Facebook and Google. Read what they wrote in their own words, and if we've worked on your car, we'd value a review of your own.",
+    body: "Drivers rate us on Carfax, Yelp, Facebook and Google. If we've worked on your car, we'd love a review of your own.",
   },
   area: {
     heading: 'Minutes from Orangeburg, Tappan, Nyack and New City.',
     body:
-      'We sit on Route 303 in Blauvelt, one block off the highway on Birchwood Drive. Thruway exit 12 and the Palisades Parkway are both close, which makes us an easy drop-off on the way to work from anywhere in Rockland, and from Northvale and Norwood across the line.',
+      'We sit on Route 303 in Blauvelt, close to Thruway exit 12 and the Palisades Parkway. An easy drop-off on the way to work from anywhere in Rockland.',
   },
   faq: { heading: 'Questions drivers ask us' },
 };

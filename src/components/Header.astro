@@ -33,14 +33,15 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
     <span>{site.hours.short}</span>
     <a href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
     <a href={site.text.sms}>TEXT {site.text.display}</a>
+    <a class="utility-book" href={rel(Astro.url, '/contact/')}>BOOK AN APPOINTMENT</a>
   </div>
 </div>
 
 <header class:list={['site-header', theme === 'dark' && 'site-header--over-dark']} data-header data-theme={theme}>
   <div class="container site-header__row">
     <a class="brand" href={base(Astro.url)} aria-label="Toy Auto Center home">
-      <Image src={logo} alt="Toy Auto Center" class="brand__logo brand__logo--light" width={232} height={39} loading="eager" />
-      {theme === 'dark' && <Image src={logoInverse} alt="" class="brand__logo brand__logo--dark" width={232} height={39} loading="eager" aria-hidden="true" />}
+      <Image src={logo} alt="Toy Auto Center" class="brand__logo brand__logo--light" width={300} height={50} loading="eager" />
+      {theme === 'dark' && <Image src={logoInverse} alt="" class="brand__logo brand__logo--dark" width={300} height={50} loading="eager" aria-hidden="true" />}
     </a>
     <span class="progress-key" data-progress-key aria-hidden="true"><KeyMark size={28} /></span>
 
@@ -86,8 +87,6 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
         ))}
       </ul>
     </nav>
-
-    <Button href="/contact/" class="header-cta" size="sm">BOOK AN APPOINTMENT</Button>
 
     <MobileNav client:media="(max-width: 1023px)" groups={mobileGroups} links={mobileLinks} phone={site.phone} text={site.text} book={rel(Astro.url, '/contact/')} />
   </div>
@@ -153,11 +152,18 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .skip-link:focus { top: var(--s-4); color: var(--tac-white); }
 
   .utility-bar { display: none; background: var(--tac-graphite); color: var(--tac-on-dark-soft); height: var(--utility-h); }
-  .utility-bar__row { display: flex; height: 100%; align-items: center; justify-content: flex-end; gap: var(--s-6); font-size: 0.75rem; letter-spacing: 0.06em; }
+  .utility-bar__row { display: flex; height: 100%; align-items: center; justify-content: flex-end; gap: var(--s-6); font-size: 0.8125rem; letter-spacing: 0.04em; }
   .utility-bar__row > :first-child { margin-right: auto; }
   .utility-bar a { color: var(--tac-on-dark); text-decoration: none; display: inline-flex; align-items: center; min-height: 28px; }
   .utility-bar a:hover { color: var(--tac-amber); }
   .utility-bar span { color: var(--tac-on-dark-soft); }
+  .utility-bar a.utility-book {
+    align-self: stretch; min-height: 0; padding-inline: var(--s-5); margin-left: calc(var(--s-6) * -0.5);
+    background: var(--tac-purple); color: var(--tac-white);
+    font-family: var(--font-body); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.08em;
+    transition: background-color var(--dur-2);
+  }
+  .utility-bar a.utility-book:hover { background: var(--tac-violet-deep); color: var(--tac-white); }
 
   .site-header {
     position: sticky; top: 0; z-index: var(--z-nav); height: var(--nav-h);
@@ -167,10 +173,10 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .site-header.is-scrolled { border-bottom-color: var(--tac-line); box-shadow: 0 1px 0 var(--tac-white-60), 0 6px 18px var(--tac-grape-06); }
   .site-header.is-hidden { transform: translateY(-100%); }
   .site-header--over-dark:not(.is-scrolled) { background: transparent; }
-  .site-header__row { height: 100%; display: flex; align-items: center; gap: var(--s-4); }
+  .site-header__row { height: 100%; display: flex; align-items: center; gap: var(--s-5); }
 
   .brand { display: block; position: relative; flex: none; line-height: 0; }
-  .brand :global(.brand__logo) { width: clamp(168px, 14vw + 60px, 232px); height: auto; }
+  .brand :global(.brand__logo) { width: clamp(196px, 9vw + 120px, 300px); height: auto; }
   .brand :global(.brand__logo--dark) { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-2); }
   .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--dark) { opacity: 1; }
   .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--light) { opacity: 0; }
@@ -180,9 +186,9 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .site-header--over-dark:not(.is-scrolled) .progress-key { color: var(--tac-white); }
 
   .primary-nav { display: none; margin-left: auto; }
-  .primary-nav__list { list-style: none; padding: 0; display: flex; align-items: center; gap: clamp(0.75rem, 0.2rem + 0.9vw, 1.5rem); }
+  .primary-nav__list { list-style: none; padding: 0; display: flex; align-items: center; gap: clamp(0.875rem, 0.1rem + 1.2vw, 1.75rem); }
   .nav-link {
-    font-family: var(--font-display); font-weight: 600; font-size: 0.875rem; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: var(--font-body); font-weight: 650; font-size: clamp(0.8125rem, 0.62rem + 0.3vw, 0.9375rem); letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--tac-ink); text-decoration: none; padding-block: var(--s-2); position: relative; white-space: nowrap;
   }
   .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--tac-violet); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-2) var(--ease-out); }
@@ -205,7 +211,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .mega__group ul { list-style: none; padding: 0; margin-top: var(--s-3); }
   .mega__link { display: grid; grid-template-columns: 34px 1fr; gap: var(--s-3); align-items: start; padding: var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); }
   .mega__link:hover { background: var(--tac-mist); color: var(--tac-ink); }
-  .mega__name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; color: var(--tac-purple); line-height: 1.15; }
+  .mega__name { display: block; font-family: var(--font-body); font-weight: 700; font-size: 0.875rem; letter-spacing: 0.03em; color: var(--tac-purple); line-height: 1.15; }
   .mega__n { font-size: 0.6875rem; color: var(--tac-violet-deep); margin-right: 0.5em; }
   .mega__sym { display: block; font-size: 0.8125rem; color: var(--tac-ink-soft); line-height: 1.35; margin-top: 2px; }
   .mega__card { background: var(--tac-grape); color: var(--tac-on-dark); border-radius: var(--r-3); padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; }
@@ -213,7 +219,6 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
   .mega__card-text { font-size: 0.9375rem; color: var(--tac-on-dark-soft); }
   .mega__all { color: var(--tac-white); font-size: 0.875rem; }
 
-  .site-header :global(.header-cta) { display: none; }
 
   .mobile-bar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-nav); height: var(--mobile-bar-h);
@@ -221,7 +226,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
     padding-bottom: env(safe-area-inset-bottom); transition: transform var(--dur-5) var(--ease-out);
   }
   .mobile-bar.is-hidden { transform: translateY(110%); }
-  .mobile-bar__btn { display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 1.125rem; letter-spacing: 0.14em; text-decoration: none; color: var(--tac-white); background: var(--tac-grape); }
+  .mobile-bar__btn { display: grid; place-items: center; font-family: var(--font-body); font-weight: 800; font-size: 1rem; letter-spacing: 0.1em; text-decoration: none; color: var(--tac-white); background: var(--tac-grape); }
   .mobile-bar__btn--primary { background: var(--tac-purple); }
   .mobile-bar__btn:hover { color: var(--tac-white); filter: brightness(1.12); }
 
@@ -231,11 +236,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
     .utility-bar { display: block; }
     .primary-nav { display: block; }
     .progress-key { display: block; }
-    .site-header :global(.header-cta) { display: inline-flex; }
     .mobile-bar { display: none; }
     .noscript-nav { display: none; }
-  }
-  @media (min-width: 1024px) and (max-width: 1240px) {
-    .site-header :global(.header-cta) { display: none; }
   }
 </style>

@@ -6,7 +6,7 @@
 /* ---------- Mobile nav ---------- */
 .mnav-btn {
   margin-left: auto; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3);
-  font-family: var(--font-display); font-weight: 700; letter-spacing: 0.14em; font-size: 1rem; color: var(--tac-purple);
+  font-family: var(--font-body); font-weight: 700; letter-spacing: 0.08em; font-size: 0.875rem; color: var(--tac-purple);
   border: 2px solid currentColor; border-radius: var(--r-2);
 }
 .site-header--over-dark:not(.is-scrolled) .mnav-btn { color: var(--tac-white); }
@@ -36,10 +36,10 @@
 .mnav__items { padding: var(--s-2) 0 var(--s-4); }
 .mnav__items a { display: grid; grid-template-columns: 2.5ch 1fr; gap: var(--s-3); padding: var(--s-2) 0; text-decoration: none; color: var(--tac-on-dark); }
 .mnav__n { font-family: var(--font-mono); font-size: 0.75rem; color: var(--tac-amber); padding-top: 3px; }
-.mnav__name { display: block; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.06em; color: var(--tac-white); }
+.mnav__name { display: block; font-family: var(--font-body); font-weight: 700; letter-spacing: 0.03em; color: var(--tac-white); }
 .mnav__sym { display: block; font-size: 0.875rem; color: var(--tac-on-dark-soft); }
 .mnav__links { margin-top: var(--s-6); display: grid; gap: var(--s-1); }
-.mnav__links a { display: block; padding: var(--s-2) 0; font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: 0.1em; color: var(--tac-white); text-decoration: none; }
+.mnav__links a { display: block; padding: var(--s-2) 0; font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; letter-spacing: 0.05em; color: var(--tac-white); text-decoration: none; }
 .mnav__links a:hover { color: var(--tac-amber); }
 .mnav__book { margin-top: var(--s-6); --btn-bg: var(--tac-white); --btn-fg: var(--tac-grape); --btn-bd: var(--tac-white); width: 100%; }
 .mnav__pinned { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--tac-white-15); padding-bottom: env(safe-area-inset-bottom); }
