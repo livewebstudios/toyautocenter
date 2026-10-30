@@ -74,8 +74,11 @@ const fontCss = `
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:600;font-display:swap;src:url(${mono600}) format('woff2')}`;
 
 const ga4 = site.ga4Id;
+// gtag.js loads after the page has painted (load + idle) so it never competes with the LCP image.
+// The queue is set up immediately, so the page_view still records.
 const gaInit = ga4
-  ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4}');`
+  ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4}');` +
+    `addEventListener('load',function(){(window.requestIdleCallback||setTimeout)(function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${ga4}';document.head.appendChild(s)})});`
   : '';
 ---
 <!doctype html>
@@ -125,8 +128,7 @@ const gaInit = ga4
 
     <script type="application/ld+json" set:html={jsonld} />
 
-    <Fragment set:html="<!-- GA4: G-XXXXXXXXXX -->" />
-    {ga4 && <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>}
+    <Fragment set:html="<!-- GA4 -->" />
     {ga4 && <script is:inline set:html={gaInit}></script>}
   </head>
   <body>

@@ -5,7 +5,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const files = [];
-const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) { if (f !== 'admin' && f !== '_astro') walk(p); } else if (f.endsWith('.html')) files.push(p); } };
+const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) { if (f !== 'admin' && f !== '_astro') walk(p); } else if (f.endsWith('.html') && !/^google[0-9a-f]+\.html$/.test(f)) files.push(p); } }; // skip the GSC verification file
 walk('dist');
 const urlOf = (f) => 'https://toyautocenter.net/' + f.replace(/^dist\//, '').replace(/index\.html$/, '').replace(/404\.html$/, '404/');
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
@@ -34,7 +34,7 @@ for (const f of files) {
   for (const t of ['twitter:card', 'twitter:image']) if (!h.includes(`name="${t}"`)) p(`missing ${t}`);
   const og = (h.match(/property="og:image" content="https:\/\/toyautocenter\.net\/(og\/[^"]+)"/) || [])[1];
   if (!og || !existsSync(join('dist', og))) p(`og image file missing: ${og}`);
-  if (!h.includes('<!-- GA4: G-XXXXXXXXXX -->')) p('missing GA4 placeholder');
+  if (!h.includes('<!-- GA4 -->') || !h.includes('googletagmanager.com/gtag/js?id=G-KSH0KJ15GJ')) p('missing GA4 tag');
   const types = new Set();
   for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     try {

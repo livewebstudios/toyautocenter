@@ -15,12 +15,12 @@ Node 24 (see `engines`). `npm run build` must be used for deploys: the relativiz
 
 ## Environment variables
 
-Copy `.env.example` to `.env` locally, and set the same two in Netlify (Site settings > Environment variables):
+Both IDs are already set as defaults in `src/data/site.ts`, so a deploy works with no env vars. Set them in Netlify (Site settings > Environment variables) only to override:
 
-| Variable | What it does |
-|---|---|
-| `PUBLIC_FORMSPREE_ID` | The ID after `/f/` in the Formspree endpoint. Without it the booking form posts to a placeholder. |
-| `PUBLIC_GA4_ID` | GA4 measurement ID (`G-...`). Empty = no gtag snippet; the `<!-- GA4 -->` placeholder comment is always present. |
+| Variable | Default | What it does |
+|---|---|---|
+| `PUBLIC_FORMSPREE_ID` | `xljjlyoe` | The ID after `/f/` in the Formspree endpoint (`https://formspree.io/f/xljjlyoe`). |
+| `PUBLIC_GA4_ID` | `G-KSH0KJ15GJ` | GA4 measurement ID, the same property the old WordPress site used. |
 
 ## Where things live
 
@@ -66,7 +66,7 @@ Decap is pinned to **3.1.2** in `public/admin/index.html` (later versions crash 
 
 1. Create the repo `livewebstudios/toyautocenter` on GitHub. From `build/`: `git remote add origin git@github.com:livewebstudios/toyautocenter.git && git push -u origin main`.
 2. Netlify: Add new site > Import from GitHub > `toyautocenter`. Build command `npm run build`, publish `dist` (both already in `netlify.toml`).
-3. Netlify env vars: `PUBLIC_FORMSPREE_ID`, `PUBLIC_GA4_ID`. Trigger a redeploy.
+3. Env vars: none needed (Formspree and GA4 IDs are defaults in `src/data/site.ts`).
 4. Netlify Identity: enable, registration **invite only**, then Services > Git Gateway: enable. Invite yourself (and the shop if they will post).
 5. Check the `.netlify.app` URL: forms, `/admin/`, redirects (`/home/contact-us/` should land on `/contact/`).
 6. DNS: apex `A` record to `75.2.60.5`, `www` `CNAME` to `<site>.netlify.app`. Add the domain in Netlify and let it issue the certificate.
@@ -77,7 +77,7 @@ Decap is pinned to **3.1.2** in `public/admin/index.html` (later versions crash 
 - **Google Business Profile**: primary category "Auto repair shop"; secondary "Vehicle inspection service", "Car battery store", "Brake shop", "Auto air conditioning service", "Transmission shop". Services list mirroring the 13 service pages. Hours Mon to Fri 8 to 5 (add Saturday once confirmed). Description built around "When car trouble arrives, we hope you WIND UP with us." Real photos only (storefront, bays, sign, the team if they agree). Seed Q&A with the FAQ page. Weekly posts from the blog.
 - **Bing Places**: import from GBP. **Apple Business Connect**: claim and match.
 - **Citations**: Yelp, Carfax, Facebook, Nextdoor, MapQuest. Name, address and phone identical to the site: Toy Auto Center, 628 NY-303, Blauvelt, NY 10913, 845.365.3003.
-- **Google Search Console**: verify by DNS (the old site's `G-KSH0KJ15GJ` meta is a GA4 ID, not a GSC token). Submit `https://toyautocenter.net/sitemap-index.xml`. Request indexing for home, `/services/nys-inspection/`, `/toyota-lexus-repair/` and the ten `/service-area/` pages.
+- **Google Search Console**: the HTML verification file `public/google3643688bb9fb1a45.html` ships at the site root, so verify with the HTML file method once DNS points at Netlify (or the Google Analytics method, since GA4 `G-KSH0KJ15GJ` is live on every page). Submit `https://toyautocenter.net/sitemap-index.xml`. Request indexing for home, `/services/nys-inspection/`, `/toyota-lexus-repair/` and the ten `/service-area/` pages.
 - **Reviews**: put the Google review link in post-service texts: `https://search.google.com/local/writereview?placeid=ChIJt5cZblvpwokRucHzfCQOoqA`.
 
 ## Quality scripts

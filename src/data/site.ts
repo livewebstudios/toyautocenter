@@ -58,8 +58,8 @@ export const site = {
       'Check for fluid leaks',
     ],
   },
-  formspreeId: import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID',
-  ga4Id: import.meta.env.PUBLIC_GA4_ID || '',
+  formspreeId: import.meta.env.PUBLIC_FORMSPREE_ID || 'xljjlyoe',
+  ga4Id: import.meta.env.PUBLIC_GA4_ID || 'G-KSH0KJ15GJ',
 } as const;
 
 export type Site = typeof site;
