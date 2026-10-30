@@ -34,7 +34,7 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
     </div>
   </Band>
 
-  <Band tone="dark" eyebrow="SIDE BY SIDE" heading={copy.comparison.heading} headingId="cmp-h" seed={619}>
+  <Band tone="dark" eyebrow="SIDE BY SIDE" heading={copy.comparison.heading} headingId="cmp-h" seed={619} art="gauge">
     <p slot="head" set:html={md(copy.pricingNote)} />
     <div class="table-wrap" tabindex="0" role="region" aria-label={`${copy.comparison.caption}, scrolls sideways`}>
       <table class="data-table cmp">
@@ -45,7 +45,7 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
     </div>
   </Band>
 
-  <Band tone="light" eyebrow="FAIR QUESTIONS" heading={copy.closing.heading} headingId="close-h" seed={620}>
+  <Band tone="light" eyebrow="FAIR QUESTIONS" heading={copy.closing.heading} headingId="close-h" seed={620} art="shield">
     <div slot="head" class="da-close">{copy.closing.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}</div>
     <FAQ items={copy.faqs} />
   </Band>

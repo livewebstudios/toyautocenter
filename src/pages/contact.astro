@@ -12,6 +12,7 @@ const crumbs = [{ name: 'Home', path: '/' }, { name: 'Contact', path }];
 const endpoint = `https://formspree.io/f/${site.formspreeId}`;
 import { heroPreload } from '../lib/images';
 const heroPre = await heroPreload('hero-shop-bay-blauvelt');
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="ContactPage" ctaBand={false} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="BOOK · CALL · TEXT" title={copy.h1} lead={copy.intro} seed={10913} density="low" image="hero-shop-bay-blauvelt" />
@@ -19,11 +20,11 @@ const heroPre = await heroPreload('hero-shop-bay-blauvelt');
   <section class="section contact" aria-label="Booking and shop details">
     <div class="container contact__grid">
       <div class="contact__form" id="book">
-        <h2>{copy.formHeading}</h2>
+        <div class="art-anchor"><SectionArt name="phone" class="art--side" /><h2>{copy.formHeading}</h2></div>
         <BookingForm client:visible endpoint={endpoint} next="https://toyautocenter.net/contact/?sent=1" services={services.map((s) => s.name)} phone={site.phone.display} text={site.text.display} />
       </div>
       <aside class="contact__side" aria-labelledby="visit-h">
-        <h2 id="visit-h">{copy.visitHeading}</h2>
+        <div class="art-anchor"><SectionArt name="route" class="art--side" /><h2 id="visit-h">{copy.visitHeading}</h2></div>
         <address class="nap">
           <p class="nap__name">Toy Auto Center</p>
           <p>{site.address.streetDisplay}<br />{site.address.city}, {site.address.region} {site.address.zip}</p>

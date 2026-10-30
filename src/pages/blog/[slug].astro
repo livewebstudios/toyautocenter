@@ -51,11 +51,13 @@ const schema = [
   },
 ];
 const title = `${post.title} | Toy Auto Center`;
+import SectionArt from '../../components/SectionArt.astro';
 ---
 <Base title={title.length > 70 ? `${post.title} | Toy Auto` : title} description={post.excerpt} crumbs={crumbs.slice(1)} schema={schema} ogType="article" article={{ published: post.date, section: post.category }} ctaSeed={post.slug.length * 17} preload={preload}>
   <article class="post">
     <header class="post__head">
-      <div class="container--narrow post__head-inner">
+      <div class="container--narrow post__head-inner art-anchor">
+        <SectionArt name="notes" class="art--side" />
         <Breadcrumbs items={crumbs} />
         <p class="post__meta mono">
           <a href={rel(Astro.url, `/blog/category/${catSlug(post.category)}/`)}>{post.category}</a>

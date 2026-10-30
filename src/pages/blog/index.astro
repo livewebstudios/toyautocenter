@@ -20,11 +20,13 @@ const blogNode = {
 };
 import { heroPreload } from '../../lib/images';
 const heroPre = await heroPreload('serpentine-belt-replacement');
+import SectionArt from '../../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[blogNode]} ctaSeed={88} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="THE SHOP BLOG" title={copy.h1} lead={copy.intro} image="serpentine-belt-replacement" />
   <section class="section section--tight">
     <div class="container">
+      <div class="art-anchor blog-h"><SectionArt name="notes" class="art--side" /><h2>Latest posts</h2></div>
       <BlogFilter client:visible posts={postCards(Astro.url)} categories={categoryLinks(Astro.url)} allHref={rel(Astro.url, '/blog/')} />
     </div>
   </section>

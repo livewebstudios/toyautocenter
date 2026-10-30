@@ -25,13 +25,14 @@ const schema = list.map((r, i) => ({
 }));
 import { heroPreload } from '../lib/images';
 const heroPre = await heroPreload('hero-shop-bay-blauvelt');
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={55} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="WORD ON THE ROAD" title={copy.h1} lead={copy.intro} seed={55} image="hero-shop-bay-blauvelt" />
 
   <section class="section section--tight" aria-labelledby="rt-h">
     <div class="container">
-      <h2 id="rt-h" class="rv-h">{copy.ratingsHeading}</h2>
+      <div class="art-anchor"><SectionArt name="stars" class="art--side" /><h2 id="rt-h" class="rv-h">{copy.ratingsHeading}</h2></div>
       <RatingStrip />
       {list.length > 0 && (
         <div class="rv-rail"><ReviewsRail client:visible reviews={list} /></div>
@@ -51,7 +52,7 @@ const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 
   <section class="section section--mist" aria-labelledby="lv-h">
     <div class="container--narrow leave">
-      <h2 id="lv-h">{copy.leaveHeading}</h2>
+      <div class="art-anchor"><SectionArt name="chat" class="art--side" /><h2 id="lv-h">{copy.leaveHeading}</h2></div>
       <p>{copy.leave}</p>
       <div class="btn-row">
         <a class="btn btn--primary" href={site.links.googleReview} rel="noopener">Review us on Google</a>

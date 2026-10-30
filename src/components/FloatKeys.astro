@@ -1,0 +1,13 @@
+---
+// Two outline wind-up keys drifting behind a dark section (the closing band's key, set loose).
+// The seed picks one of three placements so neighbouring dark sections differ.
+// The outer box scrolls at its own rate (data-parallax, motion.ts); the inner box drifts (art.css).
+import KeyMark from './KeyMark.astro';
+interface Props { seed?: number }
+const { seed = 0 } = Astro.props;
+const v = Math.abs(seed) % 3;
+---
+<div class:list={['float-keys', `float-keys--v${v}`]} aria-hidden="true">
+  <div class="float-keys__k float-keys__k--a" data-parallax="0.55"><div class="float-keys__in"><KeyMark variant="outline" size={340} /></div></div>
+  <div class="float-keys__k float-keys__k--b" data-parallax="0.8"><div class="float-keys__in"><KeyMark variant="outline" size={190} /></div></div>
+</div>

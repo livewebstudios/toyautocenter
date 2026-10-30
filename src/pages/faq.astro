@@ -19,6 +19,7 @@ const townFaqs = allTownFaqs();
 const everything = [...general.general, ...groups.flatMap((g) => g.items), ...townFaqs];
 import { heroPreload } from '../lib/images';
 const heroPre = await heroPreload('obd2-diagnostic-scan-tool');
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="FAQPage" schema={[faqNode(path, everything)]} ctaSeed={99} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow={`${everything.length} ANSWERS`} title={copy.h1} lead={copy.intro} seed={99} density="low" image="obd2-diagnostic-scan-tool" />
@@ -30,9 +31,10 @@ const heroPre = await heroPreload('obd2-diagnostic-scan-tool');
         {groups.map((g) => <li><a href={`#${g.s.slug}`}><span class="mono">{pad(g.s.n)}</span> {g.s.name}</a></li>)}
         <li><a href="#towns">Around Rockland County</a></li>
       </ul>
+      <SectionArt name="chat" class="art--below" parallax={1} />
     </nav>
     <div class="faq-groups">
-      <section id="shop" aria-labelledby="shop-h"><h2 id="shop-h">{copy.generalHeading}</h2><FAQ items={general.general} /></section>
+      <section id="shop" aria-labelledby="shop-h"><div class="art-anchor"><SectionArt name="gears" class="art--side" /><h2 id="shop-h">{copy.generalHeading}</h2></div><FAQ items={general.general} /></section>
       {groups.map((g) => (
         <section id={g.s.slug} aria-labelledby={`${g.s.slug}-h`}>
           <h2 id={`${g.s.slug}-h`}><a href={rel(Astro.url, `/services/${g.s.slug}/`)}>{g.s.name}</a></h2>

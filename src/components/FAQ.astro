@@ -21,8 +21,9 @@ import { rel } from '../lib/paths';
 
 <script>
   // Height animation for <details>. Native toggling still works without JS or with reduced motion.
+  import { msOf } from '../lib/duration';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const dur = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-4')) || 600) * 0.6;
+  const dur = msOf('--dur-4', 600) * 0.75;
   document.querySelectorAll<HTMLDetailsElement>('[data-faq] .faq__item').forEach((d) => {
     const sum = d.querySelector('summary')!;
     const body = d.querySelector<HTMLElement>('.faq__a')!;
@@ -34,12 +35,12 @@ import { rel } from '../lib/paths';
       if (d.open) {
         d.classList.add('is-closing');
         const h = body.offsetHeight;
-        anim = body.animate([{ height: `${h}px`, opacity: 1 }, { height: '0px', opacity: 0 }], { duration: dur * 0.8, easing: 'cubic-bezier(.4,0,.2,1)' });
+        anim = body.animate([{ height: `${h}px`, opacity: 1, transform: 'translateY(0)' }, { height: '0px', opacity: 0, transform: 'translateY(-6px)' }], { duration: dur * 0.8, easing: 'cubic-bezier(.4,0,.2,1)' });
         anim.onfinish = () => { d.open = false; d.classList.remove('is-closing'); anim = null; };
       } else {
         d.open = true;
         const h = body.offsetHeight;
-        anim = body.animate([{ height: '0px', opacity: 0 }, { height: `${h}px`, opacity: 1 }], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)' });
+        anim = body.animate([{ height: '0px', opacity: 0, transform: 'translateY(-6px)' }, { height: `${h}px`, opacity: 1, transform: 'translateY(0)' }], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)' });
         anim.onfinish = () => { anim = null; };
       }
     });

@@ -62,6 +62,7 @@
   --tac-violet-07: rgb(126 78 220 / 0.07);
   --tac-violet-25: rgb(126 78 220 / 0.25);
   --tac-violet-35: rgb(126 78 220 / 0.35);
+  --tac-violet-light-40: rgb(185 160 240 / 0.4);
   --tac-violet-00: rgb(126 78 220 / 0);
   --tac-purple-60: rgb(77 45 132 / 0.6);
   --tac-purple-00: rgb(77 45 132 / 0);
@@ -160,6 +161,17 @@
   --loop-charge: 4s;
   --loop-puff: 3s;
   --loop-puff-delay: 0.35s;
+
+  /* Section illustrations (SectionArt.astro, art.css) and drifting keys on dark sections */
+  --dur-art-draw: 1.8s;    /* line art draws in on entering view */
+  --loop-art-badge: 90s;   /* key badge outline turning behind each illustration */
+  --loop-art-wheel: 1.4s;
+  --loop-art-road: 0.8s;
+  --loop-art-bob: 1.2s;
+  --loop-art-fast: 2.4s;
+  --loop-art: 5s;
+  --loop-art-slow: 9s;
+  --loop-key-drift: 24s;
 
   /* Layers */
   --z-bg: 0;

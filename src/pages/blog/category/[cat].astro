@@ -20,11 +20,13 @@ const title = `${name} Articles | Toy Auto Center Blog, Blauvelt NY`;
 const description = `${name} articles from Toy Auto Center in Blauvelt, NY: ${count} plain-English ${count === 1 ? 'post' : 'posts'} from our Route 303 shop for Rockland County drivers and car owners.`;
 import { heroPreload } from '../../../lib/images';
 const heroPre = await heroPreload('serpentine-belt-replacement');
+import SectionArt from '../../../components/SectionArt.astro';
 ---
 <Base title={title} description={description} crumbs={crumbs.slice(1)} pageType="CollectionPage" ctaSeed={slug.length * 31} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="THE SHOP BLOG" title={`${name} posts`} lead={copy.categoryIntro(name)} image="serpentine-belt-replacement" />
   <section class="section section--tight">
     <div class="container">
+      <div class="art-anchor blog-h"><SectionArt name="notes" class="art--side" /><h2>Latest posts</h2></div>
       <BlogFilter client:visible posts={postCards(Astro.url)} categories={categoryLinks(Astro.url)} allHref={rel(Astro.url, '/blog/')} active={slug} />
     </div>
   </section>

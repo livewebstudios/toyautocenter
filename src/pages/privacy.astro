@@ -5,11 +5,13 @@ import copy from '../data/pages/privacy';
 import { inline, splitLong } from '../lib/inline';
 const path = '/privacy/';
 const crumbs = [{ name: 'Home', path: '/' }, { name: 'Privacy', path }];
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} ctaBand={false}>
   <PageHero crumbs={crumbs} eyebrow={copy.lastUpdated.toUpperCase()} title={copy.h1} lead={inline(copy.intro, Astro.url)} harness={false} />
   <section class="section">
-    <div class="container--narrow prose">
+    <div class="container--narrow prose art-anchor">
+      <SectionArt name="shield" class="art--side art--high" />
       {copy.sections.map((s) => (
         <>
           <h2>{s.heading}</h2>

@@ -29,6 +29,8 @@ const schema = [
 ];
 import { heroPreload } from '../lib/images';
 const heroPre = await heroPreload('wheel-alignment-rack-strut');
+import SectionArt from '../components/SectionArt.astro';
+import FloatKeys from '../components/FloatKeys.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} speakable ctaSeed={4321} preload={heroPre}>
   <section class="tl-hero photo-hero on-dark" aria-labelledby="tl-title">
@@ -50,7 +52,7 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
   <section class="band band--light" aria-labelledby="why-h">
     <div class="band__glow" aria-hidden="true"></div>
     <div class="container why">
-      <div><p class="eyebrow">WHY INDEPENDENT</p><h2 id="why-h">{copy.why.heading}</h2></div>
+      <div class="art-anchor"><SectionArt name="key" class="art--behind" /><p class="eyebrow">WHY INDEPENDENT</p><h2 id="why-h">{copy.why.heading}</h2></div>
       <div class="why__list">{copy.why.body.flatMap(splitLong).map((p) => <p data-reveal set:html={md(p)} />)}</div>
     </div>
   </section>
@@ -58,9 +60,12 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
   <section class="band band--dark section--dark" aria-labelledby="models-h">
     <div class="band__glow" aria-hidden="true"></div>
     <Harness client:visible variant="dark" density="low" seed={2008} />
+    <FloatKeys seed={2008} />
     <div class="container">
-      <p class="eyebrow">MODELS</p>
-      <h2 id="models-h" class="models__h">{copy.models.heading}</h2>
+      <div class="art-anchor"><SectionArt name="car" class="art--side" />
+        <p class="eyebrow">MODELS</p>
+        <h2 id="models-h" class="models__h">{copy.models.heading}</h2>
+      </div>
       <div class="models">
         <div>
           <h3>{copy.models.toyotaHeading}</h3>
@@ -80,8 +85,11 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
     <div class="band__glow" aria-hidden="true"></div>
     <div class="container hybrid__inner">
       <div class="flow hybrid__text">
-        <p class="eyebrow">HYBRID SERVICE</p>
-        <h2 id="hy-h">{copy.hybrid.heading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="battery" class="art--side" />
+          <p class="eyebrow">HYBRID SERVICE</p>
+          <h2 id="hy-h">{copy.hybrid.heading}</h2>
+        </div>
         {copy.hybrid.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
       </div>
       <ol class="readout-list hybrid__items">
@@ -93,9 +101,12 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
   <section class="band band--dark section--dark" aria-labelledby="int-h">
     <div class="band__glow" aria-hidden="true"></div>
     <Harness client:visible variant="dark" density="low" seed={2010} />
+    <FloatKeys seed={2010} />
     <div class="container--narrow">
-      <p class="eyebrow">MAINTENANCE</p>
-      <h2 id="int-h">{copy.intervals.heading}</h2>
+      <div class="art-anchor"><SectionArt name="gauge" class="art--side" />
+        <p class="eyebrow">MAINTENANCE</p>
+        <h2 id="int-h">{copy.intervals.heading}</h2>
+      </div>
       <div class="table-wrap int-table" tabindex="0" role="region" aria-label={`${copy.intervals.caption}, scrolls sideways`}>
         <table class="data-table">
           <caption>{copy.intervals.caption}</caption>
@@ -111,8 +122,10 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
   <section class="band band--light" aria-labelledby="svc-h">
     <div class="band__glow" aria-hidden="true"></div>
     <div class="container">
-      <p class="eyebrow">ALL 13 SERVICES</p>
-      <h2 id="svc-h">{copy.serviceLinks.heading}</h2>
+      <div class="art-anchor"><SectionArt name="wrench" class="art--side" />
+        <p class="eyebrow">ALL 13 SERVICES</p>
+        <h2 id="svc-h">{copy.serviceLinks.heading}</h2>
+      </div>
       <p class="svc-intro">{copy.serviceLinks.intro}</p>
       <ul class="svc-grid" data-live-icons>
         {services.map((s) => (
@@ -126,9 +139,12 @@ const heroPre = await heroPreload('wheel-alignment-rack-strut');
   <section class="band band--dark section--dark" aria-labelledby="tlfaq-h">
     <div class="band__glow" aria-hidden="true"></div>
     <Harness client:visible variant="dark" density="low" seed={2011} />
+    <FloatKeys seed={2011} />
     <div class="container--narrow">
-      <p class="eyebrow">FAQ</p>
-      <h2 id="tlfaq-h">Toyota and Lexus owners ask</h2>
+      <div class="art-anchor"><SectionArt name="chat" class="art--side" />
+        <p class="eyebrow">FAQ</p>
+        <h2 id="tlfaq-h">Toyota and Lexus owners ask</h2>
+      </div>
       <FAQ items={copy.faqs} />
       <p class="tl-more">Thinking about the dealer instead? Read our honest take on <a href={rel(Astro.url, '/dealer-alternative/')}>when the dealer makes more sense</a>.</p>
     </div>

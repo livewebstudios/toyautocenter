@@ -44,6 +44,8 @@ const faqs = [
   ...homeFaqSources.map(({ slug, index }) => serviceCopy(slug).faqs[index]),
 ];
 const { list: reviews } = await getReviews();
+import SectionArt from '../components/SectionArt.astro';
+import FloatKeys from '../components/FloatKeys.astro';
 ---
 <Base
   title={copy.title}
@@ -118,8 +120,11 @@ const { list: reviews } = await getReviews();
   <section class="section pitch" aria-labelledby="pitch-title">
     <div class="container pitch__grid">
       <div class="pitch__text flow" data-reveal>
-        <p class="eyebrow">THE DEALER ALTERNATIVE</p>
-        <h2 id="pitch-title">{copy.pitch.heading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="shield" class="art--side" />
+          <p class="eyebrow">THE DEALER ALTERNATIVE</p>
+          <h2 id="pitch-title">{copy.pitch.heading}</h2>
+        </div>
         {copy.pitch.body.flatMap(splitLong).map((p) => <p>{p}</p>)}
         <p><a class="link-arrow" href={rel(Astro.url, '/dealer-alternative/')}>{copy.pitch.link}</a></p>
       </div>
@@ -131,8 +136,10 @@ const { list: reviews } = await getReviews();
 
   <section class="section section--dark language" aria-labelledby="lang-title">
     <Harness client:visible variant="dark" density="high" seed={2601} />
+    <FloatKeys seed={2601} />
     <div class="container language__inner">
-      <div class="language__head" data-reveal>
+      <div class="language__head art-anchor" data-reveal>
+        <SectionArt name="scope" class="art--side" />
         <p class="eyebrow">{copy.language.eyebrow}</p>
         <h2 id="lang-title">{copy.language.heading}</h2>
         <p class="lead language__intro">{copy.language.intro}</p>
@@ -153,8 +160,11 @@ const { list: reviews } = await getReviews();
     <div class="container deal-band__grid">
       <DealBadge />
       <div class="deal-band__text" data-reveal>
-        <p class="eyebrow">THIS MONTH'S DEAL</p>
-        <h2 id="deal-title">{copy.deal.heading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="tag" class="art--side" />
+          <p class="eyebrow">THIS MONTH'S DEAL</p>
+          <h2 id="deal-title">{copy.deal.heading}</h2>
+        </div>
         <p>{copy.deal.body}</p>
         <ul class="deal-list mono">{site.deal.includes.map((i) => <li>{i}</li>)}</ul>
         <div class="btn-row">
@@ -181,8 +191,11 @@ const { list: reviews } = await getReviews();
   <section class="section area below-fold" aria-labelledby="area-title">
     <div class="container area__grid">
       <div class="area__text" data-reveal>
-        <p class="eyebrow">SERVICE AREA</p>
-        <h2 id="area-title">{copy.area.heading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="route" class="art--side" />
+          <p class="eyebrow">SERVICE AREA</p>
+          <h2 id="area-title">{copy.area.heading}</h2>
+        </div>
         <p>{copy.area.body}</p>
         <ul class="town-cloud">
           {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
@@ -196,8 +209,11 @@ const { list: reviews } = await getReviews();
 
   <section class="section faq-band below-fold" aria-labelledby="faq-title">
     <div class="container--narrow">
-      <p class="eyebrow">FAQ</p>
-      <h2 id="faq-title">{copy.faq.heading}</h2>
+      <div class="art-anchor">
+        <SectionArt name="chat" class="art--side" />
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">{copy.faq.heading}</h2>
+      </div>
       <FAQ items={faqs} />
       <p class="faq-band__more"><a class="link-arrow" href={rel(Astro.url, '/faq/')}>Every answer in one place</a></p>
     </div>

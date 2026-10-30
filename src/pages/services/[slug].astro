@@ -74,7 +74,7 @@ const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
     </div>
   </section>
 
-  <Band tone={tone()} label="Overview" seed={svc.n * 7}>
+  <Band tone={tone()} label="Overview" seed={svc.n * 7} art="car">
     <div class="svc-intro" slot="head">
       <p class="eyebrow">{shortName.toUpperCase()}</p>
       <p class="svc-intro__lead" set:html={md(c.intro[0])} />
@@ -89,7 +89,7 @@ const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
     </div>
   </Band>
 
-  <Band tone={tone()} eyebrow="SYMPTOMS" heading={c.symptomsHeading} headingId="sym-h" seed={svc.n * 11}>
+  <Band tone={tone()} eyebrow="SYMPTOMS" heading={c.symptomsHeading} headingId="sym-h" seed={svc.n * 11} art="scope">
     <ul class="symptoms">
       {c.symptoms.map((s) => (
         <li data-reveal>
@@ -100,12 +100,12 @@ const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
     </ul>
   </Band>
 
-  <Band tone={tone()} eyebrow="WHAT WE CHECK" heading={c.checkHeading} headingId="chk-h" seed={svc.n * 13}>
+  <Band tone={tone()} eyebrow="WHAT WE CHECK" heading={c.checkHeading} headingId="chk-h" seed={svc.n * 13} art="checklist">
     {c.checkIntro && <p slot="head" set:html={md(c.checkIntro)} />}
     <ol class="checks">{c.checks.map((x) => <li data-reveal set:html={md(x)} />)}</ol>
   </Band>
 
-  <Band tone={tone()} eyebrow="WHAT WE FIX" heading={c.fixHeading} headingId="fix-h" seed={svc.n * 17}>
+  <Band tone={tone()} eyebrow="WHAT WE FIX" heading={c.fixHeading} headingId="fix-h" seed={svc.n * 17} art="wrench">
     <div class="fixes">
       {c.fixes.map((g) => (
         <div class="fixes__group" data-reveal>
@@ -121,7 +121,7 @@ const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
   </Band>
 
   {c.table && (
-    <Band tone={tone()} eyebrow="AT A GLANCE" heading={c.table.caption} headingId="tbl-h" seed={svc.n * 19}>
+    <Band tone={tone()} eyebrow="AT A GLANCE" heading={c.table.caption} headingId="tbl-h" seed={svc.n * 19} art="gauge">
       <div class="table-wrap" tabindex="0" role="region" aria-label={`${c.table.caption}, scrolls sideways`}>
         <table class="data-table">
           <thead><tr>{c.table.columns.map((h) => <th scope="col">{h}</th>)}</tr></thead>
@@ -139,31 +139,31 @@ const tone = (): 'light' | 'dark' => (bandN++ % 2 ? 'dark' : 'light');
   )}
 
   {c.extra?.map((b, i) => (
-    <Band tone={tone()} eyebrow="GOOD TO KNOW" heading={b.heading} headingId={`ex-h-${i}`} seed={svc.n * 23 + i}>
+    <Band tone={tone()} eyebrow="GOOD TO KNOW" heading={b.heading} headingId={`ex-h-${i}`} seed={svc.n * 23 + i} art="gears">
       {b.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
     </Band>
   ))}
 
   {c.techie && (
-    <Band tone={tone()} eyebrow="FOR THE CURIOUS" heading={c.techie.heading} headingId="tech-h" seed={svc.n * 29}>
+    <Band tone={tone()} eyebrow="FOR THE CURIOUS" heading={c.techie.heading} headingId="tech-h" seed={svc.n * 29} art="gears">
       {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
     </Band>
   )}
 
   {c.toyota && (
-    <Band tone={tone()} eyebrow="TOYOTA & LEXUS" heading={c.toyota.heading} headingId="toy-h" seed={svc.n * 31}>
+    <Band tone={tone()} eyebrow="TOYOTA & LEXUS" heading={c.toyota.heading} headingId="toy-h" seed={svc.n * 31} art="key">
       <KeyMark variant="solid" size={44} slot="head" class="svc-key" />
       {c.toyota.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
       <p><a class="link-arrow" href={rel(Astro.url, '/toyota-lexus-repair/')}>TOYOTA &amp; LEXUS SPECIALISTS</a></p>
     </Band>
   )}
 
-  <Band tone={tone()} eyebrow="FAQ" heading={`${shortName} questions, answered`} headingId="faq-h" seed={svc.n * 37}>
+  <Band tone={tone()} eyebrow="FAQ" heading={`${shortName} questions, answered`} headingId="faq-h" seed={svc.n * 37} art="chat">
     <p slot="head" set:html={md(c.closing)} />
     <FAQ items={c.faqs} />
   </Band>
 
-  <Band tone={tone()} eyebrow="KEEP GOING" heading="Related services" headingId="rel-h" seed={svc.n * 41}>
+  <Band tone={tone()} eyebrow="KEEP GOING" heading="Related services" headingId="rel-h" seed={svc.n * 41} art="route">
     <ul class="related" data-live-icons>
       {related.map((r) => (
         <li>

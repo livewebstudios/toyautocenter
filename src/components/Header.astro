@@ -98,6 +98,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
 </div>
 
 <script>
+  import { msOf } from '../lib/duration';
   // Mega panel: hover intent (120ms) on fine pointers, click/tap toggles, Esc closes.
   const li = document.querySelector<HTMLElement>('[data-mega]');
   const btn = document.querySelector<HTMLButtonElement>('[data-mega-toggle]');
@@ -111,7 +112,7 @@ const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/')
     };
     const fine = matchMedia('(hover: hover) and (pointer: fine)');
     // Hover intent uses the --dur-1 token (120ms); closing waits a little longer so diagonal moves into the panel don't close it.
-    const intent = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-1')) || 120;
+    const intent = msOf('--dur-1', 120);
     li.addEventListener('pointerenter', (e) => {
       if (e.pointerType !== 'mouse' || !fine.matches) return;
       clearTimeout(timer);

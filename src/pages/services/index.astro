@@ -24,6 +24,7 @@ const itemList = {
 };
 import { heroPreload } from '../../lib/images';
 const heroPre = await heroPreload('hero-shop-bay-blauvelt');
+import SectionArt from '../../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[itemList]} ctaSeed={1313} preload={heroPre}>
   <section class="hub-hero photo-hero on-dark" aria-labelledby="hub-title">
@@ -38,7 +39,7 @@ const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 
   <section class="section section--tight" aria-labelledby="tray-h">
     <div class="container">
-      <h2 id="tray-h" class="hub-h2">{copy.trayHeading}</h2>
+      <div class="art-anchor"><SectionArt name="wrench" class="art--side" /><h2 id="tray-h" class="hub-h2">{copy.trayHeading}</h2></div>
       <PartsTray client:visible items={trayItems} />
     </div>
   </section>
@@ -47,7 +48,7 @@ const heroPre = await heroPreload('hero-shop-bay-blauvelt');
 
   <section class="section" aria-labelledby="groups-h">
     <div class="container">
-      <h2 id="groups-h" class="hub-h2">{copy.groupsHeading}</h2>
+      <div class="art-anchor"><SectionArt name="gears" class="art--side" /><h2 id="groups-h" class="hub-h2">{copy.groupsHeading}</h2></div>
       <div class="groups">
         {groups.map((g) => (
           <section class="group" aria-labelledby={`g-${g.replace(/\W+/g, '')}`} data-reveal>

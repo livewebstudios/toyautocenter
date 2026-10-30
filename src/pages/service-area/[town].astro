@@ -59,7 +59,7 @@ const heroPre = await heroPreload(townHero);
     </Fragment>
   </PageHero>
 
-  <Band tone="light" label="Overview" seed={t.map.x}>
+  <Band tone="light" label="Overview" seed={t.map.x} art="route">
     <div slot="head">
       <p class="eyebrow">{t.name.toUpperCase()}</p>
       {c.intro.slice(1).flatMap(splitLong).map((p) => <p class="town-lead" set:html={md(p)} />)}
@@ -74,12 +74,12 @@ const heroPre = await heroPreload(townHero);
   </Band>
 
   {c.sections.map((sec, i) => (
-    <Band tone={i % 2 === 0 ? 'dark' : 'light'} eyebrow={i === 0 ? 'WHAT WE DO' : 'GOOD TO KNOW'} heading={sec.heading} headingId={`sec-h-${i}`} seed={t.map.y + i}>
+    <Band tone={i % 2 === 0 ? 'dark' : 'light'} eyebrow={i === 0 ? 'WHAT WE DO' : 'GOOD TO KNOW'} heading={sec.heading} headingId={`sec-h-${i}`} seed={t.map.y + i} art={i === 0 ? 'wrench' : 'gears'}>
       {sec.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
     </Band>
   ))}
 
-  <Band tone={c.sections.length % 2 === 0 ? 'dark' : 'light'} eyebrow="INSPECTION" heading={c.inspectionNote.heading} headingId="insp-h" seed={t.map.x + 5}>
+  <Band tone={c.sections.length % 2 === 0 ? 'dark' : 'light'} eyebrow="INSPECTION" heading={c.inspectionNote.heading} headingId="insp-h" seed={t.map.x + 5} art="checklist">
     {c.inspectionNote.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
     <ul class="town-svcs" data-live-icons aria-label={`What ${t.name} drivers book most`}>
       {svcs.map((s) => (
@@ -94,7 +94,7 @@ const heroPre = await heroPreload(townHero);
     </ul>
   </Band>
 
-  <Band tone={c.sections.length % 2 === 0 ? 'light' : 'dark'} eyebrow="FAQ" heading={`${t.name} questions`} headingId="tf-h" seed={t.map.y + 9}>
+  <Band tone={c.sections.length % 2 === 0 ? 'light' : 'dark'} eyebrow="FAQ" heading={`${t.name} questions`} headingId="tf-h" seed={t.map.y + 9} art="chat">
     <div slot="head" class="town-more">
       <p class="town-more__label">Other towns we serve</p>
       <ul>{neighbors.map((n) => <li><a href={rel(Astro.url, `/service-area/${n.slug}/`)}>{n.name}</a></li>)}</ul>

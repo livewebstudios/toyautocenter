@@ -1,8 +1,12 @@
 ---
 // Full-width content band. Light bands sit on mist with a slow drifting glow; dark bands sit on
-// grape with the Harness wiring and a moving glow. "split" puts the heading in a left column
-// (sticky on desktop) and the content on the right.
+// grape with the Harness wiring, a moving glow and two drifting outline keys. "split" puts the
+// heading in a left column (sticky on desktop) and the content on the right. "art" draws an
+// animated illustration of the section's subject behind the heading, under a heading-less intro
+// column, or in the corner when the band has no left column at all.
 import Harness from '../islands/HarnessBackground';
+import SectionArt, { type ArtName } from './SectionArt.astro';
+import FloatKeys from './FloatKeys.astro';
 interface Props {
   tone?: 'light' | 'dark';
   eyebrow?: string;
@@ -11,9 +15,10 @@ interface Props {
   label?: string;
   seed?: number;
   split?: boolean;
+  art?: ArtName;
   class?: string;
 }
-const { tone = 'light', eyebrow, heading, headingId, label, seed = 11, split = true, class: cls } = Astro.props;
+const { tone = 'light', eyebrow, heading, headingId, label, seed = 11, split = true, art, class: cls } = Astro.props;
 const hasHead = !!heading || Astro.slots.has('head');
 ---
 <section
@@ -23,12 +28,16 @@ const hasHead = !!heading || Astro.slots.has('head');
 >
   <div class="band__glow" aria-hidden="true"></div>
   {tone === 'dark' && <Harness client:visible variant="dark" density="low" seed={seed} />}
+  {tone === 'dark' && <FloatKeys seed={seed} />}
+  {art && !hasHead && <SectionArt name={art} class="art--corner" />}
   <div class:list={['container', 'band__grid', split && hasHead && 'band__grid--split']}>
     {hasHead && (
       <div class="band__head">
+        {art && heading && <SectionArt name={art} class="art--behind" />}
         {eyebrow && <p class="eyebrow">{eyebrow}</p>}
         {heading && <h2 id={headingId}>{heading}</h2>}
         <slot name="head" />
+        {art && !heading && <SectionArt name={art} class="art--below" />}
       </div>
     )}
     <div class="band__body"><slot /></div>

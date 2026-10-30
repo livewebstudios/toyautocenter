@@ -1,0 +1,286 @@
+---
+// Animated line illustrations that sit behind section headings and say what the section is about.
+// One drawing style for the whole site: a dot grid and the slowly turning key badge outline behind,
+// purple line art in front, amber for the moving parts. Lines draw in when the art scrolls into
+// view, then idle loops run only while it stays in view (data-live-icons -> .icons-live, motion.ts).
+// Styles live in src/styles/art.css.
+import { KEY_VIEWBOX, KEY_BADGE, KEY_KEY } from './keyPaths';
+
+export type ArtName =
+  | 'car' | 'scope' | 'checklist' | 'wrench' | 'gauge' | 'chat' | 'route' | 'key'
+  | 'shop' | 'phone' | 'shield' | 'stars' | 'tag' | 'notes' | 'gears' | 'battery';
+
+interface Props { name: ArtName; class?: string; parallax?: number }
+const { name, class: cls, parallax = 0.75 } = Astro.props;
+
+const f = (n: number) => Math.round(n * 10) / 10;
+/** Gear outline: `teeth` flat-topped teeth between radii r (root) and R (tip). */
+const gear = (cx: number, cy: number, r: number, R: number, teeth: number) => {
+  const pts: string[] = [];
+  const step = (Math.PI * 2) / teeth;
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step;
+    const at = (rad: number, ang: number) => `${f(cx + rad * Math.cos(ang))} ${f(cy + rad * Math.sin(ang))}`;
+    pts.push(at(r, a), at(R, a + step * 0.18), at(R, a + step * 0.48), at(r, a + step * 0.66));
+  }
+  return `M${pts.join(' L')} Z`;
+};
+/** Five-point star. */
+const star = (cx: number, cy: number, R: number, r: number) => {
+  const pts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    const rad = i % 2 ? r : R;
+    pts.push(`${f(cx + rad * Math.cos(a))} ${f(cy + rad * Math.sin(a))}`);
+  }
+  return `M${pts.join(' L')} Z`;
+};
+/** Gauge tick marks from 210 to -30 degrees around (160,150). */
+const ticks = Array.from({ length: 13 }, (_, i) => {
+  const a = ((210 - i * 20) * Math.PI) / 180;
+  const r1 = i % 2 ? 84 : 76;
+  return `M${f(160 + r1 * Math.cos(a))} ${f(150 - r1 * Math.sin(a))} L${f(160 + 92 * Math.cos(a))} ${f(150 - 92 * Math.sin(a))}`;
+}).join(' ');
+const wave = 'M72 104 H96 L104 92 L112 120 L122 70 L132 132 L140 104 H162 L170 96 L178 112 L186 104 H248';
+const road = 'M36 206 C96 196 72 150 128 140 S196 150 214 112 S240 76 270 70';
+const grid = Array.from({ length: 7 }, (_, i) => `M8 ${24 + i * 32} H312`).join(' ');
+---
+<svg
+  class:list={['art', `art--${name}`, cls]}
+  viewBox="0 0 320 240"
+  aria-hidden="true"
+  focusable="false"
+  data-live-icons
+  data-parallax={parallax}
+>
+  <path class="art-grid" d={grid} />
+  <g class="art-badge">
+    <svg x="52" y="4" width="216" height="232" viewBox={KEY_VIEWBOX}><path d={KEY_BADGE} vector-effect="non-scaling-stroke" /></svg>
+  </g>
+
+  {name === 'car' && (
+    <g>
+      <path class="t art-road" d="M8 180 H312" />
+      <path class="a art-speed" d="M6 118 H38 M14 132 H42 M2 146 H26" />
+      <g class="art-bob">
+        <path class="l d" pathLength="1" d="M34 150 V140 Q36 128 54 123 L104 112 L130 95 Q148 84 170 84 H214 Q238 84 256 100 L280 118 Q296 122 298 136 V150 H268 A24 24 0 0 0 220 150 H116 A24 24 0 0 0 68 150 Z" />
+        <path class="t d" pathLength="1" d="M136 110 L152 97 Q160 92 172 92 H196 V110 Z" />
+        <path class="t d" pathLength="1" d="M206 92 H214 Q230 92 242 104 L248 110 H206 Z" />
+        <path class="t" d="M160 124 H176" />
+        <circle class="fa art-blink" cx="290" cy="131" r="3.5" />
+      </g>
+      <g class="art-wheel"><circle class="l" cx="92" cy="152" r="18" /><path class="t" d="M92 138 V166 M78 152 H106 M82 142 L102 162 M102 142 L82 162" /><circle class="fp" cx="92" cy="152" r="3" /></g>
+      <g class="art-wheel"><circle class="l" cx="244" cy="152" r="18" /><path class="t" d="M244 138 V166 M230 152 H258 M234 142 L254 162 M254 142 L234 162" /><circle class="fp" cx="244" cy="152" r="3" /></g>
+    </g>
+  )}
+
+  {name === 'scope' && (
+    <g>
+      <rect class="l d" pathLength="1" x="56" y="40" width="208" height="136" rx="14" />
+      <rect class="t" x="72" y="56" width="176" height="96" rx="6" />
+      <path class="t art-faint" d="M72 80 H248 M72 128 H248 M116 56 V152 M160 56 V152 M204 56 V152" />
+      <path class="t" d={wave} />
+      <path class="a art-pulse" pathLength="1" d={wave} />
+      <path class="t" d="M120 166 H184" />
+      <circle class="fa art-blink" cx="244" cy="165" r="3" />
+      <path class="l d" pathLength="1" d="M160 176 V194 Q160 210 144 210 H98" />
+      <rect class="l" x="70" y="200" width="28" height="20" rx="4" />
+      <g class="art-orbit"><circle class="l bgf" cx="262" cy="70" r="22" /><path class="l" d="M278 86 L296 104" /><path class="a" d="M252 64 Q256 58 262 58" /></g>
+    </g>
+  )}
+
+  {name === 'checklist' && (
+    <g>
+      <rect class="l d" pathLength="1" x="92" y="34" width="136" height="180" rx="12" />
+      <rect class="l bgf" x="132" y="24" width="56" height="20" rx="6" />
+      {[0, 1, 2, 3].map((i) => {
+        const y = 78 + i * 34;
+        return (
+          <g>
+            <rect class="t" x="112" y={y - 10} width="20" height="20" rx="4" />
+            <path class="a art-tick" style={`--i:${i}`} pathLength="1" d={`M116 ${y} l5 5 l9 -10`} />
+            <path class="t" d={`M144 ${y - 3} H206 M144 ${y + 5} H${186 - i * 8}`} />
+          </g>
+        );
+      })}
+      <g class="art-scribble"><path class="l bgf" d="M236 196 L276 156 L288 168 L248 208 L232 212 Z" /><path class="l" d="M270 162 L282 174" /></g>
+    </g>
+  )}
+
+  {name === 'wrench' && (
+    <g>
+      <path class="t art-spin" d={gear(206, 160, 30, 38, 10)} />
+      <circle class="t" cx="206" cy="160" r="9" />
+      <path class="t art-spin-rev" d={gear(258, 92, 15, 21, 8)} />
+      <path class="l" d="M146 120 L138 133.9 L122 133.9 L114 120 L122 106.1 L138 106.1 Z" />
+      <circle class="fp" cx="130" cy="120" r="4" />
+      <g class="art-ratchet">
+        <circle class="l bgf" cx="130" cy="120" r="28" />
+        <path class="t" d="M150 120 L140 137.3 L120 137.3 L110 120 L120 102.7 L140 102.7 Z" />
+        <path class="l bgf" d="M153.7 105.2 L287.9 69.3 A8 8 0 0 1 292.1 84.7 L158 121" />
+      </g>
+      <path class="a art-spark" d="M86 92 L74 84 M84 140 L70 146 M100 160 L94 172" />
+    </g>
+  )}
+
+  {name === 'gauge' && (
+    <g>
+      <path class="l d" pathLength="1" d="M76.9 198 A96 96 0 1 1 243.1 198" />
+      <path class="a art-red" d="M254.5 133.3 A96 96 0 0 1 243.1 198" />
+      <path class="t" d={ticks} />
+      <g class="art-needle"><path class="l" d="M160 150 L160 78" /><path class="a" d="M160 150 L160 160" /></g>
+      <circle class="fp" cx="160" cy="150" r="7" />
+      <rect class="t" x="122" y="180" width="76" height="26" rx="4" />
+      <path class="a art-seg" d="M134 193 H146 M154 193 H166 M174 193 H186" />
+    </g>
+  )}
+
+  {name === 'chat' && (
+    <g>
+      <g class="art-float">
+        <path class="l d bgf" pathLength="1" d="M60 50 H200 Q216 50 216 66 V130 Q216 146 200 146 H112 L84 172 L90 146 H60 Q44 146 44 130 V66 Q44 50 60 50 Z" />
+        <path class="a" d="M114 84 Q114 68 130 68 Q146 68 146 82 Q146 94 130 100 V110" />
+        <circle class="fa" cx="130" cy="124" r="3.5" />
+      </g>
+      <g class="art-float art-float--b">
+        <path class="l bgf" d="M196 120 H266 Q280 120 280 134 V170 Q280 184 266 184 H258 L264 204 L240 184 H196 Q182 184 182 170 V134 Q182 120 196 120 Z" />
+        <circle class="fa art-dot" style="--i:0" cx="212" cy="152" r="4.5" />
+        <circle class="fa art-dot" style="--i:1" cx="231" cy="152" r="4.5" />
+        <circle class="fa art-dot" style="--i:2" cx="250" cy="152" r="4.5" />
+      </g>
+    </g>
+  )}
+
+  {name === 'route' && (
+    <g>
+      <path class="l d" pathLength="1" d={road} />
+      <path class="t art-lane" d={road} />
+      <circle class="t" cx="36" cy="206" r="6" />
+      <circle class="a art-ping" cx="128" cy="140" r="9" />
+      <circle class="fa" cx="128" cy="140" r="3.5" />
+      <circle class="a art-ping" style="--i:1" cx="214" cy="112" r="9" />
+      <circle class="fa" cx="214" cy="112" r="3.5" />
+      <g class="art-traveller" style={`offset-path: path('${road}')`}><circle class="fp" r="5.5" /><circle class="a" r="9" /></g>
+      <g class="art-pin">
+        <path class="l bgf" d="M270 70 C256 54 250 44 250 36 A20 20 0 0 1 290 36 C290 44 284 54 270 70 Z" />
+        <circle class="fa" cx="270" cy="36" r="7" />
+      </g>
+    </g>
+  )}
+
+  {name === 'key' && (
+    <g>
+      <g class="art-spin-slow">
+        <path class="a" d="M160 28 A92 92 0 0 1 252 120 M242 110 L252 122 L262 110" />
+        <path class="a" d="M160 212 A92 92 0 0 1 68 120 M58 130 L68 118 L78 130" />
+      </g>
+      <g class="art-wind">
+        <svg x="88" y="44" width="144" height="154" viewBox={KEY_VIEWBOX}><path class="l" d={KEY_KEY} fill-rule="evenodd" vector-effect="non-scaling-stroke" /></svg>
+      </g>
+    </g>
+  )}
+
+  {name === 'shop' && (
+    <g>
+      <path class="t" d="M16 210 H304" />
+      <path class="l d" pathLength="1" d="M40 210 V100 L160 44 L280 100 V210" />
+      <rect class="t" x="128" y="70" width="64" height="18" rx="3" />
+      <path class="a" d="M140 79 H180" />
+      <rect class="t" x="52" y="118" width="26" height="22" rx="2" />
+      <rect class="t" x="242" y="118" width="26" height="22" rx="2" />
+      <rect class="fa art-blink" x="56" y="122" width="18" height="14" rx="1" />
+      <rect class="fa art-blink art-blink--b" x="246" y="122" width="18" height="14" rx="1" />
+      <path class="t" d="M108 200 V192 Q110 184 122 182 L134 172 Q140 168 150 168 H170 Q180 168 188 176 L198 182 Q210 184 212 192 V200 Z" />
+      <circle class="t" cx="128" cy="202" r="7" /><circle class="t" cx="192" cy="202" r="7" />
+      <rect class="l" x="92" y="116" width="136" height="94" />
+      <g class="art-door">
+        <rect class="bgf" x="94" y="118" width="132" height="90" />
+        <path class="t" d="M96 128 H224 M96 140 H224 M96 152 H224 M96 164 H224 M96 176 H224 M96 188 H224 M96 200 H224" />
+      </g>
+    </g>
+  )}
+
+  {name === 'phone' && (
+    <g>
+      <g class="art-ring">
+        <rect class="l d bgf" pathLength="1" x="120" y="40" width="80" height="150" rx="14" />
+        <rect class="t" x="130" y="58" width="60" height="108" rx="4" />
+        <path class="t" d="M150 49 H170" />
+        <circle class="t" cx="160" cy="178" r="5" />
+        <path class="t" d="M138 76 H172 M138 88 H164 M148 104 H182 M156 116 H182" />
+        <path class="a art-tick" style="--i:1" pathLength="1" d="M142 140 l8 8 l18 -18" />
+      </g>
+      {[20, 34, 48].map((r, i) => (
+        <g class="art-wave" style={`--i:${i}`}>
+          <path class="a" d={`M${f(206 + r * 0.707)} ${f(115 - r * 0.707)} A${r} ${r} 0 0 1 ${f(206 + r * 0.707)} ${f(115 + r * 0.707)}`} />
+          <path class="a" d={`M${f(114 - r * 0.707)} ${f(115 - r * 0.707)} A${r} ${r} 0 0 0 ${f(114 - r * 0.707)} ${f(115 + r * 0.707)}`} />
+        </g>
+      ))}
+    </g>
+  )}
+
+  {name === 'shield' && (
+    <g>
+      <circle class="t art-spin-slow art-dash" cx="160" cy="122" r="100" />
+      <path class="l d" pathLength="1" d="M160 36 L232 62 V120 Q232 176 160 208 Q88 176 88 120 V62 Z" />
+      <path class="t" d="M160 52 L218 73 V120 Q218 166 160 192 Q102 166 102 120 V73 Z" />
+      <path class="a art-tick" style="--i:0" pathLength="1" d="M128 122 L150 144 L194 98" />
+      <path class="a art-twinkle" style="--i:0" d="M262 52 V68 M254 60 H270" />
+      <path class="a art-twinkle" style="--i:1" d="M52 158 V174 M44 166 H60" />
+      <path class="a art-twinkle" style="--i:2" d="M266 176 V188 M260 182 H272" />
+    </g>
+  )}
+
+  {name === 'stars' && (
+    <g>
+      <path class="t d" pathLength="1" d="M40 188 Q160 236 280 188" />
+      {[[64, 146], [112, 108], [160, 94], [208, 108], [256, 146]].map(([x, y], i) => (
+        <path class="l art-star" style={`--i:${i}`} d={star(x, y, 20, 9)} />
+      ))}
+      <path class="a art-twinkle" style="--i:1" d="M160 40 V56 M152 48 H168" />
+    </g>
+  )}
+
+  {name === 'tag' && (
+    <g>
+      <circle class="fp" cx="160" cy="28" r="4" />
+      <g class="art-swing">
+        <path class="t" d="M160 28 L160 86" />
+        <path class="l d bgf" pathLength="1" d="M160 64 L206 96 V194 Q206 204 196 204 H124 Q114 204 114 194 V96 Z" />
+        <circle class="t" cx="160" cy="92" r="7" />
+        <path class="a d" pathLength="1" d="M160 118 C150 134 142 144 142 154 A18 18 0 0 0 178 154 C178 144 170 134 160 118 Z" />
+        <path class="t" d="M134 186 H186" />
+      </g>
+      <path class="a art-twinkle" style="--i:0" d="M246 70 V86 M238 78 H254" />
+      <path class="a art-twinkle" style="--i:2" d="M74 150 V162 M68 156 H80" />
+    </g>
+  )}
+
+  {name === 'notes' && (
+    <g>
+      <rect class="l d" pathLength="1" x="84" y="44" width="152" height="168" rx="10" />
+      {[108, 134, 160, 186, 212].map((x) => <circle class="t bgf" cx={x} cy="44" r="6" />)}
+      <path class="t" d="M104 80 H216 M104 98 H216 M104 116 H200 M104 134 H216" />
+      <path class="a art-write" pathLength="1" d="M108 160 q7 -10 14 0 t14 0 t14 0 t14 0 t14 0 t14 0" />
+      <path class="t" d="M104 186 H180" />
+      <g class="art-pencil"><path class="l bgf" d="M108 160 L112 146 L152 106 L162 116 L122 156 Z" /><path class="l" d="M146 112 L156 122" /></g>
+    </g>
+  )}
+
+  {name === 'gears' && (
+    <g>
+      <g class="art-gear-a"><path class="l" d={gear(126, 128, 46, 58, 12)} /><circle class="t" cx="126" cy="128" r="16" /></g>
+      <g class="art-gear-b"><path class="t" d={gear(214, 78, 26, 35, 8)} /><circle class="t" cx="214" cy="78" r="8" /></g>
+      <g class="art-gear-c"><path class="a" d={gear(222, 178, 20, 28, 7)} /><circle class="fa" cx="222" cy="178" r="4" /></g>
+    </g>
+  )}
+
+  {name === 'battery' && (
+    <g>
+      <rect class="l d" pathLength="1" x="66" y="84" width="174" height="96" rx="10" />
+      <rect class="l" x="240" y="114" width="12" height="36" rx="3" />
+      {[0, 1, 2, 3].map((i) => <rect class="fp art-cell" style={`--i:${i}`} x={82 + i * 38} y="98" width="28" height="68" rx="4" />)}
+      <path class="a bgf art-zap" d="M168 34 L140 100 H164 L150 150 L198 80 H174 L190 34 Z" />
+    </g>
+  )}
+</svg>

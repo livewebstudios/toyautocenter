@@ -5,12 +5,14 @@ import Harness from '../islands/HarnessBackground';
 import { notFound as copy } from '../data/pages/misc';
 import { site } from '../data/site';
 import { rel } from '../lib/paths';
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} noindex rootBase ctaBand={false}>
   <section class="nf" aria-labelledby="nf-title">
     <Harness client:idle variant="light" density="med" seed={404} />
     <div class="nf__key" data-float aria-hidden="true"><KeyMark variant="outline" size={380} /></div>
-    <div class="container nf__inner">
+    <div class="container nf__inner art-anchor">
+      <SectionArt name="route" class="art--side" />
       <p class="eyebrow eyebrow--mono">ERROR 404 · NO ROUTE FOUND</p>
       <h1 id="nf-title">{copy.h1}</h1>
       <p class="lead">{copy.line}</p>

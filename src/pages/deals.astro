@@ -18,6 +18,7 @@ const schema = [
 ];
 import { heroPreload } from '../lib/images';
 const heroPre = await heroPreload('serpentine-belt-replacement');
+import SectionArt from '../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={4499} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="THIS MONTH'S DEAL" title={copy.h1} lead={copy.intro} seed={4499} image="serpentine-belt-replacement">
@@ -33,14 +34,20 @@ const heroPre = await heroPreload('serpentine-belt-replacement');
   <section class="section" aria-labelledby="inc-h">
     <div class="container deal-grid">
       <div>
-        <p class="eyebrow">INCLUDED</p>
-        <h2 id="inc-h">{copy.includesHeading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="tag" class="art--side" />
+          <p class="eyebrow">INCLUDED</p>
+          <h2 id="inc-h">{copy.includesHeading}</h2>
+        </div>
         <ol class="readout-list inc-list">{site.deal.includes.map((i) => <li>{i}</li>)}</ol>
         <p class="deal-more">Want the full maintenance picture? See our <a href={rel(Astro.url, '/services/oil-change-maintenance/')}>oil change and scheduled maintenance service</a>.</p>
       </div>
       <div>
-        <p class="eyebrow">HOW IT WORKS</p>
-        <h2>{copy.howHeading}</h2>
+        <div class="art-anchor">
+          <SectionArt name="phone" class="art--side" />
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2>{copy.howHeading}</h2>
+        </div>
         <ol class="steps">{copy.how.map((s) => <li>{s}</li>)}</ol>
       </div>
     </div>

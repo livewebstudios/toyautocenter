@@ -18,6 +18,7 @@ const list = {
 };
 import { heroPreload } from '../../lib/images';
 const heroPre = await heroPreload('hero-shop-bay-blauvelt');
+import SectionArt from '../../components/SectionArt.astro';
 ---
 <Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[list]} ctaSeed={303} preload={heroPre}>
   <PageHero crumbs={crumbs} eyebrow="ROUTE 303 · BLAUVELT · ROCKLAND COUNTY" title={copy.h1} lead={inline(copy.intro[0], Astro.url)} seed={303} image="hero-shop-bay-blauvelt">
@@ -26,7 +27,7 @@ const heroPre = await heroPreload('hero-shop-bay-blauvelt');
   <section class="section" aria-labelledby="towns-h">
     <div class="container">
       <p class="sa-intro">{copy.intro[1]}</p>
-      <h2 id="towns-h" class="sa-h">{copy.listHeading}</h2>
+      <div class="art-anchor"><SectionArt name="route" class="art--side" /><h2 id="towns-h" class="sa-h">{copy.listHeading}</h2></div>
       <ul class="sa-list">
         {towns.map((t) => {
           const c = townCopyOf(t.slug);

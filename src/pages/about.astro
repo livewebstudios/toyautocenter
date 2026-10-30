@@ -28,14 +28,14 @@ const heroPre = await heroPreload('mechanic-hands-wrench-workbench');
     <Fragment slot="actions"><Button href="/contact/">BOOK AN APPOINTMENT</Button></Fragment>
   </PageHero>
 
-  <Band tone="light" eyebrow="THE SHOP" heading={shop.heading} headingId="ab-shop" seed={1976}>
+  <Band tone="light" eyebrow="THE SHOP" heading={shop.heading} headingId="ab-shop" seed={1976} art="shop">
     {shop.body.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={md(p)} />)}
     <dl class="facts">
       {facts.map((f) => <div data-reveal><dt>{f.k}</dt><dd>{f.v}</dd></div>)}
     </dl>
   </Band>
 
-  <Band tone="dark" eyebrow="NO SURPRISES" heading={estimate.heading} headingId="ab-est" seed={77}>
+  <Band tone="dark" eyebrow="NO SURPRISES" heading={estimate.heading} headingId="ab-est" seed={77} art="phone">
     <ol class="steps">
       {estimate.body.map((p) => <li data-reveal set:html={md(p)} />)}
     </ol>
@@ -52,7 +52,7 @@ const heroPre = await heroPreload('mechanic-hands-wrench-workbench');
     </div>
   </Band>
 
-  <Band tone="dark" eyebrow="OUR WORD" heading={copy.pledgeHeading} headingId="pledge-h" seed={1313}>
+  <Band tone="dark" eyebrow="OUR WORD" heading={copy.pledgeHeading} headingId="pledge-h" seed={1313} art="shield">
     <KeyMark variant="solid" size={56} slot="head" class="pledge-key" />
     <ol class="pledge">{copy.pledge.map((p) => <li data-reveal>{p}</li>)}</ol>
   </Band>
