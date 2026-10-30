@@ -1,0 +1,27 @@
+---
+// Visible breadcrumbs. The BreadcrumbList schema is emitted by Base.astro from the same list.
+import { rel } from '../lib/paths';
+export interface Crumb { name: string; path: string }
+interface Props { items: Crumb[]; tone?: 'light' | 'dark' }
+const { items, tone = 'light' } = Astro.props;
+---
+<nav class:list={['crumbs', `crumbs--${tone}`]} aria-label="Breadcrumb">
+  <ol>
+    {items.map((c, i) => (
+      <li>
+        {i < items.length - 1 ? <a href={rel(Astro.url, c.path)}>{c.name}</a> : <span aria-current="page">{c.name}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<style>
+  .crumbs ol { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .crumbs li { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--tac-ink-soft); }
+  .crumbs li + li::before { content: '/'; color: var(--tac-violet); }
+  .crumbs a { color: var(--tac-ink-soft); text-decoration: none; display: inline-flex; align-items: center; min-height: 24px; }
+  .crumbs [aria-current] { display: inline-block; line-height: 24px; max-width: min(34ch, 70vw); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+  .crumbs a:hover { color: var(--tac-purple); text-decoration: underline; }
+  .crumbs [aria-current] { color: var(--tac-purple); font-weight: 600; }
+  .crumbs--dark li, .crumbs--dark a { color: var(--tac-on-dark-soft); }
+  .crumbs--dark [aria-current] { color: var(--tac-white); }
+</style>

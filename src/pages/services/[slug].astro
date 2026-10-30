@@ -1,0 +1,274 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Button from '../../components/Button.astro';
+import PhotoFrame from '../../components/PhotoFrame.astro';
+import ServiceIcon from '../../components/ServiceIcon.astro';
+import KeyMark from '../../components/KeyMark.astro';
+import FAQ from '../../components/FAQ.astro';
+import Divider from '../../components/Divider.astro';
+import Harness from '../../islands/HarnessBackground';
+import { services, serviceBySlug, pad } from '../../data/services';
+import { towns } from '../../data/towns';
+import { site } from '../../data/site';
+import { serviceCopy } from '../../lib/content';
+import { inline, splitLong } from '../../lib/inline';
+import { rel } from '../../lib/paths';
+import { serviceNode, faqNode, oilOfferNode } from '../../lib/schema';
+import { getImage } from 'astro:assets';
+import { photo } from '../../lib/images';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params as { slug: string };
+const svc = serviceBySlug(slug);
+const c = serviceCopy(slug);
+const path = `/services/${slug}/`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+  { name: svc.name, path },
+];
+const related = svc.related.map(serviceBySlug);
+const md = (s: string) => inline(s, Astro.url);
+const isOil = slug === 'oil-change-maintenance';
+const schema = [
+  serviceNode({ path, name: svc.name, serviceType: svc.serviceType, description: c.description, offer: isOil ? oilOfferNode(path) : undefined }),
+  faqNode(path, c.faqs),
+];
+const shortName = svc.short;
+const heroSizes = '(min-width: 1024px) 34vw, 92vw';
+const heroImg = svc.image ? photo(svc.image) : null;
+const heroAvif = heroImg ? await getImage({ src: heroImg, widths: [480, 720, 928].filter((w) => w <= heroImg.width), format: 'avif', quality: 38 }) : null;
+const preload = heroAvif ? { srcset: heroAvif.srcSet.attribute, sizes: heroSizes, type: 'image/avif' } : null;
+---
+<Base title={c.title} description={c.description} crumbs={crumbs.slice(1)} schema={schema} speakable={slug === 'nys-inspection'} ctaSeed={svc.n * 131} preload={preload}>
+  <section class="svc-hero" aria-labelledby="svc-title">
+    <Harness client:idle variant="light" density="med" seed={svc.n * 97} />
+    <div class="container svc-hero__grid">
+      <div class="svc-hero__text">
+        <Breadcrumbs items={crumbs} />
+        <p class="svc-hero__num mono"><span class="led" aria-hidden="true"></span>SERVICE {pad(svc.n)} / 13</p>
+        <h1 id="svc-title">{c.h1}</h1>
+        <p class="lead svc-hero__promise" data-speakable>{c.promise}</p>
+        <div class="btn-row">
+          <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+          <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+        </div>
+      </div>
+      <div class="svc-hero__media">
+        {svc.image ? (
+          <PhotoFrame image={svc.image} alt={svc.imageAlt ?? svc.name} focus={svc.focus} eager label={`${pad(svc.n)} · ${shortName.toUpperCase()}`} sizes={heroSizes} />
+        ) : (
+          <div class="svc-hero__icon" data-live-icons>
+            <ServiceIcon name={svc.icon} size={240} />
+            <p class="frame-tag mono"><span class="led" aria-hidden="true"></span>{pad(svc.n)} · {shortName.toUpperCase()}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <div class="container svc-body">
+    <article class="svc-main">
+      <section class="svc-intro flow" aria-label="Overview">
+        {c.intro.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={md(p)} />)}
+      </section>
+
+      <section class="svc-block" aria-labelledby="sym-h">
+        <p class="eyebrow">SYMPTOMS</p>
+        <h2 id="sym-h">{c.symptomsHeading}</h2>
+        <ul class="symptoms">
+          {c.symptoms.map((s) => (
+            <li data-reveal>
+              <p class="symptoms__feel" set:html={md(s.feel)} />
+              <p class="symptoms__means"><span class="mono">LIKELY CAUSE</span> <span set:html={md(s.means)} /></p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="svc-block" aria-labelledby="chk-h">
+        <p class="eyebrow">WHAT WE CHECK</p>
+        <h2 id="chk-h">{c.checkHeading}</h2>
+        {c.checkIntro && <p set:html={md(c.checkIntro)} />}
+        <ol class="readout-list">{c.checks.map((x) => <li set:html={md(x)} />)}</ol>
+      </section>
+
+      <section class="svc-block" aria-labelledby="fix-h">
+        <p class="eyebrow">WHAT WE FIX</p>
+        <h2 id="fix-h">{c.fixHeading}</h2>
+        <div class="fixes">
+          {c.fixes.map((g) => (
+            <div class="fixes__group" data-reveal>
+              <h3>{g.title}</h3>
+              <dl>
+                {g.items.map((it) => (
+                  <div><dt>{it.name}</dt><dd set:html={md(it.note)} /></div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {c.table && (
+        <section class="svc-block" aria-label={c.table.caption}>
+          <div class="table-wrap" tabindex="0" role="region" aria-label={`${c.table.caption}, scrolls sideways`}>
+            <table class="data-table">
+              <caption>{c.table.caption}</caption>
+              <thead><tr>{c.table.columns.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+              <tbody>
+                {c.table.rows.map((r) => (
+                  <tr>
+                    <th scope="row">{r[0]}</th>
+                    {r.slice(1).map((cell) => <td class:list={[cell && 'tick']}>{cell ? cell : <span class="visually-hidden">Not scheduled</span>}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {c.extra?.map((b) => (
+        <section class="svc-block flow" aria-label={b.heading}>
+          <h2>{b.heading}</h2>
+          {b.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+        </section>
+      ))}
+
+      <section class="techie" aria-labelledby="tech-h" data-reveal>
+        <p class="techie__label mono">FOR THE CURIOUS</p>
+        <h2 id="tech-h" class="techie__h">{c.techie.heading}</h2>
+        {c.techie.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+      </section>
+
+      {c.toyota && (
+        <section class="toyota-note" aria-labelledby="toy-h" data-reveal>
+          <KeyMark variant="solid" size={48} class="toyota-note__key" />
+          <div class="flow">
+            <p class="eyebrow">TOYOTA &amp; LEXUS</p>
+            <h2 id="toy-h">{c.toyota.heading}</h2>
+            {c.toyota.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+          </div>
+        </section>
+      )}
+
+      <section class="svc-block" aria-labelledby="faq-h">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-h">{shortName} questions, answered</h2>
+        <FAQ items={c.faqs} />
+      </section>
+
+      <section class="svc-close" aria-label="Book this service">
+        <p class="lead" set:html={md(c.closing)} />
+        <div class="btn-row">
+          <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+          <a class="link-arrow" href={rel(Astro.url, '/services/')}>BACK TO SERVICES</a>
+        </div>
+      </section>
+    </article>
+
+    <aside class="svc-aside" aria-label="Related">
+      <div class="aside-card aside-card--dark on-dark">
+        <p class="aside-card__title">Not sure it's {shortName.toLowerCase()}?</p>
+        <p>Describe what the car is doing. We diagnose first and call before any repair.</p>
+        <Button href="/contact/" size="sm">BOOK AN APPOINTMENT</Button>
+        <p class="aside-card__phone mono"><a href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a><br /><a href={site.text.sms}>TEXT {site.text.display}</a></p>
+      </div>
+      <nav class="aside-card" aria-labelledby="rel-h">
+        <h2 id="rel-h" class="aside-card__h">Related services</h2>
+        <ul class="related" data-live-icons>
+          {related.map((r) => (
+            <li>
+              <a href={rel(Astro.url, `/services/${r.slug}/`)}>
+                <ServiceIcon name={r.icon} size={36} />
+                <span><span class="mono related__n">{pad(r.n)}</span>{r.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {svc.toyotaNote && <a class="aside-link" href={rel(Astro.url, '/toyota-lexus-repair/')}>Toyota &amp; Lexus specialists</a>}
+      </nav>
+      <nav class="aside-card" aria-labelledby="serve-h">
+        <h2 id="serve-h" class="aside-card__h">Serving</h2>
+        <ul class="serving">
+          {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <Divider />
+</Base>
+
+<style>
+  .svc-hero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .svc-hero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; }
+  .svc-hero__text { display: grid; gap: var(--s-5); justify-items: start; }
+  .svc-hero__num { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; margin-top: var(--s-4); }
+  .svc-hero h1 { font-size: var(--fs-h1-inner); max-width: 14ch; }
+  .svc-hero__promise { max-width: 46ch; }
+  .svc-hero__media { width: 100%; max-width: 440px; justify-self: center; }
+  .svc-hero__icon {
+    position: relative; aspect-ratio: 4 / 5; display: grid; place-items: center; border-radius: var(--r-3);
+    background: var(--tac-white); border: 1px solid var(--tac-line); box-shadow: var(--tac-shadow-1);
+  }
+  .svc-hero__icon :global(.ic) { width: min(240px, 60%); height: auto; }
+  .frame-tag { position: absolute; left: var(--s-3); bottom: var(--s-3); display: inline-flex; align-items: center; gap: var(--s-2); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-grape); color: var(--tac-white); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; }
+  @media (min-width: 900px) {
+    .svc-hero__grid { grid-template-columns: 1.25fr 0.75fr; gap: var(--s-16); }
+    .svc-hero__media { justify-self: end; }
+  }
+
+  .svc-body { display: grid; gap: var(--s-16); padding-block: var(--s-16) var(--section-y); }
+  @media (min-width: 1100px) { .svc-body { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--s-20); } }
+  .svc-main { display: grid; gap: var(--s-16); min-width: 0; }
+  .svc-block > h2 { margin: var(--s-2) 0 var(--s-6); max-width: 22ch; }
+  .svc-block > p { margin-bottom: var(--s-4); }
+
+  .symptoms { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--tac-line); }
+  .symptoms li { display: grid; gap: var(--s-1); padding: var(--s-5) 0; border-bottom: 1px solid var(--tac-line); }
+  .symptoms__feel { font-weight: 650; font-size: 1.0625rem; color: var(--tac-ink); }
+  .symptoms__means { color: var(--tac-ink-soft); }
+  .symptoms__means .mono { font-size: 0.6875rem; color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; margin-right: var(--s-1); }
+  @media (min-width: 720px) {
+    .symptoms li { grid-template-columns: 1fr 1fr; gap: var(--s-8); }
+  }
+
+  .fixes { display: grid; gap: var(--s-8); }
+  @media (min-width: 720px) { .fixes { grid-template-columns: 1fr 1fr; } }
+  .fixes__group h3 { font-size: 1.5rem; padding-bottom: var(--s-3); border-bottom: 2px solid var(--tac-purple); margin-bottom: var(--s-3); }
+  .fixes__group dl div { padding: var(--s-3) 0; border-bottom: 1px solid var(--tac-line); }
+  .fixes__group dt { font-weight: 650; color: var(--tac-ink); }
+  .fixes__group dd { margin: var(--s-1) 0 0; color: var(--tac-ink-soft); font-size: 0.9375rem; }
+
+  .techie { background: var(--tac-mist); border-radius: var(--r-3); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border-left: 4px solid var(--tac-violet); display: grid; gap: var(--s-4); }
+  .techie__label { font-weight: 600; letter-spacing: 0.12em; color: var(--tac-violet-deep); font-size: 0.75rem; }
+  .techie__h { font-family: var(--font-mono); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); font-weight: 600; letter-spacing: 0; text-transform: none; line-height: 1.3; }
+
+  .toyota-note { display: grid; gap: var(--s-5); grid-template-columns: auto 1fr; align-items: start; padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); }
+  .toyota-note h2 { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem); }
+
+  .svc-close { display: grid; gap: var(--s-6); padding-top: var(--s-8); border-top: 1px solid var(--tac-line); }
+
+  .svc-aside { display: grid; gap: var(--s-5); align-content: start; }
+  @media (min-width: 1100px) { .svc-aside { position: sticky; top: calc(var(--nav-h) + var(--s-6)); } }
+  .aside-card { background: var(--tac-white); border: 1px solid var(--tac-line); border-radius: var(--r-3); padding: var(--s-6); display: grid; gap: var(--s-4); }
+  .aside-card--dark { background: var(--tac-grape); color: var(--tac-on-dark); border-color: transparent; justify-items: start; }
+  .aside-card__title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1.02; color: var(--tac-white); }
+  .aside-card__phone { font-size: 0.8125rem; line-height: 1.9; }
+  .aside-card__phone a { color: var(--tac-on-dark); text-decoration: none; }
+  .aside-card__phone a:hover { color: var(--tac-amber); }
+  .aside-card__h { font-size: 1.375rem; }
+  .related { list-style: none; padding: 0; display: grid; gap: var(--s-2); }
+  .related a { display: grid; grid-template-columns: 36px 1fr; gap: var(--s-3); align-items: center; padding: var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); font-weight: 600; line-height: 1.25; }
+  .related a:hover { background: var(--tac-mist); color: var(--tac-purple); }
+  .related__n { font-size: 0.6875rem; color: var(--tac-violet-deep); margin-right: 0.6em; }
+  .aside-link { font-weight: 600; }
+  .serving { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .serving a { display: inline-block; padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); background: var(--tac-mist); font-size: 0.875rem; text-decoration: none; color: var(--tac-purple); }
+  .serving a:hover { background: var(--tac-purple); color: var(--tac-white); }
+</style>

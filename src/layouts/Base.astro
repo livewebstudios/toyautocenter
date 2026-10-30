@@ -1,0 +1,143 @@
+---
+import '../styles/global.css';
+import '../styles/icons.css';
+import '../styles/islands.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CTABand from '../components/CTABand.astro';
+import { site } from '../data/site';
+import { abs, rel } from '../lib/paths';
+import { businessNode, websiteNode, organizationNode, webPageNode, breadcrumbNode, type Node } from '../lib/schema';
+import { getImage } from 'astro:assets';
+import heroPhoto from '../assets/images/hero-shop-bay-blauvelt.jpg';
+import bsd800 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-800-normal.woff2?url';
+import bsd700 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-700-normal.woff2?url';
+import bsd600 from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-600-normal.woff2?url';
+import inter from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import mono400 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url';
+import mono600 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2?url';
+import { getReviews } from '../lib/reviews';
+import { tok } from '../lib/tokens';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Visible breadcrumb trail (also emitted as BreadcrumbList). Home passes []. */
+  crumbs?: { name: string; path: string }[];
+  /** Extra JSON-LD nodes for this page. */
+  schema?: Node[];
+  pageType?: string;
+  speakable?: boolean;
+  headerTheme?: 'light' | 'dark';
+  /** Preload for the LCP image (a <Picture> source set). */
+  preload?: { srcset: string; sizes: string; type: string } | null;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  /** Show the closing WIND UP band above the footer. */
+  ctaBand?: boolean;
+  ctaSeed?: number;
+  /** 404 only: resolve relative links from the root. */
+  rootBase?: boolean;
+  article?: { published: string; modified?: string; section?: string };
+}
+
+const {
+  title, description, crumbs = [], schema = [], pageType = 'WebPage', speakable = false,
+  headerTheme = 'light', preload = null, ogType = 'website', noindex = false, ctaBand = true, ctaSeed = 7, rootBase = false, article,
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const canonical = abs(path);
+const ogKey = path.replace(/^\/|\/$/g, '').replace(/\//g, '--') || 'home';
+const ogImage = abs(`/og/${ogKey}.png`);
+
+const logoUrl = abs('/icon-512.png');
+const heroJpg = await getImage({ src: heroPhoto, width: 1600, format: 'jpg' });
+const reviews = await getReviews();
+
+const graph: Node[] = [
+  businessNode({ logo: logoUrl, image: [logoUrl, abs(heroJpg.src)], aggregate: reviews.aggregate ?? undefined }),
+  websiteNode(),
+  ...(path === '/' ? [organizationNode(logoUrl)] : []),
+  webPageNode({ path, title, description, type: pageType, speakable, image: ogImage }),
+  breadcrumbNode(path, [{ name: 'Home', path: '/' }, ...crumbs.filter((c) => c.path !== '/')]),
+  ...schema,
+];
+const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+
+const fontCss = `
+@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:800;font-display:swap;src:url(${bsd800}) format('woff2')}
+@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:700;font-display:swap;src:url(${bsd700}) format('woff2')}
+@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:600;font-display:swap;src:url(${bsd600}) format('woff2')}
+@font-face{font-family:'Inter Variable';font-style:normal;font-weight:100 900;font-display:swap;src:url(${inter}) format('woff2-variations')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(${mono400}) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:600;font-display:swap;src:url(${mono600}) format('woff2')}`;
+
+const ga4 = site.ga4Id;
+const gaInit = ga4
+  ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4}');`
+  : '';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {rootBase && <base href="/" />}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content={tok('tac-grape')} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Toy Auto Center" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${title}. Toy Auto Center, Route 303, Blauvelt NY.`} />
+    <meta property="og:locale" content="en_US" />
+    {article && <meta property="article:published_time" content={article.published} />}
+    {article?.modified && <meta property="article:modified_time" content={article.modified} />}
+    {article?.section && <meta property="article:section" content={article.section} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href={rel(Astro.url, '/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={rel(Astro.url, '/favicon-32.png')} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={rel(Astro.url, '/apple-touch-icon.png')} />
+    <link rel="manifest" href={rel(Astro.url, '/site.webmanifest')} />
+    <link rel="alternate" type="application/rss+xml" title="Toy Auto Center blog" href={rel(Astro.url, '/rss.xml')} />
+
+    <link rel="preload" href={bsd800} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bsd700} as="font" type="font/woff2" crossorigin />
+    {preload && <link rel="preload" as="image" imagesrcset={preload.srcset} imagesizes={preload.sizes} type={preload.type} fetchpriority="high" />}
+    <style is:inline set:html={fontCss}></style>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion');
+    </script>
+
+    <script type="application/ld+json" set:html={jsonld} />
+
+    <Fragment set:html="<!-- GA4: G-XXXXXXXXXX -->" />
+    {ga4 && <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>}
+    {ga4 && <script is:inline set:html={gaInit}></script>}
+  </head>
+  <body>
+    <Header theme={headerTheme} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    {ctaBand && <CTABand seed={ctaSeed} />}
+    <Footer />
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

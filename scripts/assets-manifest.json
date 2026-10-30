@@ -1,0 +1,92 @@
+[
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011314_0b781e04-9b2a-42b3-8c20-61714c6c0e8f.png",
+    "raw": "../images/raw/01-hero-bay.png",
+    "local": "src/assets/images/hero-shop-bay-blauvelt.jpg",
+    "width": 2200,
+    "height": 1228,
+    "bytes": 342299,
+    "sha256": "6e5649c4f874c40d0d92a527b623a2111fe81f14f7eeabd826b906a56e4a55fc",
+    "blurredRegions": 1
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011313_3f466010-c434-44bb-a3f0-78a99b5180ec.png",
+    "raw": "../images/raw/02-diagnostics.png",
+    "local": "src/assets/images/obd2-diagnostic-scan-tool.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 113516,
+    "sha256": "26604ad3380057ef1861cbdc53722eba876bba9c8209e74cba8313fd0b191461",
+    "blurredRegions": 1
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011313_fe214c69-4250-45ca-851a-221ab1a899e6.png",
+    "raw": "../images/raw/03-brakes.png",
+    "local": "src/assets/images/brake-rotor-caliper-replacement.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 129001,
+    "sha256": "08272148ed25d32c535d01f08652176fa4183228151ebe2f6cf2ede696b3c243",
+    "blurredRegions": 0
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011315_c2496cf6-1b4d-4f6a-80f3-62d703a5d97d.png",
+    "raw": "../images/raw/04-inspection.png",
+    "local": "src/assets/images/nys-inspection-underbody-check.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 159215,
+    "sha256": "5e7d35905344bdc888f2026ea1f5bde4e5e7fa797df6a220f04df29da10a7183",
+    "blurredRegions": 0
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011314_80171e94-f9d4-4b9b-a92f-93b46749bd5c.png",
+    "raw": "../images/raw/05-ac.png",
+    "local": "src/assets/images/ac-manifold-gauge-service.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 175300,
+    "sha256": "ee53d9ed3354ad2d0c4644060d1c3cd29df5728062cd16c50a3ca0dfec32e4f8",
+    "blurredRegions": 1
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011312_fed50883-9168-4b5d-8038-3e1b50cdbbf9.png",
+    "raw": "../images/raw/06-belts.png",
+    "local": "src/assets/images/serpentine-belt-replacement.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 174334,
+    "sha256": "35aa365984b07f2cd860554454011982c3f71a9ba318573e0526a11052507c75",
+    "blurredRegions": 0
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011314_41806665-a715-4f1e-9583-eb0c721c2737.png",
+    "raw": "../images/raw/07-alignment.png",
+    "local": "src/assets/images/wheel-alignment-rack-strut.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 128303,
+    "sha256": "f6a1604c0b6f0fefc5ee75a2f72a2a554a1a751fbc5270195678e1684bbe947a",
+    "blurredRegions": 4
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011314_14bbaa9f-f242-4b20-a050-be4dcb318711.png",
+    "raw": "../images/raw/09-about-hands.png",
+    "local": "src/assets/images/mechanic-hands-wrench-workbench.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 151281,
+    "sha256": "27004f50f259d0462e25c09950759766cfd699e03eae2932cc291edf118e8bc5",
+    "blurredRegions": 1
+  },
+  {
+    "source": "https://d8j0ntlcm91z4.cloudfront.net/user_3BHmq0ZKzQMJfTK0sC2vyraXiln/hf_20261030_011315_b961ca82-c780-40f8-9373-d0e4c8e171a4.png",
+    "raw": "../images/raw/10-transmission.png",
+    "local": "src/assets/images/transmission-service-fluid-drain.jpg",
+    "width": 928,
+    "height": 1152,
+    "bytes": 158489,
+    "sha256": "dfbdfab866527d9e22dede7562a2567fc516d4d975bce2f891e8b72ecbd54ac7",
+    "blurredRegions": 1
+  }
+]

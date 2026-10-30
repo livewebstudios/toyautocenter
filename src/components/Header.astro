@@ -1,0 +1,241 @@
+---
+// Utility bar (desktop), sticky nav with the SERVICES mega panel, scroll-progress key,
+// mobile menu island and the bottom CALL / BOOK bar on phones.
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-full.svg';
+import logoInverse from '../assets/brand/logo-full-inverse.svg';
+import KeyMark from './KeyMark.astro';
+import ServiceIcon from './ServiceIcon.astro';
+import Button from './Button.astro';
+import MobileNav from '../islands/MobileNav';
+import { site } from '../data/site';
+import { primaryNav } from '../data/nav';
+import { services, groups, pad } from '../data/services';
+import { rel, base } from '../lib/paths';
+
+interface Props { theme?: 'light' | 'dark' }
+const { theme = 'light' } = Astro.props;
+const here = Astro.url.pathname;
+const isActive = (p: string) => (p === '/' ? here === '/' : here.startsWith(p));
+const servicesActive = here.startsWith('/services/') && !here.startsWith('/services/nys-inspection/');
+
+const mobileGroups = groups.map((g) => ({
+  group: g,
+  items: services.filter((s) => s.group === g).map((s) => ({ n: pad(s.n), name: s.name, href: rel(Astro.url, `/services/${s.slug}/`), symptom: s.symptom })),
+}));
+const mobileLinks = [{ label: 'ALL SERVICES', href: rel(Astro.url, '/services/') }, ...primaryNav.map((l) => ({ label: l.label, href: rel(Astro.url, l.path) }))];
+---
+<a class="skip-link" href="#main">SKIP TO CONTENT</a>
+
+<div class="utility-bar" role="region" aria-label="Shop location and phone">
+  <div class="container utility-bar__row mono">
+    <a href={site.links.directions} rel="noopener">{site.address.streetDisplay}, {site.address.city} {site.address.region}</a>
+    <span>{site.hours.short}</span>
+    <a href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+    <a href={site.text.sms}>TEXT {site.text.display}</a>
+  </div>
+</div>
+
+<header class:list={['site-header', theme === 'dark' && 'site-header--over-dark']} data-header data-theme={theme}>
+  <div class="container site-header__row">
+    <a class="brand" href={base(Astro.url)} aria-label="Toy Auto Center home">
+      <Image src={logo} alt="Toy Auto Center" class="brand__logo brand__logo--light" width={232} height={39} loading="eager" />
+      {theme === 'dark' && <Image src={logoInverse} alt="" class="brand__logo brand__logo--dark" width={232} height={39} loading="eager" aria-hidden="true" />}
+    </a>
+    <span class="progress-key" data-progress-key aria-hidden="true"><KeyMark size={28} /></span>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul class="primary-nav__list">
+        <li class="has-mega" data-mega>
+          <a href={rel(Astro.url, '/services/')} class:list={['nav-link', servicesActive && 'is-active']} aria-current={here === '/services/' ? 'page' : undefined}>SERVICES</a>
+          <button class="mega-toggle" type="button" aria-expanded="false" aria-controls="mega-services" data-mega-toggle>
+            <span class="visually-hidden">Show services menu</span>
+            <svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+          </button>
+          <div class="mega" id="mega-services" data-mega-panel hidden>
+            <div class="container mega__grid">
+              {groups.map((g) => (
+                <div class="mega__group">
+                  <p class="eyebrow">{g.toUpperCase()}</p>
+                  <ul>
+                    {services.filter((s) => s.group === g).map((s) => (
+                      <li>
+                        <a class="mega__link" href={rel(Astro.url, `/services/${s.slug}/`)}>
+                          <ServiceIcon name={s.icon} size={34} />
+                          <span>
+                            <span class="mega__name"><span class="mono mega__n">{pad(s.n)}</span>{s.name.toUpperCase()}</span>
+                            <span class="mega__sym">{s.symptom}</span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <div class="mega__card on-dark">
+                <p class="mega__card-title">Not sure what's wrong? Describe the symptom.</p>
+                <p class="mega__card-text">Tell us what it sounds like, feels like or smells like. We diagnose first and quote second.</p>
+                <Button href="/contact/" size="sm">BOOK AN APPOINTMENT</Button>
+                <a class="mega__all link-arrow" href={rel(Astro.url, '/services/')}>SEE ALL SERVICES</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        {primaryNav.map((l) => (
+          <li><a class:list={['nav-link', isActive(l.path) && 'is-active']} href={rel(Astro.url, l.path)} aria-current={here === l.path ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <Button href="/contact/" class="header-cta" size="sm">BOOK AN APPOINTMENT</Button>
+
+    <MobileNav client:media="(max-width: 1023px)" groups={mobileGroups} links={mobileLinks} phone={site.phone} text={site.text} book={rel(Astro.url, '/contact/')} />
+  </div>
+  <noscript>
+    <nav class="container noscript-nav" aria-label="Menu">
+      {mobileLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+  </noscript>
+</header>
+
+<div class="mobile-bar" data-mobile-bar>
+  <a class="mobile-bar__btn" href={`tel:${site.phone.tel}`}>CALL</a>
+  <a class="mobile-bar__btn mobile-bar__btn--primary" href={rel(Astro.url, '/contact/')}>BOOK</a>
+</div>
+
+<script>
+  // Mega panel: hover intent (120ms) on fine pointers, click/tap toggles, Esc closes.
+  const li = document.querySelector<HTMLElement>('[data-mega]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-mega-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-mega-panel]');
+  if (li && btn && panel) {
+    let timer = 0;
+    const set = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      li.classList.toggle('is-open', open);
+    };
+    const fine = matchMedia('(hover: hover) and (pointer: fine)');
+    // Hover intent uses the --dur-1 token (120ms); closing waits a little longer so diagonal moves into the panel don't close it.
+    const intent = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-1')) || 120;
+    li.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse' || !fine.matches) return;
+      clearTimeout(timer);
+      timer = window.setTimeout(() => set(true), intent);
+    });
+    li.addEventListener('pointerleave', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      clearTimeout(timer);
+      timer = window.setTimeout(() => set(false), intent * 1.33);
+    });
+    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+    // First tap on SERVICES with touch opens the panel instead of navigating.
+    li.querySelector('a.nav-link')?.addEventListener('click', (e) => {
+      const pe = e as PointerEvent;
+      if (pe.pointerType === 'touch' && panel.hidden) { e.preventDefault(); set(true); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) { set(false); btn.focus(); }
+    });
+    li.addEventListener('focusout', (e) => {
+      if (!li.contains(e.relatedTarget as Node)) set(false);
+    });
+    document.addEventListener('click', (e) => { if (!li.contains(e.target as Node)) set(false); });
+  }
+</script>
+
+<style>
+  .skip-link {
+    position: fixed; left: var(--s-4); top: -100px; z-index: var(--z-skip);
+    background: var(--tac-grape); color: var(--tac-white); padding: var(--s-3) var(--s-4); border-radius: var(--r-2);
+    font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; text-decoration: none;
+  }
+  .skip-link:focus { top: var(--s-4); color: var(--tac-white); }
+
+  .utility-bar { display: none; background: var(--tac-graphite); color: var(--tac-on-dark-soft); height: var(--utility-h); }
+  .utility-bar__row { display: flex; height: 100%; align-items: center; justify-content: flex-end; gap: var(--s-6); font-size: 0.75rem; letter-spacing: 0.06em; }
+  .utility-bar__row > :first-child { margin-right: auto; }
+  .utility-bar a { color: var(--tac-on-dark); text-decoration: none; display: inline-flex; align-items: center; min-height: 28px; }
+  .utility-bar a:hover { color: var(--tac-amber); }
+  .utility-bar span { color: var(--tac-on-dark-soft); }
+
+  .site-header {
+    position: sticky; top: 0; z-index: var(--z-nav); height: var(--nav-h);
+    background: var(--tac-paper); border-bottom: 1px solid transparent;
+    transition: transform var(--dur-5) var(--ease-out), background-color var(--dur-2), border-color var(--dur-2), box-shadow var(--dur-2);
+  }
+  .site-header.is-scrolled { border-bottom-color: var(--tac-line); box-shadow: 0 1px 0 var(--tac-white-60), 0 6px 18px var(--tac-grape-06); }
+  .site-header.is-hidden { transform: translateY(-100%); }
+  .site-header--over-dark:not(.is-scrolled) { background: transparent; }
+  .site-header__row { height: 100%; display: flex; align-items: center; gap: var(--s-4); }
+
+  .brand { display: block; position: relative; flex: none; line-height: 0; }
+  .brand :global(.brand__logo) { width: clamp(168px, 14vw + 60px, 232px); height: auto; }
+  .brand :global(.brand__logo--dark) { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-2); }
+  .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--dark) { opacity: 1; }
+  .site-header--over-dark:not(.is-scrolled) .brand :global(.brand__logo--light) { opacity: 0; }
+  .brand :global(.brand__logo--light) { transition: opacity var(--dur-2); }
+
+  .progress-key { display: none; color: var(--tac-purple); line-height: 0; }
+  .site-header--over-dark:not(.is-scrolled) .progress-key { color: var(--tac-white); }
+
+  .primary-nav { display: none; margin-left: auto; }
+  .primary-nav__list { list-style: none; padding: 0; display: flex; align-items: center; gap: clamp(0.75rem, 0.2rem + 0.9vw, 1.5rem); }
+  .nav-link {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.875rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--tac-ink); text-decoration: none; padding-block: var(--s-2); position: relative; white-space: nowrap;
+  }
+  .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--tac-violet); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-2) var(--ease-out); }
+  .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
+  .nav-link:hover, .nav-link.is-active { color: var(--tac-purple); }
+  .site-header--over-dark:not(.is-scrolled) .nav-link { color: var(--tac-white); }
+  .site-header--over-dark:not(.is-scrolled) .nav-link::after { background: var(--tac-amber); }
+
+  .has-mega { display: flex; align-items: center; gap: 2px; }
+  .mega-toggle { width: 28px; height: 32px; display: grid; place-items: center; color: var(--tac-ink); border-radius: var(--r-1); }
+  .site-header--over-dark:not(.is-scrolled) .mega-toggle { color: var(--tac-white); }
+  .mega-toggle svg { transition: transform var(--dur-2) var(--ease-out); }
+  .is-open .mega-toggle svg { transform: rotate(180deg); }
+  .mega {
+    position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--tac-white); border-top: 1px solid var(--tac-line); border-bottom: 1px solid var(--tac-line);
+    box-shadow: 0 24px 48px var(--tac-grape-14); padding-block: var(--s-8);
+  }
+  .mega__grid { display: grid; grid-template-columns: repeat(4, 1fr) 1.15fr; gap: var(--s-6); }
+  .mega__group ul { list-style: none; padding: 0; margin-top: var(--s-3); }
+  .mega__link { display: grid; grid-template-columns: 34px 1fr; gap: var(--s-3); align-items: start; padding: var(--s-2); margin-inline: calc(var(--s-2) * -1); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); }
+  .mega__link:hover { background: var(--tac-mist); color: var(--tac-ink); }
+  .mega__name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; color: var(--tac-purple); line-height: 1.15; }
+  .mega__n { font-size: 0.6875rem; color: var(--tac-violet-deep); margin-right: 0.5em; }
+  .mega__sym { display: block; font-size: 0.8125rem; color: var(--tac-ink-soft); line-height: 1.35; margin-top: 2px; }
+  .mega__card { background: var(--tac-grape); color: var(--tac-on-dark); border-radius: var(--r-3); padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; }
+  .mega__card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.625rem; line-height: 1.05; color: var(--tac-white); }
+  .mega__card-text { font-size: 0.9375rem; color: var(--tac-on-dark-soft); }
+  .mega__all { color: var(--tac-white); font-size: 0.875rem; }
+
+  .site-header :global(.header-cta) { display: none; }
+
+  .mobile-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-nav); height: var(--mobile-bar-h);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--tac-graphite);
+    padding-bottom: env(safe-area-inset-bottom); transition: transform var(--dur-5) var(--ease-out);
+  }
+  .mobile-bar.is-hidden { transform: translateY(110%); }
+  .mobile-bar__btn { display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 1.125rem; letter-spacing: 0.14em; text-decoration: none; color: var(--tac-white); background: var(--tac-grape); }
+  .mobile-bar__btn--primary { background: var(--tac-purple); }
+  .mobile-bar__btn:hover { color: var(--tac-white); filter: brightness(1.12); }
+
+  .noscript-nav { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); padding-block: var(--s-3); background: var(--tac-paper); font-family: var(--font-display); font-weight: 600; letter-spacing: 0.1em; }
+
+  @media (min-width: 1024px) {
+    .utility-bar { display: block; }
+    .primary-nav { display: block; }
+    .progress-key { display: block; }
+    .site-header :global(.header-cta) { display: inline-flex; }
+    .mobile-bar { display: none; }
+    .noscript-nav { display: none; }
+  }
+  @media (min-width: 1024px) and (max-width: 1240px) {
+    .site-header :global(.header-cta) { display: none; }
+  }
+</style>

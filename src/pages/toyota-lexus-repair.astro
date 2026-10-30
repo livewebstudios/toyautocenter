@@ -1,0 +1,166 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Button from '../components/Button.astro';
+import KeyMark from '../components/KeyMark.astro';
+import ServiceIcon from '../components/ServiceIcon.astro';
+import FAQ from '../components/FAQ.astro';
+import Divider from '../components/Divider.astro';
+import Readout from '../components/Readout.astro';
+import Harness from '../islands/HarnessBackground';
+import copy from '../data/pages/toyota-lexus';
+import { services, pad } from '../data/services';
+import { site } from '../data/site';
+import { inline, splitLong } from '../lib/inline';
+import { rel } from '../lib/paths';
+import { serviceNode, faqNode } from '../lib/schema';
+
+const path = '/toyota-lexus-repair/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Toyota & Lexus', path }];
+const md = (s: string) => inline(s, Astro.url);
+const schema = [
+  ...['Toyota', 'Lexus', 'Scion'].map((make) => ({
+    ...serviceNode({ path, name: `${make} repair and maintenance`, serviceType: `${make} repair`, description: copy.description }),
+    '@id': `https://toyautocenter.net${path}#service-${make.toLowerCase()}`,
+    brand: { '@type': 'Brand', name: make },
+  })),
+  faqNode(path, copy.faqs),
+];
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} speakable ctaSeed={4321}>
+  <section class="tl-hero" aria-labelledby="tl-title">
+    <Harness client:idle variant="light" density="med" seed={86} />
+    <div class="tl-hero__key" data-float aria-hidden="true"><KeyMark variant="outline" size={420} /></div>
+    <div class="container tl-hero__grid">
+      <div class="tl-hero__text">
+        <Breadcrumbs items={crumbs} />
+        <p class="eyebrow eyebrow--mono">TOYOTA · LEXUS · SCION · HYBRIDS</p>
+        <h1 id="tl-title">{copy.h1}</h1>
+        <div class="flow">{copy.intro.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} data-speakable={i === 0 ? '' : undefined} set:html={md(p)} />)}</div>
+        <div class="btn-row">
+          <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+          <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+        </div>
+      </div>
+      <div class="tl-hero__badge" aria-hidden="true"><KeyMark variant="solid" size={260} /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-h">
+    <div class="container why">
+      <div><p class="eyebrow">WHY INDEPENDENT</p><h2 id="why-h">{copy.why.heading}</h2></div>
+      <div class="why__list">{copy.why.body.flatMap(splitLong).map((p) => <p data-reveal set:html={md(p)} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="models-h">
+    <div class="container">
+      <p class="eyebrow">MODELS</p>
+      <h2 id="models-h" class="models__h">{copy.models.heading}</h2>
+      <div class="models">
+        <div>
+          <h3>{copy.models.toyotaHeading}</h3>
+          <dl class="model-list">{copy.models.toyota.map((m) => <div data-reveal><dt>{m.name}</dt><dd set:html={md(m.note)} /></div>)}</dl>
+        </div>
+        <div>
+          <h3>{copy.models.lexusHeading}</h3>
+          <dl class="model-list">{copy.models.lexus.map((m) => <div data-reveal><dt>{m.name}</dt><dd set:html={md(m.note)} /></div>)}</dl>
+          <h3 class="models__scion">{copy.models.scionHeading}</h3>
+          <p set:html={md(copy.models.scion)} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark hybrid" aria-labelledby="hy-h">
+    <Harness client:visible variant="dark" density="med" seed={2009} />
+    <div class="container hybrid__inner">
+      <div class="flow hybrid__text">
+        <p class="eyebrow">HYBRID SERVICE</p>
+        <h2 id="hy-h">{copy.hybrid.heading}</h2>
+        {copy.hybrid.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+      </div>
+      <ol class="readout-list hybrid__items">
+        {copy.hybrid.items.map((it) => <li><span><strong>{it.name}.</strong> <span set:html={md(it.note)} /></span></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="int-h">
+    <div class="container--narrow">
+      <p class="eyebrow">MAINTENANCE</p>
+      <h2 id="int-h">{copy.intervals.heading}</h2>
+      <div class="table-wrap int-table" tabindex="0" role="region" aria-label={`${copy.intervals.caption}, scrolls sideways`}>
+        <table class="data-table">
+          <caption>{copy.intervals.caption}</caption>
+          <thead><tr>{copy.intervals.columns.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+          <tbody>{copy.intervals.rows.map((r) => <tr><th scope="row">{r[0]}</th><td>{r[1]}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <p class="int-note">{copy.intervals.note}</p>
+    </div>
+  </section>
+
+  <Divider />
+
+  <section class="section" aria-labelledby="svc-h">
+    <div class="container">
+      <p class="eyebrow">ALL 13 SERVICES</p>
+      <h2 id="svc-h">{copy.serviceLinks.heading}</h2>
+      <p class="svc-intro">{copy.serviceLinks.intro}</p>
+      <ul class="svc-grid" data-live-icons>
+        {services.map((s) => (
+          <li><a href={rel(Astro.url, `/services/${s.slug}/`)}><ServiceIcon name={s.icon} size={40} /><span><span class="mono">{pad(s.n)}</span> {s.name}</span></a></li>
+        ))}
+      </ul>
+      <Readout items={['Camry', 'Corolla', 'RAV4', 'Highlander', 'Tacoma', 'Tundra', 'Sienna', 'Prius', 'ES', 'RX', 'NX', 'IS', 'GX', 'Scion']} label="Models we service" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="tlfaq-h">
+    <div class="container--narrow">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="tlfaq-h">Toyota and Lexus owners ask</h2>
+      <FAQ items={copy.faqs} />
+      <p class="tl-more">Thinking about the dealer instead? Read our honest take on <a href={rel(Astro.url, '/dealer-alternative/')}>when the dealer makes more sense</a>.</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .tl-hero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .tl-hero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; }
+  .tl-hero__text { display: grid; gap: var(--s-5); justify-items: start; }
+  .tl-hero h1 { max-width: 14ch; }
+  .tl-hero__badge { justify-self: center; filter: drop-shadow(0 30px 40px var(--tac-grape-25)); }
+  .tl-hero__badge :global(svg) { width: clamp(160px, 22vw, 280px); height: auto; }
+  .tl-hero__key { position: absolute; right: -120px; top: -60px; color: var(--tac-violet); opacity: 0.18; z-index: 0; }
+  @media (min-width: 900px) { .tl-hero__grid { grid-template-columns: 1.4fr 0.6fr; } }
+  .why { display: grid; gap: var(--s-8); }
+  .why h2 { max-width: 16ch; margin-top: var(--s-2); }
+  .why__list { display: grid; gap: var(--s-6); }
+  .why__list p { padding-left: var(--s-5); border-left: 2px solid var(--tac-violet); }
+  @media (min-width: 900px) { .why { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-16); } }
+  .models__h { margin: var(--s-2) 0 var(--s-10); }
+  .models { display: grid; gap: var(--s-10); }
+  @media (min-width: 900px) { .models { grid-template-columns: 1fr 1fr; gap: var(--s-16); } }
+  .models h3 { font-size: 2rem; border-bottom: 2px solid var(--tac-purple); padding-bottom: var(--s-2); margin-bottom: var(--s-2); }
+  .models__scion { margin-top: var(--s-10); }
+  .model-list div { display: grid; grid-template-columns: 7rem 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--tac-line); }
+  .model-list dt { font-family: var(--font-mono); font-weight: 600; font-size: 0.875rem; color: var(--tac-purple); text-transform: uppercase; letter-spacing: 0.06em; }
+  .model-list dd { margin: 0; font-size: 0.9375rem; }
+  .hybrid { overflow: hidden; isolation: isolate; }
+  .hybrid__inner { position: relative; z-index: 1; display: grid; gap: var(--s-10); }
+  @media (min-width: 900px) { .hybrid__inner { grid-template-columns: 1fr 1fr; gap: var(--s-16); } }
+  .hybrid__items li { font-family: var(--font-body); font-size: 0.9375rem; }
+  .hybrid__items strong { color: var(--tac-white); }
+  .int-table { margin-top: var(--s-6); }
+  .int-note { margin-top: var(--s-4); font-size: 0.9375rem; color: var(--tac-ink-soft); }
+  .svc-intro { margin: var(--s-4) 0 var(--s-8); }
+  .svc-grid { list-style: none; padding: 0; display: grid; gap: var(--s-2) var(--s-6); grid-template-columns: 1fr; margin-bottom: var(--s-10); }
+  @media (min-width: 640px) { .svc-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .svc-grid { grid-template-columns: repeat(3, 1fr); } }
+  .svc-grid a { display: flex; gap: var(--s-3); align-items: center; padding: var(--s-3) 0; border-bottom: 1px solid var(--tac-line); text-decoration: none; color: var(--tac-ink); font-weight: 600; }
+  .svc-grid a:hover { color: var(--tac-purple); }
+  .svc-grid .mono { font-size: 0.75rem; color: var(--tac-violet-deep); }
+  .tl-more { margin-top: var(--s-8); }
+</style>

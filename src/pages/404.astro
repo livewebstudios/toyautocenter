@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import KeyMark from '../components/KeyMark.astro';
+import Harness from '../islands/HarnessBackground';
+import { notFound as copy } from '../data/pages/misc';
+import { site } from '../data/site';
+import { rel } from '../lib/paths';
+---
+<Base title={copy.title} description={copy.description} noindex rootBase ctaBand={false}>
+  <section class="nf" aria-labelledby="nf-title">
+    <Harness client:idle variant="light" density="med" seed={404} />
+    <div class="nf__key" data-float aria-hidden="true"><KeyMark variant="outline" size={380} /></div>
+    <div class="container nf__inner">
+      <p class="eyebrow eyebrow--mono">ERROR 404 · NO ROUTE FOUND</p>
+      <h1 id="nf-title">{copy.h1}</h1>
+      <p class="lead">{copy.line}</p>
+      <ul class="nf__links">
+        <li><a class="btn btn--primary" href={rel(Astro.url, '/')}>HOME</a></li>
+        <li><a class="btn btn--ghost" href={rel(Astro.url, '/services/')}>SERVICES</a></li>
+        <li><a class="btn btn--ghost" href={rel(Astro.url, '/contact/')}>CONTACT</a></li>
+      </ul>
+      <p class="mono nf__phone"><a href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a></p>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { position: relative; overflow: hidden; isolation: isolate; min-height: 70vh; display: grid; align-items: center; padding-block: var(--s-20); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .nf__inner { position: relative; z-index: 1; display: grid; gap: var(--s-6); justify-items: start; }
+  .nf h1 { font-size: var(--fs-h1); }
+  .nf__links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .nf__phone a { font-weight: 600; text-decoration: none; }
+  .nf__key { position: absolute; right: 4%; top: 12%; color: var(--tac-violet); opacity: 0.22; z-index: 0; }
+</style>

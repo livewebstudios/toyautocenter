@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import BlogFilter from '../../islands/BlogFilter';
+import { blog as copy } from '../../data/pages/misc';
+import { postCards, categoryLinks } from '../../lib/blogcards';
+import { allPosts } from '../../lib/posts';
+import { rel, abs } from '../../lib/paths';
+import { BUSINESS_ID } from '../../lib/schema';
+
+const path = '/blog/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Blog', path }];
+const blogNode = {
+  '@type': 'Blog',
+  '@id': `${abs(path)}#blog`,
+  name: 'Toy Auto Center blog',
+  url: abs(path),
+  publisher: { '@id': BUSINESS_ID },
+  blogPost: allPosts().map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: abs(`/blog/${p.slug}/`), datePublished: p.date })),
+};
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[blogNode]} ctaSeed={88}>
+  <PageHero crumbs={crumbs} eyebrow="THE SHOP BLOG" title={copy.h1} lead={copy.intro} harness={false} />
+  <section class="section section--tight">
+    <div class="container">
+      <BlogFilter client:visible posts={postCards(Astro.url)} categories={categoryLinks(Astro.url)} allHref={rel(Astro.url, '/blog/')} />
+    </div>
+  </section>
+</Base>

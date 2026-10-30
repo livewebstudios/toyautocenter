@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import DealBadge from '../components/DealBadge.astro';
+import KeyMark from '../components/KeyMark.astro';
+import { deals as copy } from '../data/pages/misc';
+import { site } from '../data/site';
+import { rel } from '../lib/paths';
+import { oilOfferNode, serviceNode, lastDayOfMonth } from '../lib/schema';
+
+const path = '/deals/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Deals', path }];
+const valid = new Date(`${lastDayOfMonth()}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const schema = [
+  oilOfferNode(path),
+  serviceNode({ path, name: site.deal.name, serviceType: 'Oil change', description: copy.description, offer: { '@id': `https://toyautocenter.net${path}#offer` } }),
+];
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={4499}>
+  <PageHero crumbs={crumbs} eyebrow="THIS MONTH'S DEAL" title={copy.h1} lead={copy.intro} seed={4499}>
+    <DealBadge size="lg" />
+    <Fragment slot="actions">
+      <div class="btn-row no-print">
+        <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+        <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+      </div>
+    </Fragment>
+  </PageHero>
+
+  <section class="section" aria-labelledby="inc-h">
+    <div class="container deal-grid">
+      <div>
+        <p class="eyebrow">INCLUDED</p>
+        <h2 id="inc-h">{copy.includesHeading}</h2>
+        <ol class="readout-list inc-list">{site.deal.includes.map((i) => <li>{i}</li>)}</ol>
+        <p class="deal-more">Want the full maintenance picture? See our <a href={rel(Astro.url, '/services/oil-change-maintenance/')}>oil change and scheduled maintenance service</a>.</p>
+      </div>
+      <div>
+        <p class="eyebrow">HOW IT WORKS</p>
+        <h2>{copy.howHeading}</h2>
+        <ol class="steps">{copy.how.map((s) => <li>{s}</li>)}</ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist coupon-section" aria-labelledby="cp-h">
+    <div class="container--narrow">
+      <h2 id="cp-h" class="no-print">{copy.coupon.heading}</h2>
+      <div class="coupon" id="coupon">
+        <div class="coupon__head">
+          <KeyMark variant="solid" size={56} />
+          <div>
+            <p class="coupon__brand">TOY AUTO CENTER</p>
+            <p class="coupon__addr mono">{site.address.streetDisplay}, {site.address.city}, {site.address.region} {site.address.zip} · {site.phone.display}</p>
+          </div>
+        </div>
+        <p class="coupon__price"><span>$</span>{site.deal.price}</p>
+        <p class="coupon__name">Full Service Oil Change</p>
+        <p class="coupon__alt mono">${site.deal.synthetic} full synthetic</p>
+        <ul class="coupon__inc mono">{site.deal.includes.map((i) => <li>{i}</li>)}</ul>
+        <p class="coupon__fine">{copy.coupon.fine}</p>
+        <p class="coupon__valid mono">Valid through {valid}</p>
+      </div>
+      <p class="coupon__actions no-print">
+        <button type="button" class="btn btn--primary" data-print>PRINT THE COUPON</button>
+        <span>{copy.update}</span>
+      </p>
+    </div>
+  </section>
+</Base>
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>
+<style>
+  .deal-grid { display: grid; gap: var(--s-12); }
+  @media (min-width: 900px) { .deal-grid { grid-template-columns: 1fr 1fr; gap: var(--s-16); } }
+  .deal-grid h2 { margin: var(--s-2) 0 var(--s-6); }
+  .deal-more { margin-top: var(--s-6); }
+  .steps { padding-left: 1.4em; display: grid; gap: var(--s-4); }
+  .steps li::marker { font-family: var(--font-mono); color: var(--tac-violet-deep); font-weight: 600; }
+  .coupon-section h2 { margin-bottom: var(--s-6); }
+  .coupon { background: var(--tac-white); border: 2px dashed var(--tac-purple); border-radius: var(--r-3); padding: clamp(1.5rem, 1rem + 3vw, 3rem); display: grid; gap: var(--s-3); text-align: center; justify-items: center; }
+  .coupon__head { display: flex; gap: var(--s-4); align-items: center; text-align: left; }
+  .coupon__brand { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; letter-spacing: 0.08em; color: var(--tac-purple); }
+  .coupon__addr { font-size: 0.75rem; color: var(--tac-ink-soft); }
+  .coupon__price { font-family: var(--font-display); font-weight: 800; font-size: clamp(4.5rem, 3rem + 6vw, 7rem); line-height: 0.9; color: var(--tac-grape); }
+  .coupon__price span { font-size: 0.45em; vertical-align: 0.8em; }
+  .coupon__name { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--tac-purple); }
+  .coupon__alt { font-weight: 600; }
+  .coupon__inc { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-1) var(--s-6); font-size: 0.75rem; text-align: left; margin-top: var(--s-3); }
+  .coupon__fine { font-size: 0.8125rem; color: var(--tac-ink-soft); max-width: 52ch; margin-top: var(--s-3); }
+  .coupon__valid { font-size: 0.75rem; font-weight: 600; color: var(--tac-purple); }
+  .coupon__actions { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; }
+  @media print {
+    :global(body) * { visibility: hidden; }
+    .coupon, .coupon * { visibility: visible; }
+    .coupon { position: absolute; left: 0; top: 0; width: 100%; border-color: var(--tac-black); }
+    .coupon__price, .coupon__name, .coupon__brand { color: var(--tac-black); }
+  }
+</style>

@@ -1,0 +1,208 @@
+@import './tokens.css';
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: calc(var(--nav-h) + var(--s-4)); }
+body {
+  min-height: 100vh;
+  background: var(--tac-paper);
+  color: var(--tac-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+img, picture, svg, video, canvas { display: block; max-width: 100%; }
+img, video { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+p, li, dd, h1, h2, h3, h4 { overflow-wrap: break-word; }
+table { border-collapse: collapse; }
+[hidden] { display: none !important; }
+
+/* ---------- Type ---------- */
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: var(--lh-heading); color: var(--tac-purple); letter-spacing: -0.01em; text-wrap: balance; }
+h1 { font-size: var(--fs-h1-inner); font-weight: 800; text-transform: uppercase; line-height: var(--lh-tight); }
+h2 { font-size: var(--fs-h2); font-weight: 700; }
+h3 { font-size: var(--fs-h3); font-weight: 700; }
+h4 { font-size: 1.25rem; font-weight: 700; }
+p { max-width: var(--measure); text-wrap: pretty; }
+.lead { font-size: var(--fs-lead); line-height: 1.5; }
+strong { font-weight: 650; }
+small, .small { font-size: var(--fs-small); }
+.mono { font-family: var(--font-mono); font-size: var(--fs-mono); letter-spacing: 0.02em; }
+
+a { color: var(--tac-violet-deep); text-decoration-thickness: 1px; text-underline-offset: 0.18em; transition: color var(--dur-2) var(--ease-out); }
+a:hover { color: var(--tac-purple); text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--tac-amber); outline-offset: 3px; border-radius: var(--r-1); box-shadow: 0 0 0 2px var(--tac-purple); }
+/* Amber alone is under 3:1 on paper, so light grounds add a purple inner ring. Dark grounds use amber only. */
+:is(.on-dark, .section--dark, .section--graphite, .site-footer, .mnav, .site-header--over-dark:not(.is-scrolled), .mega__card) :focus-visible { box-shadow: none; }
+::selection { background: var(--tac-violet); color: var(--tac-white); }
+
+/* ---------- Layout ---------- */
+.container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+.container--narrow { width: min(100% - 2 * var(--gutter), var(--container-narrow)); margin-inline: auto; }
+.section { padding-block: var(--section-y); position: relative; }
+.section--tight { padding-block: calc(var(--section-y) * 0.6); }
+.section--mist { background: var(--tac-mist); }
+.section--white { background: var(--tac-white); }
+.section--dark { background: var(--tac-grape); color: var(--tac-on-dark); }
+.section--graphite { background: var(--tac-graphite); color: var(--tac-on-dark); }
+.section--dark :is(h2, h3, h4), .section--graphite :is(h2, h3, h4) { color: var(--tac-white); }
+.section--dark a:not(.btn), .section--graphite a:not(.btn) { color: var(--tac-violet-light); }
+.section--dark a:not(.btn):hover, .section--graphite a:not(.btn):hover { color: var(--tac-white); }
+.below-fold { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+.stack > * + * { margin-top: var(--s-4); }
+.stack-lg > * + * { margin-top: var(--s-8); }
+.flow > * + * { margin-top: 1em; }
+.flow > :is(h2, h3) { margin-top: 1.6em; }
+.flow > :is(h2, h3) + * { margin-top: 0.6em; }
+.flow > .eyebrow + :is(h2, h3) { margin-top: 0.35em; }
+
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Eyebrow ---------- */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-family: var(--font-display); font-weight: 600; font-size: var(--fs-eyebrow);
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--tac-violet-deep);
+}
+.section--dark .eyebrow, .section--graphite .eyebrow, .on-dark .eyebrow { color: var(--tac-violet-light); }
+.eyebrow--mono { font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.08em; font-size: 0.8125rem; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  --btn-bg: var(--tac-purple);
+  --btn-fg: var(--tac-white);
+  --btn-bd: var(--tac-purple);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-3);
+  min-height: 52px; padding: var(--s-3) var(--s-6);
+  background: var(--btn-bg); color: var(--btn-fg); border: 2px solid var(--btn-bd); border-radius: var(--r-2);
+  font-family: var(--font-display); font-weight: 700; font-size: 1.0625rem; letter-spacing: 0.08em; text-transform: uppercase;
+  text-decoration: none; line-height: 1; white-space: nowrap;
+  box-shadow: var(--tac-shadow-1);
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2);
+}
+.btn:hover { color: var(--btn-fg); text-decoration: none; transform: translateY(-2px); box-shadow: var(--tac-shadow-2); }
+.btn:active { transform: translateY(0); }
+.btn--ghost { --btn-bg: transparent; --btn-fg: var(--tac-purple); --btn-bd: var(--tac-purple); box-shadow: none; }
+.btn--ghost:hover { --btn-bg: var(--tac-purple); --btn-fg: var(--tac-white); }
+.on-dark .btn--ghost, .section--dark .btn--ghost, .section--graphite .btn--ghost { --btn-fg: var(--tac-white); --btn-bd: var(--tac-white-70); }
+.on-dark .btn--ghost:hover, .section--dark .btn--ghost:hover, .section--graphite .btn--ghost:hover { --btn-bg: var(--tac-white); --btn-fg: var(--tac-grape); --btn-bd: var(--tac-white); }
+.on-dark .btn--primary, .section--dark .btn--primary, .section--graphite .btn--primary { --btn-bg: var(--tac-white); --btn-fg: var(--tac-grape); --btn-bd: var(--tac-white); }
+.btn--sm { min-height: 40px; padding: var(--s-2) var(--s-4); font-size: 0.9375rem; }
+@media (max-width: 1023px), (pointer: coarse) { .btn--sm { min-height: 44px; } }
+.btn .btn__key { width: 22px; height: 22px; flex: none; transition: transform var(--dur-3) var(--ease-out); transform-origin: 50% 50%; }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .btn__key { transform: rotate(90deg); }
+}
+.btn:focus-visible .btn__key { transform: rotate(90deg); }
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+
+/* ---------- Text link with arrow ---------- */
+.link-arrow {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 1rem;
+  text-decoration: none; color: var(--tac-purple);
+}
+.link-arrow::after { content: ''; width: 18px; height: 2px; background: currentColor; transition: width var(--dur-2) var(--ease-out); }
+.link-arrow:hover::after { width: 30px; }
+.section--dark .link-arrow, .section--graphite .link-arrow { color: var(--tac-white); }
+
+/* ---------- Readout (mono lists) ---------- */
+.readout-list { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--tac-line); counter-reset: ro; }
+.readout-list li {
+  display: grid; grid-template-columns: 3.25ch 1fr; gap: var(--s-3); align-items: baseline;
+  padding: var(--s-3) 0; border-bottom: 1px solid var(--tac-line);
+  font-family: var(--font-mono); font-size: var(--fs-mono); line-height: 1.5;
+}
+.readout-list li { counter-increment: ro; }
+.readout-list li::before { content: counter(ro, decimal-leading-zero); color: var(--tac-violet-deep); font-weight: 600; }
+.section--dark .readout-list, .section--dark .readout-list li { border-color: var(--tac-steel-dark); }
+.section--dark .readout-list li::before { color: var(--tac-amber); }
+
+/* ---------- Key tooth bullet ---------- */
+.tooth-list { list-style: none; padding: 0; }
+.tooth-list li { position: relative; padding-left: 1.6em; }
+.tooth-list li + li { margin-top: var(--s-2); }
+.tooth-list li::before {
+  content: ''; position: absolute; left: 0; top: 0.62em; width: 0.9em; height: 0.42em;
+  background: var(--tac-violet);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 62% 100%, 62% 55%, 38% 55%, 38% 100%, 0 100%);
+}
+
+/* ---------- Tables (mono) ---------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--tac-line); border-radius: var(--r-2); background: var(--tac-white); -webkit-overflow-scrolling: touch; }
+.table-wrap:focus-visible { outline-offset: 2px; }
+.data-table { width: 100%; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.4; }
+.data-table caption { text-align: left; padding: var(--s-4); font-family: var(--font-display); font-weight: 700; font-size: 1.125rem; color: var(--tac-purple); letter-spacing: 0.02em; }
+.data-table th, .data-table td { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--tac-line); text-align: left; vertical-align: top; }
+.data-table thead th { background: var(--tac-grape); color: var(--tac-white); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+.data-table tbody th { font-weight: 600; color: var(--tac-ink); }
+.data-table tbody tr:nth-child(even) { background: var(--tac-paper); }
+.data-table .tick { color: var(--tac-purple); font-weight: 600; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--tac-white); border: 1px solid var(--tac-line); border-radius: var(--r-3);
+  padding: var(--s-6); box-shadow: var(--tac-shadow-1);
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+a.card { display: block; color: inherit; text-decoration: none; }
+a.card:hover { transform: translateY(-2px); box-shadow: var(--tac-shadow-2); color: inherit; }
+.card--mist { background: var(--tac-mist); border-color: transparent; box-shadow: none; }
+
+/* ---------- Prose (blog bodies, long copy) ---------- */
+.prose { font-size: var(--fs-body); }
+.prose > * + * { margin-top: 1.1em; }
+.prose h2 { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem); margin-top: 1.8em; }
+.prose h3 { margin-top: 1.5em; }
+.prose :is(h2, h3) + * { margin-top: 0.6em; }
+.prose ul, .prose ol { padding-left: 1.3em; max-width: var(--measure); }
+.prose li + li { margin-top: 0.4em; }
+.prose li::marker { color: var(--tac-violet); }
+.prose code { font-family: var(--font-mono); font-size: 0.9em; background: var(--tac-mist); padding: 0.1em 0.35em; border-radius: var(--r-1); }
+.prose blockquote { border-left: 3px solid var(--tac-violet); padding-left: var(--s-4); color: var(--tac-ink-soft); }
+.prose img { border-radius: var(--r-3); }
+
+/* ---------- Reveal (motion.ts adds .is-in) ---------- */
+.js-motion [data-reveal] { opacity: 0; transform: translateY(16px); }
+.js-motion [data-reveal].is-in { opacity: 1; transform: none; transition: opacity var(--dur-4) var(--ease-out), transform var(--dur-4) var(--ease-out); transition-delay: var(--reveal-delay, 0ms); }
+
+/* Hero wind-up start pose is set in CSS (before paint) so nothing flashes; 0.01 keeps it an LCP candidate. */
+.js-motion [data-windup] > span { opacity: 0.01; transform: translateY(24px); }
+/* Failsafes: if motion.ts never runs, show everything after a beat. */
+.js-motion:not(.motion-ready) [data-windup] > span,
+.js-motion:not(.motion-ready) [data-reveal] { animation: motion-failsafe var(--dur-failsafe) var(--ease-out) var(--delay-failsafe) forwards; }
+@keyframes motion-failsafe { to { opacity: 1; transform: none; } }
+
+/* ---------- Divider (hairline + key tooth) ---------- */
+.divider { position: relative; height: 14px; margin-block: 0; }
+.divider svg { width: 100%; height: 14px; overflow: visible; }
+
+/* ---------- Status LED ---------- */
+.led { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--tac-amber); box-shadow: 0 0 0 0 var(--tac-amber-60); animation: led-breathe var(--loop-breathe) var(--ease-inout) infinite; }
+@keyframes led-breathe {
+  0%, 100% { opacity: 0.55; box-shadow: 0 0 0 0 var(--tac-amber-00); }
+  50% { opacity: 1; box-shadow: 0 0 10px 2px var(--tac-amber-55); }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .js-motion [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .no-print, header.site-header, .utility-bar, footer.site-footer, .mobile-bar, canvas { display: none !important; }
+  body { background: var(--tac-white); color: var(--tac-black); }
+}

@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FAQ from '../components/FAQ.astro';
+import general from '../data/pages/faq-general';
+import { faqPage as copy } from '../data/pages/misc';
+import { services, pad } from '../data/services';
+import { serviceCopy, allTownFaqs } from '../lib/content';
+import { faqNode } from '../lib/schema';
+import { rel } from '../lib/paths';
+
+const path = '/faq/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'FAQ', path }];
+const groups = services.map((s) => ({
+  s,
+  items: serviceCopy(s.slug).faqs.map((f) => ({ ...f, source: { name: `${s.name}`, path: `/services/${s.slug}/` } })),
+}));
+const townFaqs = allTownFaqs();
+const everything = [...general.general, ...groups.flatMap((g) => g.items), ...townFaqs];
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="FAQPage" schema={[faqNode(path, everything)]} ctaSeed={99}>
+  <PageHero crumbs={crumbs} eyebrow={`${everything.length} ANSWERS`} title={copy.h1} lead={copy.intro} seed={99} density="low" />
+  <div class="container faq-layout">
+    <nav class="faq-toc" aria-label="FAQ topics">
+      <p class="eyebrow">JUMP TO</p>
+      <ul>
+        <li><a href="#shop">{copy.generalHeading}</a></li>
+        {groups.map((g) => <li><a href={`#${g.s.slug}`}><span class="mono">{pad(g.s.n)}</span> {g.s.name}</a></li>)}
+        <li><a href="#towns">Around Rockland County</a></li>
+      </ul>
+    </nav>
+    <div class="faq-groups">
+      <section id="shop" aria-labelledby="shop-h"><h2 id="shop-h">{copy.generalHeading}</h2><FAQ items={general.general} /></section>
+      {groups.map((g) => (
+        <section id={g.s.slug} aria-labelledby={`${g.s.slug}-h`}>
+          <h2 id={`${g.s.slug}-h`}><a href={rel(Astro.url, `/services/${g.s.slug}/`)}>{g.s.name}</a></h2>
+          <FAQ items={g.items} />
+        </section>
+      ))}
+      <section id="towns" aria-labelledby="towns-h"><h2 id="towns-h">Around Rockland County</h2><FAQ items={townFaqs} /></section>
+    </div>
+  </div>
+</Base>
+<style>
+  .faq-layout { display: grid; gap: var(--s-12); padding-block: var(--s-16) var(--section-y); }
+  @media (min-width: 1024px) { .faq-layout { grid-template-columns: 280px 1fr; gap: var(--s-16); } .faq-toc { position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; } }
+  .faq-toc ul { list-style: none; padding: 0; margin-top: var(--s-3); display: grid; gap: var(--s-1); font-size: 0.9375rem; }
+  .faq-toc a { text-decoration: none; color: var(--tac-ink); display: block; padding: var(--s-1) 0; }
+  .faq-toc a:hover { color: var(--tac-purple); text-decoration: underline; }
+  .faq-toc .mono { font-size: 0.6875rem; color: var(--tac-violet-deep); }
+  .faq-groups { display: grid; gap: var(--s-16); min-width: 0; }
+  .faq-groups section { scroll-margin-top: calc(var(--nav-h) + var(--s-4)); }
+  .faq-groups h2 { margin-bottom: var(--s-4); font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); }
+  .faq-groups h2 a { text-decoration: none; color: inherit; }
+  .faq-groups h2 a:hover { text-decoration: underline; }
+</style>

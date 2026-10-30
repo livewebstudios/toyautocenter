@@ -1,0 +1,20 @@
+---
+// Approved CTA labels only (see the handoff kill-list). Primary buttons carry the winding key.
+import KeyMark from './KeyMark.astro';
+import { rel } from '../lib/paths';
+
+interface Props {
+  href: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'sm';
+  key?: boolean;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { href, variant = 'primary', size = 'md', key = variant === 'primary', class: cls, ...rest } = Astro.props;
+const url = rel(Astro.url, href);
+---
+<a href={url} class:list={['btn', `btn--${variant}`, size === 'sm' && 'btn--sm', cls]} {...rest}>
+  {key && <KeyMark class="btn__key" size={22} />}
+  <span><slot /></span>
+</a>

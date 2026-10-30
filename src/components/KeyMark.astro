@@ -1,0 +1,38 @@
+---
+// The Toy Auto Center key mark as inline SVG (from images/logo-key.svg).
+// variant "solid": brand colors. "outline": 1px currentColor strokes for floating keys.
+// "mono": single currentColor fill (tintable), used in buttons and the nav progress key.
+import { KEY_VIEWBOX, KEY_BADGE, KEY_RING, KEY_KEY } from './keyPaths';
+
+interface Props {
+  variant?: 'solid' | 'outline' | 'mono';
+  size?: number;
+  class?: string;
+  label?: string;
+}
+const { variant = 'mono', size = 28, class: cls = '', label } = Astro.props;
+const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true', focusable: 'false' };
+const h = Math.round((size * 454.53) / 424.34);
+---
+<svg class:list={['keymark', `keymark--${variant}`, cls]} viewBox={KEY_VIEWBOX} width={size} height={h} {...a11y}>
+  {variant === 'solid' && (
+    <>
+      <path d={KEY_BADGE} fill="var(--tac-purple)" />
+      <path d={KEY_RING} fill="var(--tac-steel)" fill-rule="evenodd" />
+      <path d={KEY_KEY} fill="var(--tac-key-light)" fill-rule="evenodd" />
+    </>
+  )}
+  {variant === 'outline' && (
+    <>
+      <path d={KEY_RING} fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" fill-rule="evenodd" />
+      <path d={KEY_KEY} fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" fill-rule="evenodd" />
+    </>
+  )}
+  {variant === 'mono' && (
+    <>
+      <path d={KEY_BADGE} fill="currentColor" opacity="0.18" />
+      <path d={KEY_RING} fill="currentColor" fill-rule="evenodd" />
+      <path d={KEY_KEY} fill="currentColor" fill-rule="evenodd" />
+    </>
+  )}
+</svg>

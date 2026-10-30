@@ -1,0 +1,29 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# env
+.env
+.env.production
+
+# logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+desktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# project
+images/raw/
+qa/
+.claude/
+.vscode/

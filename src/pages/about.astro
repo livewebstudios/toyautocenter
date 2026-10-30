@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import KeyMark from '../components/KeyMark.astro';
+import Divider from '../components/Divider.astro';
+import Readout from '../components/Readout.astro';
+import copy from '../data/pages/about';
+import { site } from '../data/site';
+import { inline, splitLong } from '../lib/inline';
+
+const path = '/about/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'About', path }];
+const md = (s: string) => inline(s, Astro.url);
+const [first, ...rest] = copy.sections;
+const photos = [
+  { image: 'serpentine-belt-replacement', alt: 'Gloved hands routing a new serpentine belt on an engine, the cracked old belt laid on the fender cover' },
+  { image: 'brake-rotor-caliper-replacement', alt: 'Fresh brake rotor and caliper on a car lifted in the bay, coil spring and strut above it' },
+];
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="AboutPage" ctaSeed={1976}>
+  <PageHero crumbs={crumbs} eyebrow={`FAMILY OWNED · BLAUVELT, NY · SINCE ${site.founded}`} title={copy.h1} seed={1976}>
+    <PhotoFrame image="mechanic-hands-wrench-workbench" alt="A mechanic's hands wiping down a combination wrench at a worn wooden workbench, a brass wind-up key nearby" eager label={`EST. ${site.founded}`} sizes="(min-width: 1024px) 34vw, 92vw" />
+    <Fragment slot="actions"><Button href="/contact/">BOOK AN APPOINTMENT</Button></Fragment>
+  </PageHero>
+
+  <section class="section" aria-labelledby="ab-0">
+    <div class="container about-lead">
+      <h2 id="ab-0">{first.heading}</h2>
+      <div class="flow">{first.body.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={md(p)} />)}</div>
+    </div>
+  </section>
+
+  <Readout items={['Est. 1976', 'Family owned', 'NYS inspection station', 'Toyota · Lexus · Scion', 'All makes', 'Jasper transmissions']} label="About the shop" />
+
+  {rest.map((s, i) => (
+    <section class:list={['section', i % 2 === 0 && 'section--mist']} aria-labelledby={`ab-${i + 1}`}>
+      <div class:list={['container', 'about-row', i < photos.length && 'about-row--photo', i % 2 === 1 && 'about-row--flip']}>
+        <div class="flow" data-reveal>
+          <h2 id={`ab-${i + 1}`}>{s.heading}</h2>
+          {s.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+        </div>
+        {i < photos.length && (
+          <div class="about-row__media" data-reveal><PhotoFrame image={photos[i].image} alt={photos[i].alt} ratio="4/5" /></div>
+        )}
+      </div>
+    </section>
+  ))}
+
+  <Divider />
+
+  <section class="section" aria-labelledby="pledge-h">
+    <div class="container pledge">
+      <div class="pledge__head">
+        <KeyMark variant="solid" size={72} />
+        <h2 id="pledge-h">{copy.pledgeHeading}</h2>
+      </div>
+      <ol class="pledge__list">{copy.pledge.map((p) => <li data-reveal>{p}</li>)}</ol>
+    </div>
+  </section>
+</Base>
+<style>
+  .about-lead { display: grid; gap: var(--s-8); }
+  @media (min-width: 900px) { .about-lead { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-16); } }
+  .about-lead h2 { max-width: 14ch; }
+  .about-row { display: grid; gap: var(--s-10); align-items: center; }
+  .about-row__media { max-width: 420px; width: 100%; justify-self: center; }
+  @media (min-width: 900px) {
+    .about-row--photo { grid-template-columns: 1.2fr 0.8fr; gap: var(--s-16); }
+    .about-row--flip .about-row__media { order: -1; }
+    .about-row:not(.about-row--photo) { max-width: var(--container-narrow); }
+  }
+  .pledge { display: grid; gap: var(--s-8); }
+  .pledge__head { display: flex; gap: var(--s-5); align-items: center; }
+  .pledge__list { list-style: none; padding: 0; counter-reset: p; display: grid; gap: var(--s-4); }
+  @media (min-width: 900px) { .pledge__list { grid-template-columns: repeat(2, 1fr); gap: var(--s-6); } }
+  .pledge__list li { counter-increment: p; padding: var(--s-6); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); font-size: 1.0625rem; font-weight: 550; display: grid; gap: var(--s-3); }
+  .pledge__list li::before { content: counter(p, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.75rem; color: var(--tac-violet-deep); font-weight: 600; }
+</style>

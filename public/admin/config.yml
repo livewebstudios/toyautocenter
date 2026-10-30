@@ -1,0 +1,52 @@
+# Decap CMS: blog posts only. Jon manages all page edits in code.
+# Decap is pinned to 3.1.2 in admin/index.html (later versions crash on empty image fields).
+# LWS pattern: one file collection writing a single JSON file (src/data/posts.json).
+backend:
+  name: git-gateway
+  branch: main
+
+site_url: https://toyautocenter.net
+display_url: https://toyautocenter.net
+logo_url: https://toyautocenter.net/icon-192.png
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: blog
+    label: Blog
+    files:
+      - label: Blog posts
+        name: posts
+        file: src/data/posts.json
+        format: json
+        fields:
+          - label: Posts
+            name: posts
+            label_singular: Post
+            widget: list
+            summary: "{{fields.date}} · {{fields.title}}"
+            add_to_top: true
+            fields:
+              - { label: Title, name: title, widget: string }
+              - label: URL slug
+                name: slug
+                widget: string
+                hint: "Lowercase words joined by hyphens, e.g. winter-tire-check. The post lives at /blog/slug/. Do not change it after publishing."
+                pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Lowercase letters, numbers and hyphens only"]
+              - { label: Publish date, name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "MMMM D, YYYY", time_format: false, picker_utc: true }
+              - label: Category
+                name: category
+                widget: select
+                options: ["Maintenance", "Toyota & Lexus", "Inspections", "Diagnostics", "Shop News"]
+              - label: Excerpt
+                name: excerpt
+                widget: text
+                hint: "One or two sentences, 140 to 155 characters. Mention Blauvelt or Rockland County. This is also the Google description."
+              - { label: Featured image, name: image, widget: image, required: false, choose_url: false }
+              - label: Featured image description (alt text)
+                name: imageAlt
+                widget: string
+                required: false
+                hint: "Describe the image in 8 to 16 words for people who cannot see it."
+              - { label: Body, name: body, widget: markdown }

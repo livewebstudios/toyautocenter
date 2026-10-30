@@ -1,0 +1,41 @@
+---
+// Third-party rating strip. Every number links to its source listing. No Google rating unless
+// reviews.json supplies one.
+import { site } from '../data/site';
+const href = { carfax: site.links.carfax, yelp: site.links.yelp, facebook: site.links.facebook } as const;
+---
+<div class="rstrip">
+  <ul class="rstrip__list">
+    {site.ratings.map((r) => (
+      <li>
+        <a href={href[r.key]} rel="noopener" class="rstrip__item">
+          <span class="rstrip__score">{r.rating}</span>
+          <span class="rstrip__meta"><span class="rstrip__src">{r.source}</span><span class="mono">{r.count} reviews</span></span>
+        </a>
+      </li>
+    ))}
+    <li>
+      <a href={site.links.googleReview} rel="noopener" class="rstrip__item rstrip__item--google">
+        <span class="rstrip__score rstrip__score--g">G</span>
+        <span class="rstrip__meta"><span class="rstrip__src">Google</span><span class="mono">Leave a review</span></span>
+      </a>
+    </li>
+  </ul>
+  <p class="rstrip__asof mono">Ratings as of {site.ratingsAsOf}. Out of 5.</p>
+</div>
+<style>
+  .rstrip__list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  @media (min-width: 900px) { .rstrip__list { grid-template-columns: repeat(4, 1fr); } }
+  .rstrip__item {
+    display: flex; align-items: center; gap: var(--s-3); padding: var(--s-4); height: 100%; min-width: 0;
+    background: var(--tac-white); border: 1px solid var(--tac-line); border-radius: var(--r-3); text-decoration: none; color: var(--tac-ink);
+    transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  }
+  .rstrip__item:hover { transform: translateY(-2px); box-shadow: var(--tac-shadow-2); color: var(--tac-ink); }
+  .rstrip__score { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 1.7rem + 1vw, 2.5rem); line-height: 1; color: var(--tac-purple); }
+  .rstrip__score--g { width: 1.1em; text-align: center; color: var(--tac-violet-deep); }
+  .rstrip__meta { display: grid; min-width: 0; }
+  .rstrip__src { font-weight: 650; }
+  .rstrip__meta .mono { font-size: 0.75rem; color: var(--tac-ink-soft); }
+  .rstrip__asof { margin-top: var(--s-3); font-size: 0.75rem; color: var(--tac-ink-soft); }
+</style>

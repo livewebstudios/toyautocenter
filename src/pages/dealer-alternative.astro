@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import FAQ from '../components/FAQ.astro';
+import Divider from '../components/Divider.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import copy from '../data/pages/dealer-alternative';
+import { inline, splitLong } from '../lib/inline';
+import { faqNode } from '../lib/schema';
+
+const path = '/dealer-alternative/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Dealer Alternative', path }];
+const md = (s: string) => inline(s, Astro.url);
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={[faqNode(path, copy.faqs)]} ctaSeed={618}>
+  <PageHero crumbs={crumbs} eyebrow="INDEPENDENT VS. DEALER · ROUTE 303" title={copy.h1} lead={md(copy.intro[0])} seed={618}>
+    <PhotoFrame image="mechanic-hands-wrench-workbench" alt="Weathered hands wiping down a combination wrench at a wooden workbench beside a red tool chest" eager label="SINCE 1976" sizes="(min-width: 1024px) 34vw, 92vw" />
+    <Fragment slot="actions"><Button href="/contact/">BOOK AN APPOINTMENT</Button></Fragment>
+  </PageHero>
+
+  <section class="section" aria-label="Introduction">
+    <div class="container--narrow flow"><p class="lead" set:html={md(copy.intro[1])} /></div>
+  </section>
+
+  <section class="section section--tight" aria-label="Dealer and independent strengths">
+    <div class="container two-col">
+      {[copy.dealerDoesWell, copy.independentDoesBetter].map((b, i) => (
+        <div class:list={['col-card', i === 1 && 'col-card--us']} data-reveal>
+          <p class="eyebrow">{i === 0 ? 'GO TO THE DEALER FOR' : 'COME TO US FOR'}</p>
+          <h2>{b.heading}</h2>
+          {b.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <Divider />
+
+  <section class="section" aria-labelledby="cmp-h">
+    <div class="container">
+      <h2 id="cmp-h" class="cmp-h">{copy.comparison.heading}</h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-label={`${copy.comparison.caption}, scrolls sideways`}>
+        <table class="data-table cmp">
+          <caption class="visually-hidden">{copy.comparison.caption}</caption>
+          <thead><tr>{copy.comparison.columns.map((h, i) => <th scope="col">{i === 0 ? <span class="visually-hidden">Topic</span> : h}</th>)}</tr></thead>
+          <tbody>{copy.comparison.rows.map((r) => <tr><th scope="row">{r[0]}</th><td>{r[1]}</td><td class="cmp__us">{r[2]}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <p class="pricing-note" set:html={md(copy.pricingNote)} />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="close-h">
+    <div class="container--narrow flow">
+      <h2 id="close-h">{copy.closing.heading}</h2>
+      {copy.closing.body.flatMap(splitLong).map((p) => <p set:html={md(p)} />)}
+      <h2 class="faq-h">Fair questions</h2>
+      <FAQ items={copy.faqs} />
+    </div>
+  </section>
+</Base>
+<style>
+  .two-col { display: grid; gap: var(--s-6); }
+  @media (min-width: 900px) { .two-col { grid-template-columns: 1fr 1fr; } }
+  .col-card { display: grid; gap: var(--s-4); align-content: start; padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); border: 1px solid var(--tac-line); border-radius: var(--r-3); background: var(--tac-white); }
+  .col-card--us { border: 2px solid var(--tac-purple); }
+  .col-card h2 { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); }
+  .cmp-h { margin-bottom: var(--s-8); max-width: 20ch; }
+  .cmp { min-width: 720px; }
+  .cmp td, .cmp th { font-size: 0.8125rem; }
+  .cmp__us { background: var(--tac-violet-07); color: var(--tac-ink); font-weight: 600; }
+  .pricing-note { margin-top: var(--s-6); }
+  .faq-h { margin-top: var(--s-12) !important; }
+</style>

@@ -1,0 +1,77 @@
+---
+// Abstract service-area map, drawn by hand: the Hudson, Route 303 (purple), 9W, Palisades Pkwy,
+// the Thruway, and the key marker at the shop. Not to scale. Towns link to their pages.
+import { towns } from '../data/towns';
+import { rel } from '../lib/paths';
+import { KEY_VIEWBOX, KEY_BADGE, KEY_RING, KEY_KEY } from './keyPaths';
+interface Props { compact?: boolean; title?: string; links?: boolean }
+const { compact = false, title = 'Map of Toy Auto Center on Route 303 in Blauvelt and the towns it serves', links = true } = Astro.props;
+const Tag = links ? 'a' : 'g';
+const shop = { x: 210, y: 286 };
+---
+<figure class:list={['amap', compact && 'amap--compact']}>
+  <svg viewBox="0 0 400 520" role="group" aria-labelledby="amap-title">
+    <title id="amap-title">{title}</title>
+    <rect width="400" height="520" class="amap__bg" />
+    <path class="amap__grid" d="M0 104H400M0 208H400M0 312H400M0 416H400M80 0V520M160 0V520M240 0V520M320 0V520" />
+    <path class="amap__river" d="M346 0C340 60 352 110 338 170C326 222 352 268 344 330C336 392 360 450 352 520L400 520L400 0Z" />
+    <text class="amap__water" x="372" y="250" transform="rotate(90 372 250)">HUDSON RIVER</text>
+    <path class="amap__state" d="M0 470L400 470" />
+    <text class="amap__statelabel" x="8" y="464">NEW YORK</text>
+    <text class="amap__statelabel" x="8" y="486">NEW JERSEY</text>
+    <path class="amap__road amap__road--thruway" d="M0 236C80 230 160 222 230 220C280 218 320 214 346 206" />
+    <text class="amap__roadlabel" x="14" y="228">I-87 / 287 THRUWAY</text>
+    <path class="amap__road amap__road--pip" d="M150 520C146 440 140 380 148 300C156 220 140 120 120 0" />
+    <text class="amap__roadlabel" x="96" y="140" transform="rotate(-80 96 140)">PALISADES PKWY</text>
+    <path class="amap__road amap__road--9w" d="M326 520C322 440 330 380 318 300C306 220 300 120 290 0" />
+    <text class="amap__roadlabel" x="300" y="70">9W</text>
+    <path class="amap__road amap__road--59" d="M40 214C110 212 170 206 230 208C270 210 300 202 330 196" />
+    <path class="amap__road amap__road--303" d="M224 520C222 470 218 420 214 360C210 300 206 250 204 200C202 150 216 110 238 40" />
+    <text class="amap__303" x="226" y="152">303</text>
+    {towns.map((t) => (
+      <Tag href={links ? rel(Astro.url, `/service-area/${t.slug}/`) : undefined} class="amap__town">
+        <rect class="amap__hit" x={t.map.anchor === 'end' ? t.map.x - 12 - t.name.length * 6.4 : t.map.x - 8} y={t.map.y - 19} width={t.name.length * 6.4 + 20} height="38" rx="4" />
+        <circle cx={t.map.x} cy={t.map.y} r="3.5" />
+        <text x={t.map.anchor === 'end' ? t.map.x - 8 : t.map.x + 8} y={t.map.y + 4} text-anchor={t.map.anchor ?? 'start'}>{t.name}</text>
+      </Tag>
+    ))}
+    <g class="amap__shop" transform={`translate(${shop.x - 21} ${shop.y - 46})`}>
+      <svg viewBox={KEY_VIEWBOX} width="42" height="45">
+        <path d={KEY_BADGE} fill="var(--tac-purple)" />
+        <path d={KEY_RING} fill="var(--tac-steel)" fill-rule="evenodd" />
+        <path d={KEY_KEY} fill="var(--tac-key-light)" fill-rule="evenodd" />
+      </svg>
+    </g>
+    <circle cx={shop.x} cy={shop.y} r="5" class="amap__pin" />
+    <text class="amap__shoplabel" x={shop.x + 14} y={shop.y + 22}>TOY AUTO CENTER</text>
+    <text class="amap__shopsub" x={shop.x + 14} y={shop.y + 36}>628 RT 303, BLAUVELT</text>
+  </svg>
+  <figcaption class="visually-hidden">Toy Auto Center sits on Route 303 in Blauvelt, between Orangeburg and Tappan to the south and West Nyack to the north. Diagram, not to scale.</figcaption>
+</figure>
+<style>
+  .amap { background: var(--tac-mist); border-radius: var(--r-3); overflow: hidden; border: 1px solid var(--tac-line); }
+  .amap svg { width: 100%; height: auto; }
+  .amap__bg { fill: var(--tac-mist); }
+  .amap__grid { stroke: var(--tac-line); stroke-width: 0.5; fill: none; }
+  .amap__river { fill: var(--tac-map-water); }
+  .amap__water { font: 600 9px var(--font-mono); letter-spacing: 0.3em; fill: var(--tac-ink-soft); }
+  .amap__state { stroke: var(--tac-ink-soft); stroke-dasharray: 2 4; stroke-width: 1; }
+  .amap__statelabel { font: 600 8px var(--font-mono); letter-spacing: 0.18em; fill: var(--tac-ink-soft); }
+  .amap__road { fill: none; stroke: var(--tac-map-road); stroke-width: 3; stroke-linecap: round; }
+  .amap__road--thruway { stroke: var(--tac-map-road-major); stroke-width: 4; }
+  .amap__road--59 { stroke-width: 2; stroke: var(--tac-map-road-minor); }
+  .amap__road--303 { stroke: var(--tac-purple); stroke-width: 5; }
+  .amap__roadlabel { font: 600 8px var(--font-mono); letter-spacing: 0.1em; fill: var(--tac-ink-soft); }
+  .amap__303 { font: 800 15px var(--font-display); fill: var(--tac-purple); }
+  .amap__hit { fill: transparent; }
+  .amap__town:hover .amap__hit, .amap__town:focus-visible .amap__hit { fill: var(--tac-white-60); }
+  .amap__town circle { fill: var(--tac-white); stroke: var(--tac-violet-deep); stroke-width: 1.5; }
+  .amap__town text { font: 600 11px var(--font-body); fill: var(--tac-ink); paint-order: stroke; stroke: var(--tac-mist); stroke-width: 3px; stroke-linejoin: round; }
+  .amap__roadlabel, .amap__shoplabel, .amap__shopsub, .amap__303 { paint-order: stroke; stroke: var(--tac-mist); stroke-width: 3px; stroke-linejoin: round; }
+  .amap__town:hover text, .amap__town:focus-visible text { fill: var(--tac-purple); text-decoration: underline; }
+  .amap__town:focus-visible { outline: none; }
+  .amap__town:focus-visible circle { stroke: var(--tac-amber); stroke-width: 3; }
+  .amap__pin { fill: var(--tac-amber); stroke: var(--tac-grape); stroke-width: 2; }
+  .amap__shoplabel { font: 800 13px var(--font-display); letter-spacing: 0.06em; fill: var(--tac-grape); }
+  .amap__shopsub { font: 600 8.5px var(--font-mono); letter-spacing: 0.08em; fill: var(--tac-ink-soft); }
+</style>

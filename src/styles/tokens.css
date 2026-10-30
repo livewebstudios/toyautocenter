@@ -1,0 +1,170 @@
+/* Toy Auto Center design tokens. Every color, space, radius and duration lives here. */
+:root {
+  /* Brand */
+  --tac-purple: #4d2d84;
+  --tac-violet: #7e4edc;
+  --tac-grape: #2a1650;
+  --tac-graphite: #141218;
+  --tac-steel: #d2d3d4;
+  --tac-ink: #232028;
+  --tac-paper: #f6f5f9;
+  --tac-mist: #ece8f4;
+  --tac-amber: #f2a93b;
+  --tac-white: #ffffff;
+
+  /* Derived (each pair checked in scripts/contrast-check.mjs) */
+  --tac-ink-soft: #4a4552;      /* secondary text on paper/mist/white */
+  --tac-violet-deep: #6236c0;   /* violet usable for small text on light */
+  --tac-on-dark: #f1edf9;       /* body text on grape/graphite */
+  --tac-on-dark-soft: #c4bad8;  /* secondary text on grape/graphite */
+  --tac-violet-light: #b9a0f0;  /* links and accents on dark */
+  --tac-steel-dark: #3a3542;    /* hairlines on dark */
+  --tac-line: #d8d3e3;          /* hairlines on light */
+
+  /* Supporting colors (all checked in scripts/contrast-check.mjs) */
+  --tac-key-light: #b9a6e0;     /* lighter purple of the key in the logo mark */
+  --tac-field-border: #807990;  /* form field boundary, >= 3:1 on white */
+  --tac-error: #a1221b;
+  --tac-error-border: #b3261e;
+  --tac-error-bg: #fbeceb;
+  --tac-error-line: #e8b4b1;
+  --tac-error-ink: #8d1d17;
+  --tac-success-bg: #e8f3ea;
+  --tac-success-line: #a9cfb2;
+  --tac-success-ink: #1d5a2a;
+  --tac-map-water: #d9d2ea;
+  --tac-map-road: #b7aecb;
+  --tac-map-road-major: #a99fc0;
+  --tac-map-road-minor: #c3bbd5;
+  --tac-black: #000000;         /* print and CSS masks only */
+
+  /* Alpha helpers */
+  --tac-white-08: rgb(255 255 255 / 0.08);
+  --tac-white-12: rgb(255 255 255 / 0.12);
+  --tac-white-15: rgb(255 255 255 / 0.15);
+  --tac-white-18: rgb(255 255 255 / 0.18);
+  --tac-white-22: rgb(255 255 255 / 0.22);
+  --tac-white-60: rgb(255 255 255 / 0.6);
+  --tac-white-70: rgb(255 255 255 / 0.7);
+  --tac-graphite-00: rgb(20 18 24 / 0);
+  --tac-graphite-40: rgb(20 18 24 / 0.4);
+  --tac-graphite-55: rgb(20 18 24 / 0.55);
+  --tac-graphite-65: rgb(20 18 24 / 0.65);
+  --tac-graphite-78: rgb(20 18 24 / 0.78);
+  --tac-graphite-92: rgb(20 18 24 / 0.92);
+  --tac-grape-00: rgb(42 22 80 / 0);
+  --tac-grape-06: rgb(42 22 80 / 0.06);
+  --tac-grape-14: rgb(42 22 80 / 0.14);
+  --tac-grape-22: rgb(42 22 80 / 0.22);
+  --tac-grape-25: rgb(42 22 80 / 0.25);
+  --tac-grape-35: rgb(42 22 80 / 0.35);
+  --tac-grape-70: rgb(42 22 80 / 0.7);
+  --tac-violet-07: rgb(126 78 220 / 0.07);
+  --tac-violet-25: rgb(126 78 220 / 0.25);
+  --tac-amber-00: rgb(242 169 59 / 0);
+  --tac-amber-45: rgb(242 169 59 / 0.45);
+  --tac-amber-55: rgb(242 169 59 / 0.55);
+  --tac-amber-60: rgb(242 169 59 / 0.6);
+  --tac-grape-55: rgb(42 22 80 / 0.55);
+  --tac-grape-80: rgb(42 22 80 / 0.82);
+  --tac-shadow-1: 0 1px 2px rgb(20 18 24 / 0.08), 0 2px 8px rgb(42 22 80 / 0.06);
+  --tac-shadow-2: 0 4px 10px rgb(20 18 24 / 0.10), 0 14px 32px rgb(42 22 80 / 0.12);
+
+  /* Type */
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', 'Roboto Condensed', Impact, sans-serif;
+  --font-body: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --fs-h1: clamp(2.75rem, 1.6rem + 5.4vw, 6rem);
+  --fs-h1-inner: clamp(2.5rem, 1.7rem + 3.6vw, 4.5rem);
+  --fs-h2: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --fs-body: clamp(1.0625rem, 1.03rem + 0.12vw, 1.125rem);
+  --fs-lead: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem);
+  --fs-small: 0.9375rem;
+  --fs-mono: 0.875rem;
+  --fs-eyebrow: 0.875rem;
+
+  --lh-tight: 0.95;
+  --lh-heading: 1.05;
+  --lh-body: 1.6;
+  --measure: 68ch;
+
+  /* Space: 4px scale */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-20: 5rem;
+  --s-24: 6rem;
+  --s-32: 8rem;
+  --section-y: clamp(4rem, 2.5rem + 6vw, 8rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1280px;
+  --container-narrow: 860px;
+
+  /* Radius */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 8px;
+  --r-pill: 999px;
+
+  /* Motion: every duration, delay and easing in CSS and in GSAP (motion.ts reads these) */
+  --dur-1: 120ms;          /* hover intent (mega menu) */
+  --dur-2: 200ms;          /* hover lift, color, shadow */
+  --dur-3: 220ms;          /* key wind on button hover */
+  --dur-4: 600ms;          /* reveals, divider draw, image zoom */
+  --dur-5: 300ms;          /* chrome slides: header hide/show, mobile bar */
+  --dur-6: 900ms;          /* hero video fade in */
+  --dur-click: 180ms;      /* progress key click at page end */
+  --dur-wind: 460ms;       /* each hero H1 group (3 groups ~700ms total) */
+  --dur-badge: 700ms;      /* deal badge rotate in */
+  --dur-key-turn: 1100ms;  /* closing band key winds once */
+  --dur-failsafe: 400ms;   /* shows content if the motion script never runs */
+  --delay-failsafe: 2500ms;
+  --stagger: 60ms;         /* reveal stagger */
+  --stagger-wind: 120ms;   /* hero H1 group stagger */
+  --loop-breathe: 2.4s;    /* status LED */
+  --loop-badge: 6s;        /* deal badge amber edge pulse */
+  --loop-float: 8s;        /* floating keys (each adds up to 3s, out of phase) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-mech: cubic-bezier(0.34, 1.4, 0.64, 1);   /* mechanical overshoot */
+  --ease-click: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-inout: cubic-bezier(0.37, 0, 0.63, 1);
+  --ease-linear: linear;
+
+  /* Icon idle loops (one period per icon, chosen per part) */
+  --loop-rotor: 12s;
+  --loop-tire: 8s;
+  --loop-fan: 3s;
+  --loop-steer: 3.2s;
+  --loop-gear-a: 8s;
+  --loop-gear-b: 5.6s;
+  --loop-piston: 1.6s;
+  --loop-needle: 5s;
+  --loop-belt: 1.2s;
+  --loop-check: 5s;
+  --loop-trace: 4s;
+  --loop-drop: 4s;
+  --loop-charge: 4s;
+  --loop-puff: 3s;
+  --loop-puff-delay: 0.35s;
+
+  /* Layers */
+  --z-bg: 0;
+  --z-content: 1;
+  --z-nav: 50;
+  --z-menu: 80;
+  --z-skip: 100;
+
+  /* Chrome sizes (reserved to prevent layout shift) */
+  --utility-h: 36px;
+  --nav-h: 76px;
+  --mobile-bar-h: 60px;
+}

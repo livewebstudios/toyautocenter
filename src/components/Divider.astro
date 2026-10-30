@@ -1,0 +1,16 @@
+---
+// Hairline that draws left to right on entry (motion.ts), with a key-tooth notch at the 1/3 mark.
+interface Props { tone?: 'light' | 'dark'; class?: string }
+const { tone = 'light', class: cls } = Astro.props;
+---
+<div class:list={['divider container', `divider--${tone}`, cls]} aria-hidden="true" data-divider>
+  <svg viewBox="0 0 1000 14" preserveAspectRatio="none">
+    <path class="divider__line" d="M0 7H322V2.5H344V7H1000" pathLength="1" />
+  </svg>
+</div>
+<style>
+  .divider__line { fill: none; stroke: var(--tac-steel); stroke-width: 1; }
+  .divider--dark .divider__line { stroke: var(--tac-steel-dark); }
+  :global(.js-motion) .divider__line { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  :global(.js-motion) .is-drawn .divider__line { stroke-dashoffset: 0; transition: stroke-dashoffset var(--dur-4) var(--ease-out); }
+</style>

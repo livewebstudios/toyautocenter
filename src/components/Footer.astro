@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+import logoInverse from '../assets/brand/logo-full-inverse.svg';
+import badge from '../assets/brand/verifiedsecured.png';
+import { site } from '../data/site';
+import { services, pad } from '../data/services';
+import { towns } from '../data/towns';
+import { quickLinks } from '../data/nav';
+import { rel, base } from '../lib/paths';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer on-dark">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <a href={base(Astro.url)} class="site-footer__logo">
+        <Image src={logoInverse} alt="Toy Auto Center" width={260} height={43} loading="lazy" />
+      </a>
+      <p class="site-footer__tag">Family owned and operated since {site.founded}. Independent auto repair and NYS Certified Motor Vehicle Inspection Station.</p>
+      <address class="site-footer__nap">
+        <span class="site-footer__k mono">ADDRESS</span>
+        <a href={site.links.googleMaps} rel="noopener">{site.address.streetDisplay}<br />{site.address.city}, {site.address.region} {site.address.zip}</a>
+        <span class="site-footer__note">{site.address.note}</span>
+        <span class="site-footer__k mono">SHOP</span>
+        <a href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
+        <span class="site-footer__k mono">CELL / TEXT</span>
+        <a href={site.text.sms}>{site.text.display}</a>
+        <span class="site-footer__k mono">EMAIL</span>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+      <dl class="site-footer__hours mono">
+        <div><dt>Mon to Fri</dt><dd>8:00 AM to 5:00 PM</dd></div>
+        <div><dt>Sat</dt><dd>By appointment</dd></div>
+        <div><dt>Sun</dt><dd>Closed</dd></div>
+      </dl>
+      <p class="site-footer__social">
+        <a href={site.links.facebook} rel="noopener">Facebook</a>
+        <a href={site.links.googleMaps} rel="noopener">Google Maps</a>
+        <a href={site.links.waze} rel="noopener">Waze</a>
+      </p>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Quick links">
+      <p class="site-footer__h">Quick links</p>
+      <ul>{quickLinks.map((l) => <li><a href={rel(Astro.url, l.path)}>{l.label}</a></li>)}</ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Services">
+      <p class="site-footer__h">Services</p>
+      <ul>{services.map((s) => <li><a href={rel(Astro.url, `/services/${s.slug}/`)}><span class="mono site-footer__n">{pad(s.n)}</span>{s.name}</a></li>)}</ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Service area">
+      <p class="site-footer__h">Service area</p>
+      <ul>
+        <li><a href={rel(Astro.url, '/service-area/')}>All towns we serve</a></li>
+        {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container site-footer__base">
+    <p>© {year} Toy Auto Center. All rights reserved.</p>
+    <a class="site-footer__lws" href="https://livewebstudios.com" rel="noopener">
+      <Image src={badge} alt="Live Web Studios verified and secured" class="site-footer__badge" loading="lazy" />
+      <span>Built by Live Web Studios</span>
+    </a>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--tac-graphite); color: var(--tac-on-dark-soft); padding-top: var(--s-20); padding-bottom: calc(var(--s-8) + var(--mobile-bar-h)); font-size: 0.9375rem; }
+  .site-footer a { color: var(--tac-on-dark); text-decoration: none; }
+  .site-footer a:hover { color: var(--tac-amber); text-decoration: underline; }
+  .site-footer__grid { display: grid; gap: var(--s-12); grid-template-columns: 1fr; }
+  .site-footer__logo { display: inline-block; line-height: 0; }
+  .site-footer__logo :global(img) { width: 260px; height: auto; }
+  .site-footer__tag { margin-top: var(--s-5); max-width: 36ch; }
+  .site-footer__nap { font-style: normal; display: grid; grid-template-columns: auto 1fr; gap: var(--s-2) var(--s-4); margin-top: var(--s-6); align-items: baseline; }
+  .site-footer__k { font-size: 0.6875rem; color: var(--tac-violet-light); letter-spacing: 0.1em; }
+  .site-footer__note { grid-column: 2; font-size: 0.8125rem; margin-top: calc(var(--s-1) * -1); }
+  .site-footer__hours { margin-top: var(--s-6); display: grid; gap: var(--s-1); font-size: 0.8125rem; }
+  .site-footer__hours div { display: flex; gap: var(--s-3); }
+  .site-footer__hours dt { color: var(--tac-violet-light); min-width: 11ch; }
+  .site-footer__hours dd { margin: 0; color: var(--tac-on-dark); }
+  .site-footer__social { display: flex; gap: var(--s-5); margin-top: var(--s-6); font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .site-footer__h { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--tac-white); letter-spacing: 0.02em; margin-bottom: var(--s-4); }
+  .site-footer__col ul { list-style: none; padding: 0; display: grid; gap: var(--s-2); }
+  .site-footer__n { font-size: 0.6875rem; color: var(--tac-violet-light); margin-right: 0.6em; }
+  .site-footer__base { display: flex; flex-wrap: wrap; gap: var(--s-4); justify-content: space-between; align-items: center; margin-top: var(--s-16); padding-top: var(--s-6); border-top: 1px solid var(--tac-steel-dark); font-size: 0.8125rem; }
+  .site-footer__lws { display: inline-flex; align-items: center; gap: var(--s-3); }
+  .site-footer__lws :global(.site-footer__badge) { width: 150px; height: auto; opacity: 1; }
+  @media (min-width: 720px) {
+    .site-footer__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (min-width: 1024px) {
+    .site-footer { padding-bottom: var(--s-8); }
+    .site-footer__grid { grid-template-columns: 1.4fr 0.8fr 1fr 0.9fr; }
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import AreaMap from '../../components/AreaMap.astro';
+import { serviceArea as copy } from '../../data/pages/misc';
+import { towns } from '../../data/towns';
+import { townCopyOf } from '../../lib/content';
+import { rel, abs } from '../../lib/paths';
+import { inline } from '../../lib/inline';
+
+const path = '/service-area/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Service Area', path }];
+const list = {
+  '@type': 'ItemList',
+  '@id': `${abs(path)}#towns`,
+  name: 'Towns served by Toy Auto Center',
+  itemListElement: towns.map((t, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/service-area/${t.slug}/`), name: t.name })),
+};
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[list]} ctaSeed={303}>
+  <PageHero crumbs={crumbs} eyebrow="ROUTE 303 · BLAUVELT · ROCKLAND COUNTY" title={copy.h1} lead={inline(copy.intro[0], Astro.url)} seed={303}>
+    <AreaMap />
+  </PageHero>
+  <section class="section" aria-labelledby="towns-h">
+    <div class="container">
+      <p class="sa-intro">{copy.intro[1]}</p>
+      <h2 id="towns-h" class="sa-h">{copy.listHeading}</h2>
+      <ul class="sa-list">
+        {towns.map((t) => {
+          const c = townCopyOf(t.slug);
+          return (
+            <li data-reveal>
+              <a href={rel(Astro.url, `/service-area/${t.slug}/`)}>
+                <span class="sa-list__name">{t.name}{t.places[0].region === 'NJ' ? ', NJ' : ''}</span>
+                <span class="sa-list__time mono">{c.route.driveTime}</span>
+                <span class="sa-list__route">{c.route.heading}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="sa-note mono">{copy.mapNote}</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .sa-intro { font-size: var(--fs-lead); margin-bottom: var(--s-10); }
+  .sa-h { margin-bottom: var(--s-6); }
+  .sa-list { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--tac-line); }
+  @media (min-width: 900px) { .sa-list { grid-template-columns: 1fr 1fr; column-gap: var(--s-10); } }
+  .sa-list a { display: grid; grid-template-columns: 1fr auto; gap: var(--s-1) var(--s-4); padding: var(--s-5) 0; border-bottom: 1px solid var(--tac-line); text-decoration: none; color: var(--tac-ink); }
+  .sa-list__name { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; color: var(--tac-purple); line-height: 1; }
+  .sa-list__time { font-size: 0.75rem; color: var(--tac-violet-deep); font-weight: 600; align-self: center; text-transform: uppercase; }
+  .sa-list__route { grid-column: 1 / -1; color: var(--tac-ink-soft); font-size: 0.9375rem; }
+  .sa-list a:hover .sa-list__name { text-decoration: underline; }
+  .sa-note { margin-top: var(--s-6); font-size: 0.75rem; color: var(--tac-ink-soft); }
+</style>

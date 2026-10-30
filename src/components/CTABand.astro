@@ -1,0 +1,32 @@
+---
+// Dark closing band with the client's WIND UP line. The key winds once on reveal (motion.ts).
+import Harness from '../islands/HarnessBackground';
+import KeyMark from './KeyMark.astro';
+import Button from './Button.astro';
+import { site } from '../data/site';
+interface Props { seed?: number }
+const { seed = 7 } = Astro.props;
+---
+<section class="cta-band section section--dark" aria-labelledby="cta-band-title">
+  <Harness client:visible variant="dark" density="med" seed={seed} />
+  <div class="cta-band__float" aria-hidden="true" data-float data-parallax="0.6"><KeyMark variant="outline" size={360} /></div>
+  <div class="container cta-band__inner">
+    <div class="cta-band__key" data-wind-key aria-hidden="true"><KeyMark variant="solid" size={84} /></div>
+    <h2 id="cta-band-title" class="cta-band__line">When car trouble arrives, we hope you <span class="cta-band__wind">WIND UP</span> with us.</h2>
+    <p class="cta-band__sub">{site.address.streetDisplay}, {site.address.city}. {site.hours.short}. Call, text, or book online and we'll confirm a time.</p>
+    <div class="btn-row">
+      <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+      <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+      <a class="btn btn--ghost" href={site.text.sms}>TEXT US</a>
+    </div>
+  </div>
+</section>
+<style>
+  .cta-band { overflow: hidden; isolation: isolate; }
+  .cta-band__inner { position: relative; z-index: 1; display: grid; gap: var(--s-6); justify-items: start; }
+  .cta-band__key { line-height: 0; transform-origin: 50% 55%; }
+  .cta-band__line { font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem); font-weight: 800; line-height: 0.95; max-width: 16ch; text-transform: uppercase; color: var(--tac-white); }
+  .cta-band__wind { color: var(--tac-amber); }
+  .cta-band__sub { color: var(--tac-on-dark-soft); font-size: var(--fs-lead); }
+  .cta-band__float { position: absolute; right: -60px; bottom: -80px; color: var(--tac-steel); opacity: 0.35; z-index: 0; pointer-events: none; }
+</style>

@@ -1,0 +1,301 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import KeyMark from '../components/KeyMark.astro';
+import Readout from '../components/Readout.astro';
+import Divider from '../components/Divider.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import FAQ from '../components/FAQ.astro';
+import AreaMap from '../components/AreaMap.astro';
+import RatingStrip from '../components/RatingStrip.astro';
+import DealBadge from '../components/DealBadge.astro';
+import Harness from '../islands/HarnessBackground';
+import PartsTray from '../islands/PartsTray';
+import ReviewsRail from '../islands/ReviewsRail';
+import copy from '../data/pages/home';
+import { homeFaqSources } from '../data/pages/misc';
+import general from '../data/pages/faq-general';
+import { site } from '../data/site';
+import { services, pad } from '../data/services';
+import { towns } from '../data/towns';
+import { serviceCopy } from '../lib/content';
+import { iconSvg } from '../components/icons/icons';
+import { rel } from '../lib/paths';
+import { splitLong } from '../lib/inline';
+import { faqNode } from '../lib/schema';
+import { getReviews } from '../lib/reviews';
+import hero from '../assets/images/hero-shop-bay-blauvelt.jpg';
+
+const heroWidths = [800, 1200, 1600, 2200];
+const heroSizes = '100vw';
+const heroAvif = await getImage({ src: hero, widths: heroWidths, format: 'avif' });
+
+const trayItems = services.map((s) => ({
+  n: pad(s.n),
+  name: s.name,
+  symptom: s.symptom,
+  href: rel(Astro.url, `/services/${s.slug}/`),
+  icon: iconSvg(s.icon, { size: 56 }),
+}));
+
+const faqs = [
+  ...general.general.slice(0, 3),
+  ...homeFaqSources.map(({ slug, index }) => serviceCopy(slug).faqs[index]),
+];
+const { list: reviews } = await getReviews();
+---
+<Base
+  title={copy.title}
+  description={copy.description}
+  headerTheme="dark"
+  speakable
+  preload={{ srcset: heroAvif.srcSet.attribute, sizes: heroSizes, type: 'image/avif' }}
+  schema={[faqNode('/', faqs)]}
+  ctaSeed={1976}
+>
+  <section class="hero on-dark" data-hero aria-labelledby="hero-title">
+    <div class="hero__media" data-parallax="0.5">
+      <Picture
+        src={hero}
+        alt="Service bay at dusk with a sedan raised on a two-post lift and a diagnostic tablet on a cart"
+        widths={heroWidths}
+        sizes={heroSizes}
+        formats={['avif', 'webp']}
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+        class="hero__img"
+      />
+      <video class="hero__video" data-hero-video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+        <source data-src={rel(Astro.url, "/media/hero-bay.webm")} type="video/webm" />
+        <source data-src={rel(Astro.url, "/media/hero-bay.mp4")} type="video/mp4" />
+      </video>
+    </div>
+    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__harness" data-parallax="0.4" aria-hidden="true">
+      <Harness client:idle variant="dark" density="low" seed={303} />
+    </div>
+    <div class="hero__key hero__key--a" data-float data-parallax="0.6" aria-hidden="true"><KeyMark variant="outline" size={400} /></div>
+    <div class="hero__key hero__key--b" data-float data-parallax="0.6" aria-hidden="true"><KeyMark variant="outline" size={250} /></div>
+
+    <div class="container hero__content">
+      <p class="eyebrow eyebrow--mono hero__eyebrow">{copy.eyebrow}</p>
+      <h1 id="hero-title" class="hero__title" data-windup>
+        {copy.h1Groups.map((g) => <span>{g.split(' ').map((w, i) => <>{i > 0 && ' '}{w.includes('-') ? <span class="nowrap">{w}</span> : w}</>)}</span>)}
+      </h1>
+      <p class="hero__sub lead" data-speakable>{copy.sub}</p>
+      <div class="btn-row">
+        <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+        <a class="btn btn--ghost" href={`tel:${site.phone.tel}`}>CALL {site.phone.display}</a>
+      </div>
+    </div>
+    <div class="hero__readout"><Readout items={copy.readout} tone="dark" label="Shop at a glance" /></div>
+  </section>
+
+  <section class="trust" aria-label="Why drivers choose Toy Auto Center">
+    <ul class="container trust__row">
+      {copy.trust.map((t) => <li>{t}</li>)}
+    </ul>
+  </section>
+
+  <section class="section tray-section" aria-labelledby="tray-title">
+    <div class="container">
+      <div class="split-head" data-reveal>
+        <p class="eyebrow">SERVICES 01 TO 13</p>
+        <h2 id="tray-title">{copy.tray.heading}</h2>
+        <p class="split-head__intro">{copy.tray.intro}</p>
+      </div>
+      <div class="tray-wrap" data-reveal>
+        <PartsTray client:visible items={trayItems} />
+      </div>
+      <p class="tray-section__more"><Button href="/services/" variant="ghost">SEE ALL SERVICES</Button></p>
+    </div>
+  </section>
+
+  <Divider />
+
+  <section class="section pitch" aria-labelledby="pitch-title">
+    <div class="container pitch__grid">
+      <div class="pitch__text flow" data-reveal>
+        <p class="eyebrow">THE DEALER ALTERNATIVE</p>
+        <h2 id="pitch-title">{copy.pitch.heading}</h2>
+        {copy.pitch.body.flatMap(splitLong).map((p) => <p>{p}</p>)}
+        <p><a class="link-arrow" href={rel(Astro.url, '/dealer-alternative/')}>{copy.pitch.link}</a></p>
+      </div>
+      <div class="pitch__media" data-reveal>
+        <PhotoFrame image="obd2-diagnostic-scan-tool" alt="Gloved hands reading live data on an OBD-II scan tool plugged in under the dash" label="LIVE DATA" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark language" aria-labelledby="lang-title">
+    <Harness client:visible variant="dark" density="high" seed={2601} />
+    <div class="container language__inner">
+      <div class="language__head" data-reveal>
+        <p class="eyebrow">{copy.language.eyebrow}</p>
+        <h2 id="lang-title">{copy.language.heading}</h2>
+        <p class="lead language__intro">{copy.language.intro}</p>
+      </div>
+      <ol class="language__cols">
+        {copy.language.columns.map((c) => (
+          <li data-reveal>
+            <p class="language__label mono">{c.label}</p>
+            <p>{c.body}</p>
+          </li>
+        ))}
+      </ol>
+      <Readout items={['OBD-II', 'CAN bus', 'Live PID data', 'Freeze frame', 'ABS', 'SRS', 'TPMS', 'EVAP', 'Fuel trims']} tone="dark" label="Systems we read" />
+    </div>
+  </section>
+
+  <section class="section deal-band" aria-labelledby="deal-title">
+    <div class="container deal-band__grid">
+      <DealBadge />
+      <div class="deal-band__text" data-reveal>
+        <p class="eyebrow">THIS MONTH'S DEAL</p>
+        <h2 id="deal-title">{copy.deal.heading}</h2>
+        <p>{copy.deal.body}</p>
+        <ul class="deal-list mono">{site.deal.includes.map((i) => <li>{i}</li>)}</ul>
+        <div class="btn-row">
+          <Button href="/contact/">BOOK AN APPOINTMENT</Button>
+          <a class="link-arrow" href={rel(Astro.url, '/deals/')}>THIS MONTH'S DEAL</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist reviews-band below-fold" aria-labelledby="reviews-title">
+    <div class="container">
+      <div class="split-head" data-reveal>
+        <p class="eyebrow">REVIEWS</p>
+        <h2 id="reviews-title">{copy.reviews.heading}</h2>
+        <p class="split-head__intro">{copy.reviews.body}</p>
+      </div>
+      {reviews.length > 0 && <ReviewsRail client:visible reviews={reviews} />}
+      <RatingStrip />
+      <p class="reviews-band__more"><a class="link-arrow" href={rel(Astro.url, '/reviews/')}>Read the reviews</a></p>
+    </div>
+  </section>
+
+  <section class="section area below-fold" aria-labelledby="area-title">
+    <div class="container area__grid">
+      <div class="area__text" data-reveal>
+        <p class="eyebrow">SERVICE AREA</p>
+        <h2 id="area-title">{copy.area.heading}</h2>
+        <p>{copy.area.body}</p>
+        <ul class="town-cloud">
+          {towns.map((t) => <li><a href={rel(Astro.url, `/service-area/${t.slug}/`)}>{t.name}</a></li>)}
+        </ul>
+      </div>
+      <div class="area__map" data-reveal><AreaMap /></div>
+    </div>
+  </section>
+
+  <Divider />
+
+  <section class="section faq-band below-fold" aria-labelledby="faq-title">
+    <div class="container--narrow">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-title">{copy.faq.heading}</h2>
+      <FAQ items={faqs} />
+      <p class="faq-band__more"><a class="link-arrow" href={rel(Astro.url, '/faq/')}>Every answer in one place</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative; isolation: isolate; overflow: hidden; color: var(--tac-on-dark);
+    margin-top: calc(var(--nav-h) * -1); padding-top: calc(var(--nav-h) + clamp(3rem, 8vh, 6rem));
+    min-height: min(100svh, 980px); display: flex; flex-direction: column; justify-content: flex-end;
+    background: var(--tac-graphite);
+  }
+  .hero__media { position: absolute; inset: 0 0 -12% 0; z-index: -3; }
+  .hero__media :global(picture), .hero__media :global(img), .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero__video { opacity: 0; transition: opacity var(--dur-6) var(--ease-out); }
+  .hero__video:global(.is-playing) { opacity: 1; }
+  .hero__overlay {
+    position: absolute; inset: 0; z-index: -2;
+    background:
+      linear-gradient(90deg, var(--tac-graphite-65) 0%, var(--tac-graphite-40) 42%, var(--tac-graphite-00) 72%),
+      radial-gradient(ellipse 60% 55% at 28% 58%, var(--tac-grape-35), var(--tac-grape-00) 70%),
+      linear-gradient(180deg, var(--tac-graphite-55) 0%, var(--tac-grape-55) 35%, var(--tac-grape-70) 70%, var(--tac-graphite-92) 100%);
+  }
+  .hero__harness { position: absolute; inset: 0; z-index: -1; }
+  .hero__key { position: absolute; color: var(--tac-steel); opacity: 0.35; z-index: -1; pointer-events: none; }
+  .hero__key--a { right: -90px; top: 14%; }
+  .hero__key--b { left: -70px; bottom: 18%; opacity: 0.22; }
+  .hero__content { position: relative; display: grid; gap: var(--s-6); padding-bottom: var(--s-10); }
+  .hero__eyebrow { color: var(--tac-amber); justify-self: start; background: var(--tac-graphite-78); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); }
+  .hero__title { font-size: var(--fs-h1); color: var(--tac-white); max-width: 22ch; line-height: 0.92; }
+  .hero__title > span { display: block; }
+  .hero__title .nowrap { white-space: nowrap; }
+  .hero__sub { color: var(--tac-on-dark); max-width: 56ch; }
+  .hero__readout { position: relative; background: var(--tac-graphite-55); }
+  @media (max-width: 1023px) { .hero { padding-bottom: var(--mobile-bar-h); } }
+
+  .trust { background: var(--tac-white); border-bottom: 1px solid var(--tac-line); }
+  .trust__row { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .trust__row li {
+    position: relative; padding: var(--s-5) var(--s-4) var(--s-5) calc(var(--s-4) + 1.4em);
+    font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem); letter-spacing: 0.03em; color: var(--tac-purple); line-height: 1.15;
+    border-left: 1px solid var(--tac-line);
+  }
+  .trust__row li:nth-child(odd) { border-left: 0; }
+  .trust__row li:nth-child(n + 3) { border-top: 1px solid var(--tac-line); }
+  .trust__row li::before {
+    content: ''; position: absolute; left: var(--s-4); top: calc(var(--s-5) + 0.4em); width: 0.85em; height: 0.4em; background: var(--tac-violet);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 62% 100%, 62% 55%, 38% 55%, 38% 100%, 0 100%);
+  }
+  @media (min-width: 900px) {
+    .trust__row { grid-template-columns: repeat(4, 1fr); }
+    .trust__row li { border-left: 1px solid var(--tac-line); border-top: 0 !important; }
+    .trust__row li:first-child { border-left: 0; }
+  }
+
+  .split-head { display: grid; gap: var(--s-4); margin-bottom: var(--s-10); }
+  .split-head h2 { max-width: 20ch; }
+  .split-head__intro { color: var(--tac-ink-soft); }
+  @media (min-width: 1024px) {
+    .split-head { grid-template-columns: 1.2fr 0.8fr; align-items: end; column-gap: var(--s-12); }
+    .split-head .eyebrow { grid-column: 1 / -1; }
+  }
+  .tray-section__more { margin-top: var(--s-10); }
+
+  .pitch__grid { display: grid; gap: var(--s-10); align-items: center; }
+  .pitch__media { max-width: 520px; width: 100%; justify-self: center; }
+  @media (min-width: 900px) {
+    .pitch__grid { grid-template-columns: 1.15fr 0.85fr; gap: var(--s-16); }
+    .pitch__media { justify-self: end; }
+  }
+
+  .language { overflow: hidden; isolation: isolate; }
+  .language__inner { position: relative; z-index: 1; display: grid; gap: var(--s-12); }
+  .language__head h2 { font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem); max-width: 14ch; }
+  .language__intro { color: var(--tac-on-dark-soft); margin-top: var(--s-4); }
+  .language__cols { list-style: none; padding: 0; display: grid; gap: var(--s-8); counter-reset: none; }
+  .language__cols li { border-top: 1px solid var(--tac-white-22); padding-top: var(--s-5); }
+  .language__label { color: var(--tac-amber); font-weight: 600; letter-spacing: 0.1em; margin-bottom: var(--s-3); }
+  @media (min-width: 900px) { .language__cols { grid-template-columns: repeat(3, 1fr); } }
+
+  .deal-band__grid { display: grid; gap: var(--s-10); align-items: center; }
+  .deal-band__text { display: grid; gap: var(--s-4); }
+  .deal-list { list-style: none; padding: 0; display: grid; gap: var(--s-2) var(--s-6); grid-template-columns: 1fr; font-size: 0.8125rem; }
+  .deal-list li { padding-left: 1.4em; position: relative; }
+  .deal-list li::before { content: '+'; position: absolute; left: 0; color: var(--tac-violet-deep); font-weight: 600; }
+  @media (min-width: 640px) { .deal-list { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 900px) { .deal-band__grid { grid-template-columns: 0.8fr 1.2fr; gap: var(--s-16); } }
+
+  .reviews-band__more, .faq-band__more { margin-top: var(--s-8); }
+
+  .area__grid { display: grid; gap: var(--s-10); align-items: center; }
+  .area__text { display: grid; gap: var(--s-4); }
+  .area__map { max-width: 460px; width: 100%; justify-self: center; }
+  .town-cloud { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+  .town-cloud a { display: inline-flex; min-height: 40px; align-items: center; padding: 0 var(--s-4); border: 1px solid var(--tac-line); border-radius: var(--r-pill); background: var(--tac-white); text-decoration: none; font-weight: 600; font-size: 0.9375rem; color: var(--tac-purple); }
+  .town-cloud a:hover { border-color: var(--tac-violet); background: var(--tac-mist); }
+  @media (min-width: 900px) { .area__grid { grid-template-columns: 1fr 0.9fr; gap: var(--s-16); } }
+
+  .faq-band h2 { margin: var(--s-3) 0 var(--s-8); }
+</style>

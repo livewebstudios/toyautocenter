@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import RatingStrip from '../components/RatingStrip.astro';
+import ReviewsRail from '../islands/ReviewsRail';
+import { reviewsPage as copy } from '../data/pages/misc';
+import { site } from '../data/site';
+import { getReviews } from '../lib/reviews';
+import { BUSINESS_ID } from '../lib/schema';
+
+const path = '/reviews/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Reviews', path }];
+const { list } = await getReviews();
+const schema = list.map((r, i) => ({
+  '@type': 'Review',
+  '@id': `https://toyautocenter.net${path}#review-${i + 1}`,
+  itemReviewed: { '@id': BUSINESS_ID },
+  author: { '@type': 'Person', name: r.author },
+  reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+  datePublished: r.date,
+  reviewBody: r.text,
+  url: r.url,
+  publisher: { '@type': 'Organization', name: r.source },
+}));
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} schema={schema} ctaSeed={55}>
+  <PageHero crumbs={crumbs} eyebrow="WORD ON THE ROAD" title={copy.h1} lead={copy.intro} seed={55} />
+
+  <section class="section section--tight" aria-labelledby="rt-h">
+    <div class="container">
+      <h2 id="rt-h" class="rv-h">{copy.ratingsHeading}</h2>
+      <RatingStrip />
+      {list.length > 0 && (
+        <div class="rv-rail"><ReviewsRail client:visible reviews={list} /></div>
+      )}
+      {list.length > 0 && (
+        <ul class="rv-list">
+          {list.map((r) => (
+            <li>
+              <blockquote><p>{r.text}</p></blockquote>
+              <p class="rv-by"><strong>{r.author}</strong>, <a href={r.url} rel="noopener">{r.source}</a></p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="lv-h">
+    <div class="container--narrow leave">
+      <h2 id="lv-h">{copy.leaveHeading}</h2>
+      <p>{copy.leave}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href={site.links.googleReview} rel="noopener">Review us on Google</a>
+        <a class="btn btn--ghost" href={site.links.facebook} rel="noopener">Facebook</a>
+      </div>
+      <p class="leave__never mono">{copy.never}</p>
+      <p>Ready for your next visit? <Button href="/contact/" variant="ghost" size="sm">BOOK AN APPOINTMENT</Button></p>
+    </div>
+  </section>
+</Base>
+<style>
+  .rv-h { margin-bottom: var(--s-6); }
+  .rv-rail { margin-top: var(--s-10); }
+  .rv-list { list-style: none; padding: 0; margin-top: var(--s-10); display: grid; gap: var(--s-6); }
+  .rv-by { margin-top: var(--s-2); font-size: 0.9375rem; }
+  .leave { display: grid; gap: var(--s-5); }
+  .leave__never { font-size: 0.75rem; color: var(--tac-ink-soft); }
+</style>

@@ -1,0 +1,70 @@
+---
+// Tall photo frame. The image is oversized inside overflow:hidden and moves at 0.85x on scroll
+// (motion.ts, [data-parallax-inner]). Optional amber status LED + label.
+import { Picture } from 'astro:assets';
+import { photo } from '../lib/images';
+
+interface Props {
+  image: string;
+  alt: string;
+  ratio?: '4/5' | '3/4' | '16/10' | '1/1';
+  focus?: string;
+  label?: string;
+  eager?: boolean;
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+}
+const {
+  image, alt, ratio = '4/5', focus = '50% 50%', label, eager = false,
+  widths = [480, 720, 928], sizes = '(min-width: 1024px) 40vw, 92vw', class: cls,
+} = Astro.props;
+const src = photo(image);
+const ratioClass = `frame--r${ratio.replace('/', '-')}`;
+const focusClass = `focus-${focus.replace(/[%\s]+/g, '-').replace(/-$/, '')}`;
+---
+<figure class:list={['frame', ratioClass, cls]}>
+  <div class="frame__inner" data-parallax-inner="0.85">
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      quality={eager ? 38 : undefined}
+      widths={widths.filter((w) => w <= src.width)}
+      sizes={sizes}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
+      decoding={eager ? 'sync' : 'async'}
+      class:list={['frame__img', focusClass]}
+    />
+  </div>
+  {label && (
+    <figcaption class="frame__tag mono"><span class="led" aria-hidden="true"></span>{label}</figcaption>
+  )}
+</figure>
+<style>
+  .frame { position: relative; overflow: hidden; border-radius: var(--r-3); background: var(--tac-graphite); isolation: isolate; }
+  .frame--r4-5 { aspect-ratio: 4 / 5; }
+  .frame--r3-4 { aspect-ratio: 3 / 4; }
+  .frame--r16-10 { aspect-ratio: 16 / 10; }
+  .frame--r1-1 { aspect-ratio: 1; }
+  .frame__inner { position: absolute; inset: -9% 0; will-change: transform; }
+  .frame__inner :global(picture), .frame__inner :global(img) { width: 100%; height: 100%; }
+  .frame__inner :global(img) { object-fit: cover; }
+  .frame__tag {
+    position: absolute; left: var(--s-3); bottom: var(--s-3); z-index: 1;
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: var(--s-1) var(--s-3); border-radius: var(--r-pill);
+    background: var(--tac-graphite-78); color: var(--tac-white); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+  }
+  .frame::after { content: ''; position: absolute; inset: 0; border: 1px solid var(--tac-white-08); border-radius: inherit; pointer-events: none; }
+  /* object-position presets (no inline styles) */
+  :global(.focus-50-50) { object-position: 50% 50%; }
+  :global(.focus-78-40) { object-position: 78% 40%; }
+  :global(.focus-40-70) { object-position: 40% 70%; }
+  :global(.focus-30-50) { object-position: 30% 50%; }
+  :global(.focus-70-50) { object-position: 70% 50%; }
+  :global(.focus-50-30) { object-position: 50% 30%; }
+  :global(.focus-50-70) { object-position: 50% 70%; }
+  :global(.focus-60-50) { object-position: 60% 50%; }
+</style>

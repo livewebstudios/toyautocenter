@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import AreaMap from '../components/AreaMap.astro';
+import BookingForm from '../islands/BookingForm';
+import { contact as copy } from '../data/pages/misc';
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+const path = '/contact/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Contact', path }];
+const endpoint = `https://formspree.io/f/${site.formspreeId}`;
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="ContactPage" ctaBand={false}>
+  <PageHero crumbs={crumbs} eyebrow="BOOK · CALL · TEXT" title={copy.h1} lead={copy.intro} seed={10913} density="low" />
+
+  <section class="section contact" aria-label="Booking and shop details">
+    <div class="container contact__grid">
+      <div class="contact__form" id="book">
+        <h2>{copy.formHeading}</h2>
+        <BookingForm client:visible endpoint={endpoint} next="https://toyautocenter.net/contact/?sent=1" services={services.map((s) => s.name)} phone={site.phone.display} text={site.text.display} />
+      </div>
+      <aside class="contact__side" aria-labelledby="visit-h">
+        <h2 id="visit-h">{copy.visitHeading}</h2>
+        <address class="nap">
+          <p class="nap__name">Toy Auto Center</p>
+          <p>{site.address.streetDisplay}<br />{site.address.city}, {site.address.region} {site.address.zip}</p>
+          <p class="nap__note mono">{site.address.note}</p>
+          <p class="nap__lines mono">
+            <a href={`tel:${site.phone.tel}`}>SHOP {site.phone.display}</a><br />
+            <a href={site.text.sms}>TEXT {site.text.display}</a><br />
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+        </address>
+        <dl class="hours mono">
+          <div><dt>Mon to Fri</dt><dd>8:00 AM to 5:00 PM</dd></div>
+          <div><dt>Saturday</dt><dd>By appointment</dd></div>
+          <div><dt>Sunday</dt><dd>Closed</dd></div>
+        </dl>
+        <p>{copy.directions}</p>
+        <div class="mapcard">
+          <AreaMap compact links={false} title="Map of Toy Auto Center at 628 Route 303, Blauvelt" />
+          <div class="btn-row mapcard__btns">
+            <a class="btn btn--primary btn--sm" href={site.links.directions} rel="noopener">GET DIRECTIONS</a>
+            <a class="btn btn--ghost btn--sm" href={site.links.waze} rel="noopener">Waze</a>
+          </div>
+        </div>
+        <div class="next">
+          <h3>{copy.next.heading}</h3>
+          <ol>{copy.next.steps.map((s) => <li>{s}</li>)}</ol>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+<style>
+  .contact__grid { display: grid; gap: var(--s-16); }
+  @media (min-width: 1024px) { .contact__grid { grid-template-columns: 1.2fr 0.8fr; gap: var(--s-20); } }
+  .contact__form h2, .contact__side > h2 { margin-bottom: var(--s-6); }
+  .contact__form { scroll-margin-top: calc(var(--nav-h) + var(--s-4)); }
+  .contact__side { display: grid; gap: var(--s-6); align-content: start; }
+  .contact__side > h2 { margin-bottom: 0; }
+  .nap { font-style: normal; display: grid; gap: var(--s-2); }
+  .nap__name { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--tac-purple); letter-spacing: 0.04em; text-transform: uppercase; }
+  .nap__note { font-size: 0.75rem; color: var(--tac-violet-deep); }
+  .nap__lines { font-size: 0.875rem; line-height: 2; }
+  .nap__lines a { text-decoration: none; font-weight: 600; }
+  .hours { display: grid; gap: var(--s-1); font-size: 0.8125rem; padding: var(--s-4); background: var(--tac-white); border: 1px solid var(--tac-line); border-radius: var(--r-2); }
+  .hours div { display: flex; justify-content: space-between; gap: var(--s-4); }
+  .hours dt { color: var(--tac-ink-soft); }
+  .hours dd { margin: 0; font-weight: 600; }
+  .mapcard { display: grid; gap: var(--s-4); padding: var(--s-4); background: var(--tac-mist); border-radius: var(--r-3); }
+  .next { border-top: 1px solid var(--tac-line); padding-top: var(--s-6); }
+  .next h3 { margin-bottom: var(--s-3); font-size: 1.5rem; }
+  .next ol { padding-left: 1.3em; display: grid; gap: var(--s-2); }
+</style>

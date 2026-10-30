@@ -1,0 +1,108 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Button from '../../components/Button.astro';
+import { allPosts, renderBody, dateLabel, catSlug, readingMinutes, type Post } from '../../lib/posts';
+import { site } from '../../data/site';
+import { rel, abs } from '../../lib/paths';
+import { BUSINESS_ID, WEBSITE_ID } from '../../lib/schema';
+import { Picture, getImage } from 'astro:assets';
+import { photos } from '../../lib/images';
+
+export function getStaticPaths() {
+  const posts = allPosts();
+  return posts.map((p, i) => ({
+    params: { slug: p.slug },
+    props: { post: p, newer: posts[i - 1] ?? null, older: posts[i + 1] ?? null },
+  }));
+}
+const { post, newer, older } = Astro.props as { post: Post; newer: Post | null; older: Post | null };
+const path = `/blog/${post.slug}/`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: post.category, path: `/blog/category/${catSlug(post.category)}/` },
+  { name: post.title, path },
+];
+const img = post.image.startsWith('/') ? post.image : `/${post.image}`;
+const html = renderBody(post.body, Astro.url);
+// Seed images also live in src/assets/images: serve those as AVIF/WebP. CMS uploads fall back to the JPG.
+const asset = photos[img.split('/').pop()!.replace(/\.jpe?g$/i, '')];
+const figSizes = '(min-width: 1280px) 1200px, 94vw';
+const figWidths = asset ? [480, 800, 1200, 1600].filter((w) => w <= asset.width) : [];
+const figAvif = asset ? await getImage({ src: asset, widths: figWidths, format: 'avif', quality: 38 }) : null;
+const preload = figAvif ? { srcset: figAvif.srcSet.attribute, sizes: figSizes, type: 'image/avif' } : null;
+const schema = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${abs(path)}#post`,
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    image: abs(img),
+    url: abs(path),
+    mainEntityOfPage: { '@id': `${abs(path)}#webpage` },
+    articleSection: post.category,
+    wordCount: post.body.split(/\s+/).length,
+    author: { '@type': 'Organization', '@id': BUSINESS_ID, name: site.name },
+    publisher: { '@id': BUSINESS_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+  },
+];
+const title = `${post.title} | Toy Auto Center`;
+---
+<Base title={title.length > 70 ? `${post.title} | Toy Auto` : title} description={post.excerpt} crumbs={crumbs.slice(1)} schema={schema} ogType="article" article={{ published: post.date, section: post.category }} ctaSeed={post.slug.length * 17} preload={preload}>
+  <article class="post">
+    <header class="post__head">
+      <div class="container--narrow post__head-inner">
+        <Breadcrumbs items={crumbs} />
+        <p class="post__meta mono">
+          <a href={rel(Astro.url, `/blog/category/${catSlug(post.category)}/`)}>{post.category}</a>
+          <span aria-hidden="true">·</span>
+          <time datetime={post.date}>{dateLabel(post.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{readingMinutes(post.body)} min read</span>
+        </p>
+        <h1>{post.title}</h1>
+        <p class="lead post__excerpt">{post.excerpt}</p>
+      </div>
+    </header>
+    <figure class="container post__figure">
+      {asset ? (
+        <Picture src={asset} alt={post.imageAlt} widths={figWidths} sizes={figSizes} formats={['avif', 'webp']} quality={38} loading="eager" fetchpriority="high" />
+      ) : (
+        <img src={rel(Astro.url, img)} alt={post.imageAlt} width="1200" height="750" fetchpriority="high" decoding="async" />
+      )}
+    </figure>
+    <div class="container--narrow prose post__body" set:html={html} />
+    <footer class="container--narrow post__foot">
+      <p class="post__by">Written by the team at Toy Auto Center, {site.address.streetDisplay}, {site.address.city}. Questions about your car? Call {site.phone.display} or text {site.text.display}.</p>
+      <div class="btn-row"><Button href="/contact/">BOOK AN APPOINTMENT</Button></div>
+      <nav class="post__nav" aria-label="More posts">
+        {newer ? <a href={rel(Astro.url, `/blog/${newer.slug}/`)} class="post__nav-link"><span class="mono">NEWER POSTS</span><span>{newer.title}</span></a> : <span />}
+        {older ? <a href={rel(Astro.url, `/blog/${older.slug}/`)} class="post__nav-link post__nav-link--older"><span class="mono">OLDER POSTS</span><span>{older.title}</span></a> : <span />}
+      </nav>
+      <p><a class="link-arrow" href={rel(Astro.url, '/blog/')}>ALL POSTS</a></p>
+    </footer>
+  </article>
+</Base>
+<style>
+  .post__head { padding-block: var(--s-10) var(--s-8); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .post__head-inner { display: grid; gap: var(--s-5); }
+  .post__meta { display: flex; flex-wrap: wrap; gap: var(--s-2); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tac-ink-soft); }
+  .post__meta a { color: var(--tac-violet-deep); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; min-height: 24px; }
+  .post__meta { align-items: center; }
+  .post h1 { font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem); text-transform: none; line-height: 1; max-width: 22ch; }
+  .post__excerpt { color: var(--tac-ink-soft); }
+  .post__figure { margin-top: calc(var(--s-6) * -1); }
+  .post__figure :global(img) { width: 100%; max-height: 560px; object-fit: cover; border-radius: var(--r-3); aspect-ratio: 16 / 10; }
+  .post__body { padding-block: var(--s-12) var(--s-8); }
+  .post__foot { display: grid; gap: var(--s-6); padding-bottom: var(--section-y); border-top: 1px solid var(--tac-line); padding-top: var(--s-8); }
+  .post__by { color: var(--tac-ink-soft); font-size: 0.9375rem; }
+  .post__nav { display: grid; gap: var(--s-4); grid-template-columns: 1fr 1fr; }
+  .post__nav-link { display: grid; gap: var(--s-1); padding: var(--s-4); border: 1px solid var(--tac-line); border-radius: var(--r-2); text-decoration: none; color: var(--tac-ink); background: var(--tac-white); }
+  .post__nav-link .mono { font-size: 0.6875rem; color: var(--tac-violet-deep); font-weight: 600; letter-spacing: 0.1em; }
+  .post__nav-link--older { text-align: right; }
+  .post__nav-link:hover { border-color: var(--tac-violet); }
+</style>

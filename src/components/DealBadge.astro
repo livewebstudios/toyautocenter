@@ -1,0 +1,30 @@
+---
+// The $44.99 deal badge. Rotates in on reveal (motion.ts); amber edge pulses every 6s (CSS).
+import { site } from '../data/site';
+interface Props { size?: 'md' | 'lg' }
+const { size = 'md' } = Astro.props;
+---
+<div class:list={['dbadge', `dbadge--${size}`]} data-deal-badge>
+  <p class="dbadge__eyebrow mono">CURRENT SPECIAL</p>
+  <p class="dbadge__price"><span class="dbadge__cur">$</span>{site.deal.price}</p>
+  <p class="dbadge__name">Full service oil change</p>
+  <p class="dbadge__alt mono">${site.deal.synthetic} full synthetic</p>
+  <p class="dbadge__note mono">Ask at checkout</p>
+</div>
+<style>
+  .dbadge {
+    position: relative; justify-self: center; width: min(100%, 340px); aspect-ratio: 1; border-radius: 50%;
+    display: grid; place-content: center; text-align: center; gap: var(--s-1);
+    background: var(--tac-grape); color: var(--tac-white); box-shadow: 0 0 0 10px var(--tac-paper), 0 0 0 11px var(--tac-line), var(--tac-shadow-2);
+  }
+  .dbadge::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 2px solid var(--tac-amber); opacity: 0.35; animation: dbadge-pulse var(--loop-badge) var(--ease-inout) infinite; }
+  @keyframes dbadge-pulse { 0%, 80%, 100% { opacity: 0.35; box-shadow: 0 0 0 0 var(--tac-amber-00); } 88% { opacity: 1; box-shadow: 0 0 18px 2px var(--tac-amber-45); } }
+  .dbadge p { max-width: none; }
+  .dbadge__eyebrow { font-size: 0.6875rem; letter-spacing: 0.14em; color: var(--tac-amber); }
+  .dbadge__price { font-family: var(--font-display); font-weight: 800; font-size: clamp(4rem, 3rem + 4vw, 5.75rem); line-height: 0.9; letter-spacing: -0.02em; }
+  .dbadge__cur { font-size: 0.5em; vertical-align: 0.7em; margin-right: 0.04em; }
+  .dbadge__name { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .dbadge__alt { font-size: 0.8125rem; color: var(--tac-on-dark); }
+  .dbadge__note { font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tac-on-dark-soft); }
+  .dbadge--lg { width: min(100%, 380px); }
+</style>

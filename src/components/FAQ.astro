@@ -1,0 +1,35 @@
+---
+// FAQ accordion (<details>). FAQPage schema is emitted by the page through Base.astro (faqSchema helper).
+import type { FAQItem } from '../data/types';
+import { inline } from '../lib/inline';
+interface Props { items: (FAQItem & { source?: { name: string; path: string } })[]; headingLevel?: 'h3' | 'h4'; open?: number }
+const { items, headingLevel: H = 'h3', open = -1 } = Astro.props;
+import { rel } from '../lib/paths';
+---
+<div class="faq">
+  {items.map((f, i) => (
+    <details class="faq__item" open={i === open}>
+      <summary class="faq__q"><H class="faq__h">{f.q}</H><span class="faq__icon" aria-hidden="true"></span></summary>
+      <div class="faq__a">
+        <p set:html={inline(f.a, Astro.url)} />
+        {f.source && <p class="faq__src mono">From <a href={rel(Astro.url, f.source.path)}>{f.source.name}</a></p>}
+      </div>
+    </details>
+  ))}
+</div>
+<style>
+  .faq { border-top: 1px solid var(--tac-line); }
+  .faq__item { border-bottom: 1px solid var(--tac-line); }
+  .faq__q { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: var(--s-4); align-items: center; padding: var(--s-5) 0; }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__h { font-family: var(--font-body); font-size: 1.125rem; font-weight: 650; letter-spacing: 0; color: var(--tac-ink); line-height: 1.35; text-wrap: pretty; }
+  .faq__q:hover .faq__h { color: var(--tac-purple); }
+  .faq__icon { width: 22px; height: 22px; position: relative; flex: none; }
+  .faq__icon::before, .faq__icon::after { content: ''; position: absolute; left: 3px; right: 3px; top: 10px; height: 2px; background: var(--tac-violet); transition: transform var(--dur-2) var(--ease-out); }
+  .faq__icon::after { transform: rotate(90deg); }
+  details[open] .faq__icon::after { transform: rotate(0); }
+  .faq__a { padding: 0 0 var(--s-6); max-width: var(--measure); }
+  .faq__src { margin-top: var(--s-2); font-size: 0.75rem; color: var(--tac-ink-soft); }
+  :global(.section--dark) .faq, :global(.section--dark) .faq__item { border-color: var(--tac-steel-dark); }
+  :global(.section--dark) .faq__h { color: var(--tac-white); }
+</style>

@@ -1,0 +1,33 @@
+---
+// Light page hero with the Harness background. Media (photo frame, badge, map) goes in the slot.
+import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+import Harness from '../islands/HarnessBackground';
+interface Props { crumbs?: Crumb[]; eyebrow: string; title: string; lead?: string; seed?: number; density?: 'low' | 'med' | 'high'; harness?: boolean }
+const { crumbs = [], eyebrow, title, lead, seed = 5, density = 'med', harness = true } = Astro.props;
+const hasMedia = Astro.slots.has('default');
+---
+<section class:list={['phero', hasMedia && 'phero--media']} aria-labelledby="phero-title">
+  {harness && <Harness client:idle variant="light" density={density} seed={seed} />}
+  <div class="container phero__grid">
+    <div class="phero__text">
+      {crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
+      <p class="eyebrow eyebrow--mono">{eyebrow}</p>
+      <h1 id="phero-title">{title}</h1>
+      {lead && <p class="lead phero__lead" data-speakable set:html={lead} />}
+      <slot name="actions" />
+    </div>
+    {hasMedia && <div class="phero__media"><slot /></div>}
+  </div>
+</section>
+<style>
+  .phero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .phero__grid { position: relative; z-index: 1; display: grid; gap: var(--s-10); align-items: center; }
+  .phero__text { display: grid; gap: var(--s-5); justify-items: start; }
+  .phero h1 { max-width: 16ch; }
+  .phero__lead { max-width: 58ch; }
+  .phero__media { width: 100%; max-width: 440px; justify-self: center; }
+  @media (min-width: 900px) {
+    .phero--media .phero__grid { grid-template-columns: 1.25fr 0.75fr; gap: var(--s-16); }
+    .phero__media { justify-self: end; }
+  }
+</style>

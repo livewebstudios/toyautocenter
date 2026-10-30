@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ServiceIcon from '../../components/ServiceIcon.astro';
+import Divider from '../../components/Divider.astro';
+import Harness from '../../islands/HarnessBackground';
+import PartsTray from '../../islands/PartsTray';
+import { services, groups, pad } from '../../data/services';
+import { servicesHub as copy } from '../../data/pages/misc';
+import { iconSvg } from '../../components/icons/icons';
+import { inline, splitLong } from '../../lib/inline';
+import { rel } from '../../lib/paths';
+import { serviceCopy } from '../../lib/content';
+import { abs } from '../../lib/paths';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Services', path: '/services/' }];
+const trayItems = services.map((s) => ({ n: pad(s.n), name: s.name, symptom: s.symptom, href: rel(Astro.url, `/services/${s.slug}/`), icon: iconSvg(s.icon, { size: 56 }) }));
+const itemList = {
+  '@type': 'ItemList',
+  '@id': `${abs('/services/')}#list`,
+  name: 'Auto repair services at Toy Auto Center',
+  itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/services/${s.slug}/`), name: s.name })),
+};
+---
+<Base title={copy.title} description={copy.description} crumbs={crumbs.slice(1)} pageType="CollectionPage" schema={[itemList]} ctaSeed={1313}>
+  <section class="hub-hero" aria-labelledby="hub-title">
+    <Harness client:idle variant="light" density="med" seed={13} />
+    <div class="container hub-hero__inner">
+      <Breadcrumbs items={crumbs} />
+      <p class="eyebrow eyebrow--mono">SERVICES 01 TO 13 · ALL MAKES &amp; MODELS</p>
+      <h1 id="hub-title">{copy.h1}</h1>
+      <div class="hub-hero__intro flow">{copy.intro.flatMap(splitLong).map((p, i) => <p class:list={[i === 0 && 'lead']} set:html={inline(p, Astro.url)} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="tray-h">
+    <div class="container">
+      <h2 id="tray-h" class="hub-h2">{copy.trayHeading}</h2>
+      <PartsTray client:visible items={trayItems} />
+    </div>
+  </section>
+
+  <Divider />
+
+  <section class="section" aria-labelledby="groups-h">
+    <div class="container">
+      <h2 id="groups-h" class="hub-h2">{copy.groupsHeading}</h2>
+      <div class="groups">
+        {groups.map((g) => (
+          <section class="group" aria-labelledby={`g-${g.replace(/\W+/g, '')}`} data-reveal>
+            <h3 id={`g-${g.replace(/\W+/g, '')}`}>{g}</h3>
+            <p class="group__intro">{copy.groupIntros[g]}</p>
+            <ul data-live-icons>
+              {services.filter((s) => s.group === g).map((s) => (
+                <li>
+                  <a href={rel(Astro.url, `/services/${s.slug}/`)} class="group__link">
+                    <ServiceIcon name={s.icon} size={44} />
+                    <span>
+                      <span class="group__name"><span class="mono group__n">{pad(s.n)}</span>{s.name}</span>
+                      <span class="group__promise">{serviceCopy(s.slug).promise}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <p class="hub-toyota">Own a Toyota, Lexus or Scion? <a href={rel(Astro.url, '/toyota-lexus-repair/')}>See what our Toyota and Lexus specialists do differently</a>.</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .hub-hero { position: relative; overflow: hidden; isolation: isolate; padding-block: var(--s-10) var(--s-16); background: linear-gradient(180deg, var(--tac-paper), var(--tac-mist)); }
+  .hub-hero__inner { position: relative; z-index: 1; display: grid; gap: var(--s-5); }
+  .hub-hero h1 { max-width: 16ch; }
+  .hub-hero__intro { max-width: 62ch; }
+  .hub-h2 { margin-bottom: var(--s-8); max-width: 24ch; }
+  .groups { display: grid; gap: var(--s-12) var(--s-10); }
+  @media (min-width: 900px) { .groups { grid-template-columns: 1fr 1fr; } }
+  .group h3 { font-size: 2rem; border-bottom: 2px solid var(--tac-purple); padding-bottom: var(--s-2); }
+  .group__intro { color: var(--tac-ink-soft); margin: var(--s-3) 0 var(--s-4); }
+  .group ul { list-style: none; padding: 0; display: grid; }
+  .group__link { display: grid; grid-template-columns: 44px 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--tac-line); text-decoration: none; color: var(--tac-ink); }
+  .group__link:hover .group__name { color: var(--tac-violet-deep); text-decoration: underline; }
+  .group__name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.375rem; color: var(--tac-purple); line-height: 1.1; }
+  .group__n { font-size: 0.75rem; color: var(--tac-violet-deep); margin-right: 0.6em; }
+  .group__promise { display: block; color: var(--tac-ink-soft); font-size: 0.9375rem; margin-top: var(--s-1); }
+  .hub-toyota { margin-top: var(--s-12); font-size: var(--fs-lead); }
+</style>

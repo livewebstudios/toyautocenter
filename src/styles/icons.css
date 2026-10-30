@@ -1,0 +1,45 @@
+/* Service icon line art + idle loops. Loops run only under .icons-live (set while in view). */
+.ic { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.ic .p { stroke: var(--ic-p, var(--tac-purple)); }
+.ic .s { stroke: var(--ic-s, var(--tac-violet)); }
+.ic g.p > *, .ic g.s > * { stroke: inherit; }
+.ic g.p { stroke: var(--ic-p, var(--tac-purple)); }
+.ic g.s { stroke: var(--ic-s, var(--tac-violet)); }
+.ic [class*='ic-'] { transform-box: view-box; }
+
+.icons-live .ic-spin12 { animation: ic-spin var(--loop-rotor) var(--ease-linear) infinite; transform-origin: 32px 32px; }
+.icons-live .ic-spin8 { animation: ic-spin var(--loop-tire) var(--ease-linear) infinite; transform-origin: 32px 32px; }
+.icons-live .ic-spin3 { animation: ic-spin var(--loop-fan) var(--ease-linear) infinite; transform-origin: 32px 32px; }
+.icons-live .ic-rock { animation: ic-rock var(--loop-steer) var(--ease-inout) infinite; transform-origin: 32px 32px; }
+.icons-live .ic-gear-a { animation: ic-spin var(--loop-gear-a) var(--ease-linear) infinite; transform-origin: 25px 28px; }
+.icons-live .ic-gear-b { animation: ic-spin-rev var(--loop-gear-b) var(--ease-linear) infinite; transform-origin: 45px 44px; }
+.icons-live .ic-piston { animation: ic-piston var(--loop-piston) var(--ease-inout) infinite; }
+.icons-live .ic-needle { animation: ic-needle var(--loop-needle) var(--ease-inout) infinite; transform-origin: 32px 46px; }
+.ic-needle { transform: rotate(-50deg); transform-origin: 32px 46px; }
+.ic-belt { stroke-dasharray: 5 4; }
+.icons-live .ic-belt { animation: ic-belt var(--loop-belt) var(--ease-linear) infinite; }
+.ic-check { stroke-dasharray: 24; stroke-dashoffset: 0; }
+.icons-live .ic-check { animation: ic-check var(--loop-check) var(--ease-inout) infinite; }
+.ic-trace { stroke-dasharray: 70; stroke-dashoffset: 0; }
+.icons-live .ic-trace { animation: ic-trace var(--loop-trace) var(--ease-inout) infinite; }
+.icons-live .ic-drop { animation: ic-drop var(--loop-drop) var(--ease-inout) infinite; }
+.ic-charge { transform-origin: 16px 41px; }
+.icons-live .ic-charge { animation: ic-charge var(--loop-charge) var(--ease-inout) infinite; }
+.ic-puff { transform-origin: center; transform-box: fill-box; opacity: 0.85; }
+.icons-live .ic-puff-a { animation: ic-puff var(--loop-puff) var(--ease-out) infinite; }
+.icons-live .ic-puff-b { animation: ic-puff var(--loop-puff) var(--ease-out) var(--loop-puff-delay) infinite; }
+
+@keyframes ic-spin { to { transform: rotate(360deg); } }
+@keyframes ic-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes ic-rock { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(6deg); } 75% { transform: rotate(-6deg); } }
+@keyframes ic-piston { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes ic-needle { 0%, 100% { transform: rotate(-50deg); } 45%, 55% { transform: rotate(52deg); } }
+@keyframes ic-belt { to { stroke-dashoffset: -18; } }
+@keyframes ic-check { 0%, 68% { stroke-dashoffset: 0; } 72% { stroke-dashoffset: 24; } 92%, 100% { stroke-dashoffset: 0; } }
+@keyframes ic-trace { 0%, 55% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 70; } 95%, 100% { stroke-dashoffset: 0; } }
+@keyframes ic-drop { 0%, 45% { transform: translateY(0); opacity: 1; } 78% { transform: translateY(13px); opacity: 0; } 79% { transform: translateY(0); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+@keyframes ic-charge { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.15); } }
+@keyframes ic-puff { 0% { transform: scale(1); opacity: 0.85; } 40% { transform: scale(1.6) translate(4px, -3px); opacity: 0; } 41% { transform: scale(0.4); opacity: 0; } 75%, 100% { transform: scale(1); opacity: 0.85; } }
+
+/* On dark grounds */
+.on-dark .ic, .section--dark .ic, .section--graphite .ic { --ic-p: var(--tac-white); --ic-s: var(--tac-violet-light); }

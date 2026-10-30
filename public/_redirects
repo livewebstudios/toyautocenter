@@ -1,0 +1,26 @@
+# Legacy WordPress URLs (toyautocenter.net, WordPress 7.1 / Divi). All 301.
+/home/about-toy-auto-center/                                          /about/                      301
+/home/about-toy-auto-center                                           /about/                      301
+/home/toy-auto-center-services-page/                                  /services/                   301
+/home/toy-auto-center-services-page                                   /services/                   301
+/toy-auto-center-services-page                                        /services/                   301
+/toy-auto-center-services-page/                                       /services/                   301
+/home/deals-packages/                                                 /deals/                      301
+/home/deals-packages                                                  /deals/                      301
+/home/contact-us/                                                     /contact/                    301
+/home/contact-us                                                      /contact/                    301
+/contact                                                              /contact/                    301
+/home/state-certified-auto-inspection-center-in-blauvelt-new-york/    /services/nys-inspection/    301
+/home/state-certified-auto-inspection-center-in-blauvelt-new-york     /services/nys-inspection/    301
+/home/                                                                /                            301
+/home                                                                 /                            301
+/images/monthlyhookup.pdf                                             /deals/                      301
+/2022/01/31/toy-auto-center-service-deals/                            /deals/                      301
+/2022/01/20/about-tac/                                                /about/                      301
+/2021/12/20/hello-world/                                              /blog/                       301
+/category/uncategorized/                                              /blog/                       301
+/sample-page/                                                         /                            301
+/feed/                                                                /rss.xml                     301
+/wp-admin/*                                                           /                            301
+/wp-login.php                                                         /                            301
+/wp-content/*                                                         /                            301
